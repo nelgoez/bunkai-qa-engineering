@@ -9,7 +9,7 @@
   "homepage": "https://github.com/upex-galaxy/agentic-qa-boilerplate#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/upex-galaxy/agentic-qa-boilerplate.git"
+    "url": "git+https://github.com/nelgoez/bunkai-qa-engineering.git"
   },
   "bugs": {
     "url": "https://github.com/upex-galaxy/agentic-qa-boilerplate/issues"
