@@ -9,46 +9,46 @@ what_this_is: >
   — separate from the target repo (upex-bunkai-tms).
 
 pipeline:
-  stage_0: "/shift-left-testing — pre-sprint AC refinement on backlog Stories"
-  stage_1: "/sprint-testing — in-sprint manual QA per ticket (Planning)"
-  stage_2: "/sprint-testing — exploratory testing (Execution)"
-  stage_3: "/sprint-testing — reporting: ATP, ATR, bug reports (Reporting)"
-  stage_4: "/test-documentation — TMS test cases + ROI scoring → Candidate/Manual/Deferred"
-  stage_5: "/test-automation — Plan → Code → Review on KATA + Playwright + TypeScript"
-  stage_6: "/regression-testing — CI/CD suite execution → GO / CAUTION / NO-GO"
+  stage_0: /shift-left-testing — pre-sprint AC refinement on backlog Stories
+  stage_1: /sprint-testing — in-sprint manual QA per ticket (Planning)
+  stage_2: /sprint-testing — exploratory testing (Execution)
+  stage_3: '/sprint-testing — reporting: ATP, ATR, bug reports (Reporting)'
+  stage_4: '/test-documentation — TMS test cases + ROI scoring → Candidate/Manual/Deferred'
+  stage_5: '/test-automation — Plan → Code → Review on KATA + Playwright + TypeScript'
+  stage_6: /regression-testing — CI/CD suite execution → GO / CAUTION / NO-GO
 
 key_skills:
-  - trigger: "/agentic-qa-onboard"
+  - trigger: /agentic-qa-onboard
     skill: agentic-qa-onboard
     purpose: First-time orientation tour of the stack and pipeline.
-  - trigger: "/project-discovery"
+  - trigger: /project-discovery
     skill: project-discovery
     purpose: Onboard target repo; generate .context/ artifacts.
-  - trigger: "/shift-left-testing"
+  - trigger: /shift-left-testing
     skill: shift-left-testing
     purpose: Pre-sprint AC refinement; surface gaps before sprint starts.
-  - trigger: "/sprint-testing"
+  - trigger: /sprint-testing
     skill: sprint-testing
     purpose: In-sprint manual QA per ticket (Stages 1-3).
-  - trigger: "/test-documentation"
+  - trigger: /test-documentation
     skill: test-documentation
     purpose: Document test cases in TMS; calculate ROI for automation.
-  - trigger: "/test-automation"
+  - trigger: /test-automation
     skill: test-automation
     purpose: Write automated E2E/API tests (KATA + Playwright).
-  - trigger: "/regression-testing"
+  - trigger: /regression-testing
     skill: regression-testing
     purpose: Execute regression suites via CI; classify failures; release decision.
-  - trigger: "git / PR intents"
+  - trigger: git / PR intents
     skill: git-flow-master
     purpose: Branch, commit, push, PR; auto-detects branching strategy.
-  - trigger: "/acli"
+  - trigger: /acli
     skill: acli
     purpose: Jira/Confluence operations from terminal.
-  - trigger: "/xray-cli"
+  - trigger: /xray-cli
     skill: xray-cli
     purpose: Xray Cloud test management.
-  - trigger: "/judgment-day"
+  - trigger: /judgment-day
     skill: judgment-day
     purpose: Adversarial dual-judge code review (optional gate pre-PR).
 
@@ -66,10 +66,10 @@ current_status:
     - Target app backend auth endpoints not yet stable for API tests
 
 next_actions:
-  - "Run /agentic-qa-onboard if first session"
-  - "Read .context/business/_index.yml for domain orientation"
-  - "Read kata-manifest.json for existing test components"
-  - "Load /sprint-testing when a ticket enters Ready For QA"
-  - "Load /test-automation when writing or refactoring test code"
-  - "Run bun run kata:manifest before creating new components"
-  - "Check .agents/project.yaml for active environment before testing"
+  - Run /agentic-qa-onboard if first session
+  - Read .context/business/_index.yml for domain orientation
+  - Read kata-manifest.json for existing test components
+  - Load /sprint-testing when a ticket enters Ready For QA
+  - Load /test-automation when writing or refactoring test code
+  - 'Run bun run kata:manifest before creating new components'
+  - Check .agents/project.yaml for active environment before testing
