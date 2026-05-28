@@ -293,7 +293,7 @@ function formatArgs(args: unknown[]): string {
  * Each @atc execution appends one JSON line here; KataReporter.onEnd()
  * aggregates all lines into the final report.
  */
-export const ATC_PARTIAL_PATH = resolve('reports/.atc_partial.ndjson');
+export const ATC_PARTIAL_PATH = resolve(process.cwd(), 'reports', '.atc_partial.ndjson');
 
 function storeResult(_testId: string, result: AtcResult) {
   mkdirSync(dirname(ATC_PARTIAL_PATH), { recursive: true });

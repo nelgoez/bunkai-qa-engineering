@@ -1,0 +1,288 @@
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Unified QA Test Results — BK-4 & BK-5 (Staging)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Date",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": 2026-05-28 | "
+        },
+        {
+          "type": "text",
+          "text": "Tester",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Nahuel Gomez | "
+        },
+        {
+          "type": "text",
+          "text": "Env",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": https://upexbunkai.vercel.app"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "BK-4 — Create Workspace ✅ 9/9 tested"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "| AC | Scenario | Result |\n|----|----------|:---:|\n| AC-1 | POST /workspaces {name:\"QA Test Workspace\", slug:\"qa-test-workspace\"} → 201, slug derived, caller=owner | ✅ |\n| AC-5 | Name too short (\"AB\") → 400 validation"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "failed | ✅ |\n| AC-5 | Slug too short (\"ab\") → 400 too"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "small min:3 | ✅ |\n| AC-5 | Empty name → 400 too"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "small min:1 | ✅ |\n| AC-6 | Duplicate slug → 409 \"already taken\" | ✅ |\n| AC-8 | Reserved slug \"admin\" → 400 \"Slug is reserved\" | ✅ |\n| AC-8 | GET /workspaces → 200, 1 workspace | ✅ |\n| AC-8 | GET /workspaces/{id} → 200, correct slug/name | ✅ |\n| AC-8 | GET /workspaces/{bad-id} → 404 not"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "found | ✅ |\n| PATCH | Rename to \"QA Test Renamed\" → 200, persisted | ✅ |"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "BK-5 — Invite Teammate ✅ 6/6 tested"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "| AC | Scenario | Result |\n|----|----------|:---:|\n| AC-1 | POST /invites (API) → 201, token bk"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "inv"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "*"
+        },
+        {
+          "type": "text",
+          "text": ", 7d expiry | ✅ |\n| AC-1 | Create invite (UI) → 201, clipboard copy | ✅ |\n| AC-8 | GET /invites → 200, 1 pending | ✅ |\n| AC-12 | Accept with mismatched email → 403 \"different email address\" | ✅ |\n| AC-10 | DELETE /invites/{id} → {ok:true} | ✅ |\n| AC-10 | Revoked invite shows in UI as \"revoked\" | ✅ |"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Known Gaps (not tested)"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "BK-5.2: Accept invite (needs second authenticated user with matching email)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "BK-5.5: RBAC non-admin rejection (needs second user)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "BK-5.11: Rotate invite token"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "BK-4.11: Transaction atomicity (workspace + owner rollback)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "No workspace deletion endpoint"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Cleanup"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Workspace \"QA Test Renamed\" (8a2d1ff6-5e00) left on staging (no DELETE endpoint)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Invite qa-member@bunkai.io revoked"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

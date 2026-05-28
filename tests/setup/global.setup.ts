@@ -29,7 +29,7 @@ setup('Global Setup: prepare environment', async () => {
   // Ensure required directories exist
   const directories = [
     'test-results',
-    'test-results/screenshots',
+    join('test-results', 'screenshots'),
     'playwright-report',
     'allure-results',
     'reports',

@@ -43,7 +43,11 @@ const ENV_PATH = join(REPO_ROOT, '.env');
 const MCP_PATH = join(REPO_ROOT, '.mcp.json');
 const OPENCODE_PATH = join(REPO_ROOT, 'opencode.jsonc');
 const NODE_MODULES_DOTENV = join(REPO_ROOT, 'node_modules', 'dotenv-cli');
-const PW_CACHE = join(homedir(), '.cache', 'ms-playwright');
+const PW_CACHE_PATHS = [
+  join(homedir(), '.cache', 'ms-playwright'), // Linux
+  join(homedir(), 'Library', 'Caches', 'ms-playwright'), // macOS
+  join(homedir(), 'AppData', 'Local', 'ms-playwright'), // Windows
+];
 // --preflight mode resolves install.ts's only third-party import.
 const INQUIRER_MARKER = join(REPO_ROOT, 'node_modules', '@inquirer', 'prompts', 'package.json');
 
@@ -222,7 +226,15 @@ async function detectDirenv(): Promise<DirenvState> {
   const status = tryRun('direnv', ['status']);
   const envrcAllowed = /Found RC allowed true/.test(status.stdout);
 
-  const candidates = ['.bashrc', '.zshrc', '.bash_profile', '.profile'];
+  const candidates = [
+    '.bashrc',
+    '.zshrc',
+    '.bash_profile',
+    '.profile',
+    ...(process.platform === 'win32'
+      ? ['Documents\\PowerShell\\Microsoft.PowerShell_profile.ps1', 'Documents\\WindowsPowerShell\\Microsoft.PowerShell_profile.ps1']
+      : []),
+  ];
   let hookInRc = false;
   let rcFile: string | undefined;
   for (const file of candidates) {
@@ -261,6 +273,11 @@ function installCommandForPlatform(): string {
 }
 
 function shellHookLine(): { line: string, rc: string } {
+  if (process.platform === 'win32') {
+    // On Windows, direnv hooks into PowerShell through its installer.
+    // If user is in Git Bash, they'll see the bash branch below via $SHELL.
+    return { line: 'direnv hook powershell | Out-String | Invoke-Expression', rc: '$PROFILE' };
+  }
   const shell = (process.env.SHELL ?? '').toLowerCase();
   if (shell.endsWith('zsh')) {
     return { line: 'eval "$(direnv hook zsh)"', rc: '~/.zshrc' };
@@ -331,23 +348,24 @@ async function runDoctor(): Promise<DoctorReport> {
     status: 'ok',
     repo_root: REPO_ROOT,
     platform: process.platform,
-    shell: process.env.SHELL ?? '',
+    shell: process.env.SHELL ?? (process.platform === 'win32' ? 'powershell' : ''),
     is_tty: Boolean(process.stdin.isTTY),
     env_file_exists: existsSync(ENV_PATH),
     env_vars: {},
     mcp_json_exists: existsSync(MCP_PATH),
     opencode_jsonc_exists: existsSync(OPENCODE_PATH),
     deps_installed: existsSync(NODE_MODULES_DOTENV),
-    playwright_browsers: existsSync(PW_CACHE),
+    playwright_browsers: PW_CACHE_PATHS.some(p => existsSync(p)),
     direnv: { installed: false },
     pending_actions: [],
   };
 
   // .env presence
   if (!report.env_file_exists) {
+    const copyCmd = process.platform === 'win32' ? 'copy .env.example .env' : 'cp .env.example .env';
     report.pending_actions.push({
       type: 'shell_command',
-      target: 'cp .env.example .env',
+      target: copyCmd,
       hint: 'Create .env from the template; then fill in the vars below.',
     });
   }

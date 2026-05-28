@@ -67,7 +67,7 @@
     "skills:check": "bun scripts/lint-skills.ts",
     "skills:registry:check": "bun scripts/build-skill-registry.ts --check",
     "skills:registry": "bun scripts/build-skill-registry.ts",
-    "test:clean": "rm -rf test-results playwright-report allure-results allure-report reports",
+    "test:clean": "bun -e \"const{rmSync}=require('fs');for(const d of['test-results','playwright-report','allure-results','allure-report','reports']){try{rmSync(d,{recursive:true,force:true})}catch{}}\"",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --project=e2e",
     "test:env:check": "bun config/validateTestEnv.ts",

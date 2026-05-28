@@ -1,0 +1,432 @@
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "QA Refinements (Shift-Left Analysis) — BK-4"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Story Quality: Needs Improvement"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Original: single-sentence Story with business rules"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Missing: reserved slug list, error catalog, Unicode normalization rules"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Refined Acceptance Criteria (13 Given/When/Then scenarios, 4 ACs)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "AC-1 Positive",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": POST /workspaces with name \"Acme QA\" → 201 workspace created, slug \"acme-qa\", caller is owner\n"
+        },
+        {
+          "type": "text",
+          "text": "AC-2 Positive",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Slug is derived: lowercase, kebab-case, accents stripped, ≤60 chars\n"
+        },
+        {
+          "type": "text",
+          "text": "AC-3 Positive",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Creator auto-enrolled as owner in workspace"
+        },
+        {
+          "type": "text",
+          "text": "_"
+        },
+        {
+          "type": "text",
+          "text": "members\n"
+        },
+        {
+          "type": "text",
+          "text": "AC-4 Slug uniqueness",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Duplicate slug → 409 Conflict\n"
+        },
+        {
+          "type": "text",
+          "text": "AC-5 Reserved slugs",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Reserved value → 422 Validation Failed\n"
+        },
+        {
+          "type": "text",
+          "text": "AC-6 Name validation",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": 0 chars, 61 chars, no alphanumeric → 422\n"
+        },
+        {
+          "type": "text",
+          "text": "AC-7 Empty string name",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": " → 422"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Edge Cases (18 identified)"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Unicode name: \"Bünkāï\" → slug \"bunkai\" (NEEDS PO/DEV CONFIRMATION)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Emoji-only name → 422"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Leading/trailing spaces → trimmed"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Concurrent slug race → 409 for loser"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Workspace creation event fired → activity log entry"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Critical PO Questions"
+        }
+      ]
+    },
+    {
+      "type": "orderedList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SLUG"
+                },
+                {
+                  "type": "text",
+                  "text": "_"
+                },
+                {
+                  "type": "text",
+                  "text": "RESERVED list — what values are reserved? (suspect: admin, api, app, auth, "
+                },
+                {
+                  "type": "text",
+                  "text": "~"
+                },
+                {
+                  "type": "text",
+                  "text": "20 others)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Unicode normalization algorithm (NFKD? ASCII-only?)"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Error catalog — what status code per validation failure?"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Response shape: Story says {workspace"
+                },
+                {
+                  "type": "text",
+                  "text": "_"
+                },
+                {
+                  "type": "text",
+                  "text": "id, slug}, API map says {id, slug, role, plan}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Test Outlines (20 — names only)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Positive (6)",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Workspace created with valid name, slug derived correctly, owner membership, event emission, activity log, GET returns workspace\n"
+        },
+        {
+          "type": "text",
+          "text": "Negative (8)",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Name too short/long, duplicate slug, reserved slug, no alphanumeric, empty name, unauthenticated, emoji-only, Unicode boundary\n"
+        },
+        {
+          "type": "text",
+          "text": "Boundary (4)",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": Exact 3/60 char name, slug approaching 60 char limit, accented boundary\n"
+        },
+        {
+          "type": "text",
+          "text": "API (2)",
+          "marks": [
+            {
+              "type": "strong"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "text": ": GET /workspaces/{id} returns workspace, 404 for non-existent"
+        }
+      ]
+    }
+  ]
+}

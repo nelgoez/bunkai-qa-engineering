@@ -79,15 +79,15 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 
 // -----------------------------------------------------------------------------
 // Constants
 // -----------------------------------------------------------------------------
 
 const REPO_ROOT = join(import.meta.dir, '..');
-const SKILLS_DIR = join(REPO_ROOT, '.claude/skills');
-const INSTALL_TS = join(REPO_ROOT, 'cli/install.ts');
+const SKILLS_DIR = join(REPO_ROOT, '.claude', 'skills');
+const INSTALL_TS = join(REPO_ROOT, 'cli', 'install.ts');
 const CLAUDE_MD = join(REPO_ROOT, 'CLAUDE.md');
 
 /**
@@ -561,8 +561,8 @@ function checkStalePaths(
   INLINE_CODE_PATH.lastIndex = 0;
   for (const match of stripped.matchAll(INLINE_CODE_PATH)) {
     const path = match[1];
-    // Skip absolute paths.
-    if (path.startsWith('/')) { continue; }
+    // Skip absolute paths (cross-platform).
+    if (isAbsolute(path)) { continue; }
     if (path.endsWith('/')) { continue; } // directory-shape illustration, not a file ref
     // Skill-dir-first resolution: shorthand like `scripts/foo.ts` inside a skill
     // body should resolve against the skill's own directory; fall back to repo

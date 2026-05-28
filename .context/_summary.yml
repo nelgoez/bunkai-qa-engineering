@@ -1,0 +1,75 @@
+# Master summary for AI agents — load BEFORE any task to orient.
+# Full docs live in .context/business/*, .context/PRD/*, .context/SRS/*, CLAUDE.md.
+# Regenerated: 2026-05-27.
+
+what_this_is: >
+  QA engineering boilerplate for testing Bunkai TMS (open-core Test Management System).
+  Uses Playwright + KATA architecture + TypeScript + Allure + Xray. Target is the Bunkai
+  app currently in MVP development (Next.js 15 + Supabase). This repo is the QA SIDE
+  — separate from the target repo (upex-bunkai-tms).
+
+pipeline:
+  stage_0: "/shift-left-testing — pre-sprint AC refinement on backlog Stories"
+  stage_1: "/sprint-testing — in-sprint manual QA per ticket (Planning)"
+  stage_2: "/sprint-testing — exploratory testing (Execution)"
+  stage_3: "/sprint-testing — reporting: ATP, ATR, bug reports (Reporting)"
+  stage_4: "/test-documentation — TMS test cases + ROI scoring → Candidate/Manual/Deferred"
+  stage_5: "/test-automation — Plan → Code → Review on KATA + Playwright + TypeScript"
+  stage_6: "/regression-testing — CI/CD suite execution → GO / CAUTION / NO-GO"
+
+key_skills:
+  - trigger: "/agentic-qa-onboard"
+    skill: agentic-qa-onboard
+    purpose: First-time orientation tour of the stack and pipeline.
+  - trigger: "/project-discovery"
+    skill: project-discovery
+    purpose: Onboard target repo; generate .context/ artifacts.
+  - trigger: "/shift-left-testing"
+    skill: shift-left-testing
+    purpose: Pre-sprint AC refinement; surface gaps before sprint starts.
+  - trigger: "/sprint-testing"
+    skill: sprint-testing
+    purpose: In-sprint manual QA per ticket (Stages 1-3).
+  - trigger: "/test-documentation"
+    skill: test-documentation
+    purpose: Document test cases in TMS; calculate ROI for automation.
+  - trigger: "/test-automation"
+    skill: test-automation
+    purpose: Write automated E2E/API tests (KATA + Playwright).
+  - trigger: "/regression-testing"
+    skill: regression-testing
+    purpose: Execute regression suites via CI; classify failures; release decision.
+  - trigger: "git / PR intents"
+    skill: git-flow-master
+    purpose: Branch, commit, push, PR; auto-detects branching strategy.
+  - trigger: "/acli"
+    skill: acli
+    purpose: Jira/Confluence operations from terminal.
+  - trigger: "/xray-cli"
+    skill: xray-cli
+    purpose: Xray Cloud test management.
+  - trigger: "/judgment-day"
+    skill: judgment-day
+    purpose: Adversarial dual-judge code review (optional gate pre-PR).
+
+current_status:
+  configured:
+    - Business context generated (.context/business/*)
+    - KATA test architecture in place (tests/components/, tests/e2e/)
+    - Jira+Xray integration (.agents/*)
+    - All workflow skills installed (.claude/skills/)
+    - Environment URLs set (local + staging)
+  pending:
+    - Target app Bunkai TMS is greenfield — no live UI yet for E2E testing
+    - kata-manifest.json populated with initial components
+    - master-test-plan.md generation pending target app maturity
+    - Target app backend auth endpoints not yet stable for API tests
+
+next_actions:
+  - "Run /agentic-qa-onboard if first session"
+  - "Read .context/business/_index.yml for domain orientation"
+  - "Read kata-manifest.json for existing test components"
+  - "Load /sprint-testing when a ticket enters Ready For QA"
+  - "Load /test-automation when writing or refactoring test code"
+  - "Run bun run kata:manifest before creating new components"
+  - "Check .agents/project.yaml for active environment before testing"
