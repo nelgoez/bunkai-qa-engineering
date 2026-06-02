@@ -243,7 +243,7 @@ Before calling `[ISSUE_TRACKER_TOOL] Create issue`, present the full draft (titl
 ### 2.1 Prerequisites
 
 - All Stage 2 TCs have final status PASSED or FAILED (no NOT RUN).
-- Evidence under `.context/PBI/{module}/{ticket}/evidence/`.
+- Evidence under `.context/PBI/epics/EPIC-<KEY>-<slug>/stories/STORY-<KEY>-<slug>/evidence/`.
 - Bugs, if any, already filed per §1.
 - TMS modality resolved in Session Start (§0) and persisted in `test-session-memory.md`.
 
@@ -315,7 +315,7 @@ for each {TEST_KEY, result} in run:
 
 If the run was already imported from CI via `[TMS_TOOL] Import Results`, the Test Runs are already populated — only the description + Environment + Begin/End need the manual update.
 
-#### Modality jira-native (ATR = Story customfield + comment)
+#### Modality jira-native (ATR = Story customfield; comment is fallback only)
 
 ```
 [ISSUE_TRACKER_TOOL] Update Issue:
@@ -323,11 +323,12 @@ If the run was already imported from CI via `[TMS_TOOL] Import Results`, the Tes
   fields:
     {{jira.acceptance_test_results}}: {ATR body from §2.2}
 
+# Fallback only if {{jira.acceptance_test_results}} is absent in .agents/jira-fields.json:
 [ISSUE_TRACKER_TOOL] Add Comment:
   issue: {STORY_KEY}
   body: |
-    === Test Results: {{PROJECT_KEY}}-{number} ===
-    {ATR body — byte-for-byte mirror of {{jira.acceptance_test_results}}}
+    ## Acceptance Test Results (ATR)
+    {ATR body from §2.2}
 
 # Update each TC's Test Status field (Execution Status in Jira-native)
 for each {TEST_KEY, result} in run:
@@ -345,11 +346,16 @@ for each {TEST_KEY, result} in run:
 | Modality | Completion signal |
 |----------|-------------------|
 | A (Xray) | Test Execution issue transitioned to `Done`; all Test Runs have terminal status (PASS/FAIL/BLOCKED/ABORTED, not TODO/EXECUTING). |
-| B (Jira-native) | `{{jira.acceptance_test_results}}` populated with full body (not placeholder); mirror comment present on the Story; every linked TC has a terminal Test Status. |
+| B (Jira-native) | `{{jira.acceptance_test_results}}` populated with full body (not placeholder), or the `## Acceptance Test Results (ATR)` fallback comment when the field is absent; every linked TC has a terminal Test Status. |
 
-### 2.3 Local mirror (`test-report.md`)
+> **TC body**: the test-case body = the `Test` issue's `description` (synced in both modalities). The Xray Gherkin / Test-Steps plugin field is NOT synced — it only mirrors the description.
 
-Write a Markdown mirror of the ATR body at `.context/PBI/{module}/{ticket}/test-report.md`. Use H2 sections for Summary / Test Cases (table: TC ID / Name / Status) / Findings / Test Data Used (table: Purpose / Entity / ID) / Evidence (bulleted relative paths). Header lines for Date / Environment / Result ({PASSED | FAILED | BLOCKED} ({X}/{Y})). Content must match the §2.2 body field-for-field.
+### 2.5 Local cache (`acceptance-test-results.md`, from sync)
+
+After the ATR is in Jira, materialize the read-only cache per modality. This is a sync-emitted cache — NEVER hand-write or hand-edit it. Jira is source of truth. (The old hand-written `test-report.md` mirror is retired.)
+
+- **Modality jira-native**: ATR = the Story's `{{jira.acceptance_test_results}}` field (or `## Acceptance Test Results (ATR)` fallback comment). Run `bun run jira:sync-issues get <STORY_KEY> --include-comments` → `acceptance-test-results.md` at `.../stories/STORY-<KEY>-<slug>/acceptance-test-results.md`.
+- **Modality jira-xray**: ATR = the **Test Execution** issue's `description`. Run `bun run jira:sync-issues get <ATR_KEY>` → `test-executions/TESTEXEC-<ATR_KEY>-<slug>.md` (the sync supports the Test Execution issue type). Per-TC run results (pass/fail) are NOT synced — read those via `[TMS_TOOL]` (xray-cli).
 
 Also append to `context.md`:
 
@@ -361,7 +367,7 @@ Also append to `context.md`:
 **Next:** {{{jira.status.story.qa_approved}} | Wait for fixes}
 ```
 
-### 2.4 Report-to-user summary
+### 2.6 Report-to-user summary
 
 Present Total / PASSED / FAILED / Pass Rate % as a 4-row summary when closing the ticket.
 
@@ -484,6 +490,7 @@ Rules: pick the most informative 1-2 shots; for bugs show the fix working (Templ
 |-----------|-----------|-------------------|------------------|
 | Story all TCs PASSED | — | Yes | A |
 | Story any TC FAILED | Yes (per failure) | Yes | B |
+| Story TC FAILED but recalibrated to non-defect (framework-default/mitigated, §5.0) | Low-priority follow-up only (not a blocker) | Yes (result `PASSED WITH ISSUES`, record gate outcome) | A + recalibration note |
 | Bug retest confirms fix | — | Yes (abridged) | C |
 | Bug retest reproduces | — | Yes (abridged) | D |
 | Triage SKIP (code review only) | — | — | Short code-review note on ticket |
@@ -497,14 +504,35 @@ Rules: pick the most informative 1-2 shots; for bugs show the fix working (Templ
 
 Once Stage 3 closes, the ticket state moves forward and the PBI folder becomes the source of truth for Stages 4, 5 and 6.
 
+### 5.0 Severity recalibration gate (before any blocking transition)
+
+A failing Story TC does NOT mechanically equal a blocking defect. Security, auth, integration and "secure-cookie / header" findings frequently have a framework-default explanation that changes their severity — firing `defect_reported` → `blocked` on one of those over-blocks the Story and burns a fix cycle on a non-defect. Run this gate for any **Story TC FAIL** before choosing the transition in §5.1; it is the Stage-3 Story-TC counterpart of the bug veto/risk tree (`acceptance-test-planning.md` §0.1/§0.2) that runs for bugs at Stage 1.
+
+Apply the gate when the failing TC is **security / auth / framework-default class** (cookie flags, CSP/CORS/HSTS headers, SDK-by-design behavior, token rotation defaults, rate-limit defaults). For an ordinary functional FAIL with no such explanation, skip the gate and take the mechanical path in §5.1.
+
+The verdict step must, before any blocking transition:
+
+1. **State the mitigation hypothesis** if one plausibly applies — e.g. "`Secure`/`HttpOnly` are framework defaults under HSTS preload", "missing CSP is the deploy platform's default and is set at the edge", "session SDK rotates tokens by design". If none applies, say so explicitly.
+2. **Cite one verification fact** that supports or refutes the hypothesis — a config line, a response header observed, a framework doc reference, a DB/cookie attribute actually read. One fact, not a paragraph.
+3. **Surface to the user** whenever the finding is security/auth/framework-default class. The user (or dev review) confirms the recalibration; QA does not silently downgrade a security finding.
+
+Outcomes:
+
+| Gate result | Verdict | Transition |
+|-------------|---------|------------|
+| Confirmed real defect (hypothesis refuted or none) | FAILED | mechanical §5.1 path (`defect_reported`/blocked or non-strict, file the bug) |
+| Recalibrated to non-defect / low pre-prod debt (hypothesis confirmed + fact cited + user OK) | **GO-with-debt** = `PASSED WITH ISSUES` | NO blocking transition — Story signs off; record the recalibration + cited fact + a follow-up note in the ATR (and, if it is genuine pre-prod debt, file a low-priority follow-up, not a blocker) |
+
+Record the gate outcome (hypothesis, cited fact, decision) in the ATR Observations so the audit trail shows *why* a P1 FAIL did not block.
+
 ### 5.1 Actions at close
 
 1. ATR marked complete in TMS via `[TMS_TOOL]`.
 2. QA comment posted (Template A, B, C or D) via `[ISSUE_TRACKER_TOOL]`.
 3. Evidence screenshots surfaced to the user with absolute paths.
-4. Ticket transitioned — Story PASSED -> `{{jira.status.story.qa_approved}}` (via `{{jira.transition.story.qa_sign_off}}`); Bug VERIFIED -> `{{jira.status.bug.closed}}` (via `{{jira.transition.bug.retest_passed}}`); Story FAILED with `{{FORMAL_BLOCKED_GATE}}=true` -> `{{jira.status.story.blocked}}` (via `{{jira.transition.story.defect_reported}}`); Story FAILED non-strict -> left in `{{jira.status.story.in_test}}` with linked bug; Bug NOT FIXED -> left in `{{jira.status.bug.ready_for_qa}}` pending dev. See `sprint-orchestration.md` Briefing 4 Step 5 for the full decision tree.
+4. Ticket transitioned — Story PASSED -> `{{jira.status.story.qa_approved}}` (via `{{jira.transition.story.qa_sign_off}}`); Bug VERIFIED -> `{{jira.status.bug.closed}}` (via `{{jira.transition.bug.retest_passed}}`); Story FAILED **(run the §5.0 recalibration gate first for any security/auth/framework-default FAIL — a recalibrated finding becomes GO-with-debt and takes the PASSED path, not a blocking transition)** with `{{FORMAL_BLOCKED_GATE}}=true` -> `{{jira.status.story.blocked}}` (via `{{jira.transition.story.defect_reported}}`); Story FAILED non-strict -> left in `{{jira.status.story.in_test}}` with linked bug; Bug NOT FIXED -> left in `{{jira.status.bug.ready_for_qa}}` pending dev. See `sprint-orchestration.md` Briefing 4 Step 5 for the full decision tree.
 5. PBI `context.md` updated with `Final Status` block.
-6. Commit `test-report.md` + `context.md` changes on branch `test/{JIRA_KEY}/{short-desc}`, message `test({JIRA_KEY}): add Stage 3 test report for {brief-title}`. Never push to `main` without user confirmation.
+6. Commit the synced `acceptance-test-results.md` + `context.md` changes on branch `test/{JIRA_KEY}/{short-desc}`, message `test({JIRA_KEY}): add Stage 3 test report for {brief-title}`. Never push to `main` without user confirmation.
 7. For batch-sprint mode, only now is the `SPRINT-{N}-TESTING.md` framework file updated (Stage-3 gate).
 
 ### 5.2 Next stage routing
@@ -538,12 +566,12 @@ When some TCs pass and others fail, set ATR result to `PASSED WITH ISSUES`. File
 
 - [ ] All Stage 2 TCs have final status PASSED or FAILED
 - [ ] Bugs, if any, filed with complete custom fields (§1.10) and human confirmation
-- [ ] ATR body written in the §2.2 plain-text format and uploaded via `[TMS_TOOL]`
-- [ ] Local `test-report.md` mirrors the ATR exactly
+- [ ] ATR body written in the §2.2 plain-text format and uploaded via `[TMS_TOOL]` (or to `{{jira.acceptance_test_results}}` / `## Acceptance Test Results (ATR)` fallback comment)
+- [ ] Synced ATR cache materialized (not hand-written) — jira-native: `acceptance-test-results.md` via `bun run jira:sync-issues get <STORY_KEY> --include-comments`; jira-xray: `test-executions/TESTEXEC-<ATR_KEY>-<slug>.md` via `bun run jira:sync-issues get <ATR_KEY>` (per-TC run results read via `[TMS_TOOL]`, not synced)
 - [ ] Correct QA comment template chosen (A/B/C/D) and posted via `[ISSUE_TRACKER_TOOL]`
 - [ ] 1-2 evidence screenshot paths surfaced to the user
 - [ ] Ticket transitioned (story PASSED -> `{{jira.status.story.qa_approved}}`; bug VERIFIED -> `{{jira.status.bug.closed}}`)
 - [ ] `context.md` updated with Final Status block
-- [ ] `test-report.md` + `context.md` committed on `test/{JIRA_KEY}/{short-desc}` with conventional prefix
+- [ ] synced `acceptance-test-results.md` + `context.md` committed on `test/{JIRA_KEY}/{short-desc}` with conventional prefix
 - [ ] Batch mode only: `SPRINT-{N}-TESTING.md` framework file updated AFTER the above
 - [ ] Next-stage routing identified (`test-documentation` / `test-automation` / `regression-testing`, or none)

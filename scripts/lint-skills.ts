@@ -79,15 +79,15 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { isAbsolute, join } from 'node:path';
+import { join } from 'node:path';
 
 // -----------------------------------------------------------------------------
 // Constants
 // -----------------------------------------------------------------------------
 
 const REPO_ROOT = join(import.meta.dir, '..');
-const SKILLS_DIR = join(REPO_ROOT, '.claude', 'skills');
-const INSTALL_TS = join(REPO_ROOT, 'cli', 'install.ts');
+const SKILLS_DIR = join(REPO_ROOT, '.claude/skills');
+const INSTALL_TS = join(REPO_ROOT, 'cli/install.ts');
 const CLAUDE_MD = join(REPO_ROOT, 'CLAUDE.md');
 
 /**
@@ -561,8 +561,8 @@ function checkStalePaths(
   INLINE_CODE_PATH.lastIndex = 0;
   for (const match of stripped.matchAll(INLINE_CODE_PATH)) {
     const path = match[1];
-    // Skip absolute paths (cross-platform).
-    if (isAbsolute(path)) { continue; }
+    // Skip absolute paths.
+    if (path.startsWith('/')) { continue; }
     if (path.endsWith('/')) { continue; } // directory-shape illustration, not a file ref
     // Skill-dir-first resolution: shorthand like `scripts/foo.ts` inside a skill
     // body should resolve against the skill's own directory; fall back to repo
@@ -719,9 +719,14 @@ function walkSkillMarkdown(dir: string, files: string[] = []): string[] {
 
 /** Map a SKILLS_DIR-rooted file path to its owning skill slug, or null. */
 function skillSlugForFile(file: string): string | null {
-  const prefix = `${SKILLS_DIR}/`;
-  if (!file.startsWith(prefix)) { return null; }
-  const rest = file.slice(prefix.length);
+  // Normalize separators before comparing. `SKILLS_DIR` and `file` are built with
+  // path.join (backslashes on Windows), but the prefix is forward-slash-suffixed.
+  // Without normalization every startsWith() fails on Windows, so no file maps to a
+  // skill slug and every tool-owner skill loses its SKILL-LITERAL-TOOL/CFID exemption.
+  const normFile = file.replace(/\\/g, '/');
+  const prefix = `${SKILLS_DIR.replace(/\\/g, '/')}/`;
+  if (!normFile.startsWith(prefix)) { return null; }
+  const rest = normFile.slice(prefix.length);
   const slash = rest.indexOf('/');
   return slash === -1 ? rest : rest.slice(0, slash);
 }

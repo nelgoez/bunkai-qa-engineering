@@ -102,7 +102,7 @@ The choice is recorded in the skill's SKILL.md "Subagent Dispatch Strategy" tabl
 
 ### Special cases
 
-Some skills have a canonical plan artifact that already lives outside `.session/` and is committed to git (e.g. `sprint-development`'s `.context/PBI/<ticket>/impl-plan.md`). For those skills:
+Some skills have a canonical plan artifact that already lives outside `.session/` and is committed to git (e.g. `sprint-development`'s `.context/PBI/epics/EPIC-<KEY>-<slug>/stories/STORY-<KEY>-<slug>/implementation-plan.md`). For those skills:
 
 - The committed artifact stays canonical.
 - `.session/<skill-slug>/<scope>/plan.md` MAY be omitted; the skill writes only `progress.md`.
@@ -143,7 +143,7 @@ Subagents read the plan by H2 header, so the order and exact spelling are requir
 4. `## Phase breakdown` — table with columns: `Phase | Pattern | Dispatch payload pointer | Exit condition`.
 5. `## Risks & open questions` — bulleted list. Each item names the risk and the mitigation.
 6. `## Verification checklist` — bulleted list of observable signals that mean "done" before Archive.
-7. `## Cross-references` — sibling artifacts this session reads or writes (e.g. `.context/PBI/UPEX-123/impl-plan.md`, `DESIGN.md`).
+7. `## Cross-references` — sibling artifacts this session reads or writes (e.g. `.context/PBI/epics/EPIC-UPEX-100-<slug>/stories/STORY-UPEX-123-<slug>/implementation-plan.md`, `DESIGN.md`).
 
 A plan with all seven headers (even if a section is empty) is valid. Missing a header fails the lint check.
 
@@ -176,6 +176,7 @@ Each phase emits one H2 block when it starts and one when it ends (status transi
 - subagent_report: <inline summary OR engram observation ID>
 - artifacts_touched: [path, path, ...]
 - next: <Phase N+1 name | stop>
+- git: <append-only one-liner — branch/PR state left behind; omit unless relevant>
 - notes: <freeform one-liner — blockers, decisions, links>
 ```
 
@@ -186,7 +187,20 @@ Fields:
 - `subagent_report`: short inline summary (<200 chars) OR a reference to the full report (e.g. an Engram observation ID, a path to a report file). Long reports do not belong in `progress.md`.
 - `artifacts_touched`: absolute paths of files the phase created or modified. Used by Archive and by post-session audits.
 - `next`: name of the next planned phase, or `stop` if this entry is the final phase.
+- `git`: optional append-only one-liner recording the **version-control state the phase left behind** — useful when the work spans branches/PRs that a resuming session must not lose track of. Omit when the phase touched no git state. Most relevant under the `sdet` strategy, where it forms the **Git Ledger** (see below).
 - `notes`: one line, optional but encouraged. Captures the kind of context that helps a future resume ("rate-limited by Jira, retried after 90s", "user chose Path B over Path C").
+
+### The Git Ledger (`sdet` integration-trunk suites)
+
+For a chained test-automation suite running the `sdet` strategy (`.claude/skills/git-flow-master/references/sdet-integration-trunk.md`), git state lives across many branches and multiple `/test-automation` invocations. The `git:` field turns `progress.md` into an **append-only ledger** of where the suite's branches stand, so a different session (or a different agent) resuming via Phase 0 reads the tail and knows exactly how the integration trunk was left — without re-deriving it from `git log`.
+
+Each ledger line is one append-only snapshot at a phase boundary or branch action. Recommended shape:
+
+```
+- git: trunk <test/<module>-suite>@<short-sha> | merged <test/{KEY}> --no-ff | pending: <KEY..KEY> | sync-gate: <no|done> | final-PR: <none|#NN>
+```
+
+Because the field is append-only like every other line, the **latest** `git:` entry in the tail is the current truth; earlier ones are history. Never rewrite a prior `git:` line — append a new phase entry. This is the resume signal for "how did the SDET branches end up?" that the strategy depends on (reinforces it even if a later session forgets the flow).
 
 ### Why append-only
 

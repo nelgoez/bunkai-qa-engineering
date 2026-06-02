@@ -27,7 +27,7 @@ You are the ORCHESTRATOR for in-sprint QA on `{{PROJECT_NAME}}`. Manage the work
 2. Sub-agents run SEQUENTIALLY — one stage at a time. Wait for completion before dispatching the next.
 3. After every sub-agent finishes, re-read `test-session-memory.md` and present a brief summary to the user.
 4. TOOL FAILURE -> STOP, surface error, do NOT dispatch next sub-agent, wait for user instructions.
-5. BUG_FOUND -> PAUSE, present bug to user, wait for decision.
+5. **Blocking** BUG_FOUND (smoke/env down, data integrity, security-exploitable) -> PAUSE, present bug to user, wait for decision. A **non-blocking** finding does NOT pause: the Execution subagent logs it and finishes the pass, and you surface it at Stage 2 close. Classify by the "Finding triage" table in `exploration-patterns.md`; a FAIL is not auto-Critical.
 
 ---
 
@@ -45,11 +45,11 @@ Use when the user asks "generate the sprint testing framework", "set up sprint N
 
 Output path: `.context/reports/SPRINT-{sprint_number}-TESTING.md`. If it already exists, warn + ask before overwriting.
 
-> **Prerequisite**: Load `/acli` skill before the `[ISSUE_TRACKER_TOOL]` call in Step 1 below. Sprint Roadmap Generator runs before per-ticket Session Start, so §0.1 has not yet executed — load it explicitly here.
+> **Prerequisite**: The sprint roster query in Step 1 is a batch read — use `bun run jira:sync-issues jql "<query>"` (resolves every slug, materializes per-issue `.md`). Load `/acli` only for the later WRITEs (transitions). Sprint Roadmap Generator runs before per-ticket Session Start, so §0.1 has not yet executed — load `/acli` explicitly when a write is reached.
 
 ### Steps
 
-1. **Query tickets** via `[ISSUE_TRACKER_TOOL]` for `Sprint {N}` with fields: Ticket ID, Type, Title, Priority, Status, QA Assignee, Developer, Project/Epic, Platform. Sort by Priority DESC, Status ASC.
+1. **Query tickets** via `bun run jira:sync-issues jql "sprint = {N} AND project = {{PROJECT_KEY}}"` for the roster: Ticket ID, Type, Title, Priority, Status, QA Assignee, Developer, Project/Epic, Platform read from the synced `.md`. (A trivial `[ISSUE_TRACKER_TOOL]` search is fine only if you need nothing beyond key/summary/status — any custom field requires the sync.) Sort by Priority DESC, Status ASC.
 2. **Classify** each ticket's board status (resolve canonical slugs via `.agents/jira-workflows.json`):
 
    | Canonical Status (Story) | QA Category | Wave |
@@ -179,7 +179,8 @@ ORCHESTRATOR                           SUB-AGENTS
     |-> Brief user (1-2 lines)
     |
     |-> Dispatch EXECUTION ---------> Updates memory (TC statuses, findings)
-    |-> If BUG_FOUND: present, WAIT for user decision
+    |-> If blocking BUG_FOUND: present, WAIT for user decision
+    |   (non-blocking finding: subagent finished the pass; present at Stage 2 close)
     |
     |-> Dispatch REPORTING ---------> Updates memory (final status)
     |-> Verify Checklist
@@ -212,9 +213,11 @@ Once chosen: note ID / type / title / priority, check for an existing `test-sess
 
 Every dispatch uses the **6-component briefing format** defined in `.claude/skills/agentic-qa-core/references/briefing-template.md` (Goal / Context docs / Skills to load / Exact instructions / Report format / Rules). The four briefings below cover the per-ticket cadence (Session Start -> Stage 1 -> Stage 2 -> Stage 3) and are used VERBATIM in BOTH single-ticket and batch modes — single-ticket runs them once, batch loops them per Wave 1 PENDING ticket. Detailed step instructions live in the stage-specific reference — do NOT duplicate them here.
 
-> **Variable resolution**: `<TICKET_KEY>`, `<MODULE>`, `<BRIEF_TITLE>`, `<PBI_FOLDER>`, `<ENV>` are session variables filled by the orchestrator before dispatch. `<PBI_FOLDER>` resolves to `.context/PBI/<MODULE>/<TICKET_KEY>-<BRIEF_TITLE>/` (absolute path). `{{PROJECT_KEY}}`, `{{WEB_URL}}`, `{{API_URL}}`, `{{API_MCP}}`, `{{DB_MCP}}` resolve from `.agents/project.yaml` per `CLAUDE.md` §"Project Variables".
+> **Variable resolution**: `<TICKET_KEY>`, `<EPIC_KEY>`, `<EPIC_SLUG>`, `<STORY_SLUG>`, `<PBI_FOLDER>`, `<ENV>` are session variables filled by the orchestrator before dispatch. `<PBI_FOLDER>` resolves to `.context/PBI/epics/EPIC-<EPIC_KEY>-<EPIC_SLUG>/stories/STORY-<TICKET_KEY>-<STORY_SLUG>/` (absolute path; module = Epic, 1:1). `{{PROJECT_KEY}}`, `{{WEB_URL}}`, `{{API_URL}}`, `{{API_MCP}}`, `{{DB_MCP}}` resolve from `.agents/project.yaml` per `CLAUDE.md` §"Project Variables".
 
-> **Skill-loading invariant**: every briefing that touches `[ISSUE_TRACKER_TOOL]` requires `/acli`; every briefing that touches `[TMS_TOOL]` in Modality jira-xray also requires `/xray-cli`. Sub-agents inherit the orchestrator's skill registry, so the orchestrator only needs to load them once at Session Start §0.1 — but each briefing's "Skills to load" line lists them explicitly so the dispatch is self-contained.
+> **Environment override**: every briefing resolves `{{WEB_URL}}` / `{{API_URL}}` through `test-session-memory.md` §Environment FIRST. If `WEB_URL_OVERRIDE` / `API_URL_OVERRIDE` is set there (not `none`), use it instead of the `project.yaml` active-env value — this is a session-only ad-hoc URL (broken staging, ephemeral preview deploy, hotfix branch) authorized by the user. It is NEVER written to `.agents/project.yaml`. This is distinct from `active_env` switching (which picks a *named* env from `project.yaml`). The override is recorded once at Session Start and read automatically by all four dispatches — do not re-thread it per briefing.
+
+> **Skill-loading invariant**: every briefing that WRITES via `[ISSUE_TRACKER_TOOL]` requires `/acli`; every briefing that touches `[TMS_TOOL]` in Modality jira-xray also requires `/xray-cli`. Detailed READS (ticket detail, ACs, ATP/ATR, comments) do NOT use `/acli` — they use `bun run jira:sync-issues get <KEY> --include-comments` and read the synced `.md`. Sub-agents inherit the orchestrator's skill registry, so the orchestrator only needs to load `/acli` once at Session Start §0.1 — but each briefing's "Skills to load" line lists it explicitly so the dispatch is self-contained.
 
 > **Bug-vs-Feature divergence**: the Stage 1 briefing applies the veto + risk-score decision tree only when `<TICKET_TYPE>` is `Bug`; for Feature/Story tickets it produces the full ATP per `acceptance-test-planning.md` Phases 1-7. The Stage 2 and Stage 3 briefings keep the same shape; their internal step list adapts (smoke + reproduce + regression vs smoke + triforce; Template C/D vs PASSED/FAILED comment).
 
@@ -232,17 +235,18 @@ Context docs:
   - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.claude/skills/sprint-testing/references/session-entry-points.md
   - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.agents/project.yaml (project metadata + active env)
 
-Skills to load: /acli (for the issue-tracker fetch)
+Skills to load: none required for the read (detailed fetch uses bun run jira:sync-issues, not /acli)
 
 Exact instructions:
-  1. [ISSUE_TRACKER_TOOL] Fetch Issue: <TICKET_KEY> (capture: type, summary, AC list, status, components, fix-version, comments).
-  2. Determine <MODULE> from components/labels per session-entry-points.md §"Step 4 — Module context".
-  3. Generate <BRIEF_TITLE> (max 5 words, kebab-case) from the ticket summary.
-  4. Create <PBI_FOLDER> = .context/PBI/<MODULE>/<TICKET_KEY>-<BRIEF_TITLE>/ with:
-       - context.md (ticket summary + AC list + Team Discussion + Related Code + "Open questions" section, populated per session-entry-points.md §"Step 7")
+  1. Fetch detail: `bun run jira:sync-issues get <TICKET_KEY> --include-comments`, then read the synced `.md` files (story.md, acceptance-criteria.md, comments.md, etc.) to capture: type, summary, AC list, status, components, fix-version, comments. NEVER `acli workitem view` for custom fields.
+  2. Determine <EPIC_KEY> / <EPIC_SLUG> (module = Epic, 1:1) from the parent epic + components/labels per session-entry-points.md §"Step 4 — Module context".
+  3. Generate <STORY_SLUG> (max 5 words, kebab-case) from the ticket summary.
+  4. Create <PBI_FOLDER> = .context/PBI/epics/EPIC-<EPIC_KEY>-<EPIC_SLUG>/stories/STORY-<TICKET_KEY>-<STORY_SLUG>/ with the HAND-AUTHORED (NON-Jira) files only:
+       - context.md (session notes + "Open questions" section, populated per session-entry-points.md §"Step 7")
        - test-session-memory.md (template from this reference §"test-session-memory.md template")
        - evidence/ (empty directory)
-  5. Extract Team Discussion from comments per session-entry-points.md §"Step 1b" rules.
+     Jira-mirrored files (story.md, acceptance-criteria.md, acceptance-test-plan.md, comments.md, ...) are materialized by the sync in Step 1 — never hand-write them.
+  5. Extract Team Discussion from the synced comments.md per session-entry-points.md §"Step 1b" rules.
   6. For Bug tickets: include the bug-specific fields (steps to reproduce, expected vs actual) in context.md.
   7. Write the Story Explanation into test-session-memory.md (the orchestrator presents it to the user).
 
@@ -250,7 +254,8 @@ Report format:
   {
     "ticket_key": "<TICKET_KEY>",
     "type": "Story | Bug | Task | ...",
-    "module": "<MODULE>",
+    "epic_key": "<EPIC_KEY>",
+    "epic_slug": "<EPIC_SLUG>",
     "pbi_folder": "<absolute path>",
     "memory_path": "<PBI_FOLDER>/test-session-memory.md",
     "ac_count": <int>,
@@ -258,12 +263,14 @@ Report format:
     "ticket_summary": "...",
     "story_explanation": "<verbatim text written to memory>",
     "readiness": "READY | BLOCKED",
+    "inbox_check_required": true|false,
     "checklist": "X/Y"
   }
 
 Rules:
   - Do NOT modify the issue in the issue tracker (read-only operation; no comments, no transitions).
   - Do NOT load all of .context/ — only the docs listed above.
+  - Environment reachability was already gated orchestrator-side by Session Start §0.6 before this dispatch — do NOT re-probe the env. If the ticket is email / magic-link / auth-token dependent, set inbox_check_required=true so the orchestrator runs (or has run) the inbox receive-check before Stage 1.
   - Critical Rule #1 (Login Credentials): if any tool needs auth, reference .env keys; never hardcode.
   - Never ask the user for confirmation — the orchestrator handles user interaction.
 ```
@@ -279,9 +286,9 @@ Context docs:
   - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.claude/skills/sprint-testing/references/acceptance-test-planning.md
   - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.context/business/business-feature-map.md
   - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.context/business/business-api-map.md (if API-affecting)
-  - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.context/PBI/<MODULE>/module-context.md (if it exists)
+  - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.context/PBI/epics/EPIC-<EPIC_KEY>-<EPIC_SLUG>/module-context.md (if it exists)
 
-Skills to load: /acli (for ATP/ATR creation + Story link); in Modality jira-xray also /xray-cli (for [TMS_TOOL] Test Plan / Test Execution issues).
+Skills to load: /acli (for ATP/ATR WRITE + Story link); in Modality jira-xray also /xray-cli (for [TMS_TOOL] Test Plan / Test Execution issues). Detailed reads (ACs, parent feature plan) use bun run jira:sync-issues, not /acli.
 
 Exact instructions:
   1. Bug branch: run the veto decision tree per acceptance-test-planning.md §"Phase 0 — Triage" (SKIP -> emit veto_outcome=skip, write minimal Bug Analysis, exit; REQUIRE -> continue).
@@ -290,13 +297,15 @@ Exact instructions:
   4. Draft TC outlines (summary + steps + expected) — full TC bodies are formalized in Stage 4 (test-documentation), not here.
   5. Create ATP + ATR per the modality branch in acceptance-test-planning.md §"Phase 6 — Traceability + Ticket updates":
        - Modality jira-xray: [TMS_TOOL] Create TestPlan + Create Execution; link to Story via [ISSUE_TRACKER_TOOL] Link Issues.
-       - Modality jira-native: [ISSUE_TRACKER_TOOL] Update Issue with {{jira.acceptance_test_plan}} field + comment mirror.
-  6. Write artifacts to <PBI_FOLDER>/test-analysis.md (byte-for-byte mirror of the Jira/TMS comment).
+       - Modality jira-native: [ISSUE_TRACKER_TOOL] Update Issue with {{jira.acceptance_test_plan}} field (or `## Acceptance Test Plan (ATP)` fallback comment when the field is absent).
+  6. Materialize the local cache per modality (read-only cache; never hand-write it), then read it back to confirm:
+       - Modality jira-native: `bun run jira:sync-issues get <TICKET_KEY> --include-comments` -> <PBI_FOLDER>/acceptance-test-plan.md
+       - Modality jira-xray: `bun run jira:sync-issues get <ATP_KEY>` -> .context/PBI/test-plans/TESTPLAN-<ATP_KEY>-<slug>.md (the Test Plan issue; its description holds the ATP body)
   7. Update <PBI_FOLDER>/test-session-memory.md sections: TMS Artifacts, Test Data, Stage Results > Planning, Checklist > Planning.
 
 Report format:
   {
-    "atp_path": "<PBI_FOLDER>/test-analysis.md",
+    "atp_path": "<PBI_FOLDER>/acceptance-test-plan.md (jira-native) | .context/PBI/test-plans/TESTPLAN-<ATP_KEY>-<slug>.md (jira-xray)",
     "atp_id": "<TMS issue key | story-field>",
     "atr_id": "<TMS issue key | story-field>",
     "atc_drafts": [{ "title": "...", "type": "Positive|Negative|Boundary|Edge", "priority": "P0|P1|P2" }],
@@ -312,7 +321,7 @@ Rules:
   - Do NOT create formal TMS Test entities (Stage 4 / test-documentation owns that).
   - Critical Rule #2 (Plan Before Coding): outputs are plans + outlines, no test code.
   - Surface open_questions to the orchestrator instead of guessing AC behavior.
-  - Mirror order: Jira/TMS comment is canonical; <PBI_FOLDER>/test-analysis.md is the byte-for-byte mirror.
+  - Source order: Jira field (or `## Acceptance Test Plan (ATP)` fallback comment) is canonical; <PBI_FOLDER>/acceptance-test-plan.md is a read-only cache emitted by bun run jira:sync-issues — never hand-written.
 ```
 
 ### Briefing 3 — Stage 2 Execution subagent
@@ -321,7 +330,7 @@ Rules:
 Goal: Run smoke pass + triforce exploration (UI / API / DB) for <TICKET_KEY> against the <ENV> environment; capture evidence; surface any BUG_FOUND.
 
 Context docs:
-  - <PBI_FOLDER>/test-analysis.md (the ATP from Stage 1)
+  - <PBI_FOLDER>/acceptance-test-plan.md (the ATP from Stage 1 — Jira-synced cache; Modality jira-xray: .context/PBI/test-plans/TESTPLAN-<ATP_KEY>-<slug>.md)
   - <PBI_FOLDER>/test-session-memory.md (READ FIRST — shared memory)
   - <PBI_FOLDER>/context.md
   - /home/sai/Desktop/upex/web-apps/agentic-qa-boilerplate/.claude/skills/sprint-testing/references/exploration-patterns.md
@@ -343,7 +352,7 @@ Exact instructions:
   6. Triforce DB: verify state changes via the DB MCP for write-side ATCs per exploration-patterns.md §3.
   7. Bug branch: replace steps 4-6 with reproduce-original -> verify-fix -> regression-pass on adjacent areas -> DB cross-validation if data-integrity bug (per session-entry-points.md §"Bug workflow Phase 2").
   8. Capture evidence (screenshots, traces, response samples) under <PBI_FOLDER>/evidence/ using the naming rule from exploration-patterns.md.
-  9. For each defect found: build a BUG_FOUND entry with severity, repro steps, evidence paths.
+  9. For each defect found: build a BUG_FOUND entry with severity, repro steps, evidence paths, and classify it `blocking` vs `non-blocking` per the "Finding triage" table in exploration-patterns.md. A FAIL is not auto-Critical — assign severity per reporting-templates.md §1.4. Graduated handling: a **blocking** finding (smoke/env down, data integrity, security-exploitable) STOPS the pass — emit it and stop. A **non-blocking** finding is logged and you CONTINUE the pass to completion; report all non-blocking findings together (do not stop the pass for them).
   10. Update <PBI_FOLDER>/test-session-memory.md sections: Stage Results > Execution, Bugs Found, Observations, Checklist > Execution.
 
 Report format:
@@ -356,7 +365,8 @@ Report format:
       "db": [{ "query": "...", "result": "PASSED|FAILED", "evidence": [...] }]
     },
     "tc_results": { "passed": <int>, "failed": <int>, "total": <int> },
-    "bugs_found": [{ "summary": "...", "severity": "Critical|High|Medium|Low", "evidence_paths": [...], "repro_steps": "..." }],
+    "pass_completed": true|false,
+    "bugs_found": [{ "summary": "...", "severity": "Critical|High|Medium|Low", "blocking": true|false, "evidence_paths": [...], "repro_steps": "..." }],
     "blockers": [...],
     "checklist": "X/Y"
   }
@@ -365,7 +375,7 @@ Rules:
   - Do NOT file the bug in the issue tracker yet — Stage 3 handles filing per the bug-report template in reporting-templates.md.
   - Do NOT modify production data; for write-side checks use staging entities flagged in the ATP.
   - Critical Rule #1 (Login Credentials): credentials always from .env; never hardcode.
-  - Stop and surface to orchestrator on any blocker (env down, auth failure, infra issue) — do NOT auto-retry.
+  - A blocking finding (env down, auth failure, infra issue, data corruption, security-exploitable) STOPS the pass — surface to orchestrator, do NOT auto-retry. A non-blocking finding does NOT stop the pass — log it, finish the remaining TCs, and report it at the end (set pass_completed=true).
 ```
 
 ### Briefing 4 — Stage 3 Reporting subagent
@@ -374,7 +384,7 @@ Rules:
 Goal: Fill the ATR, post the QA comment, transition the issue, and file bug reports for <TICKET_KEY>.
 
 Context docs:
-  - <PBI_FOLDER>/test-analysis.md (ATP)
+  - <PBI_FOLDER>/acceptance-test-plan.md (ATP — Jira-synced cache; Modality jira-xray: .context/PBI/test-plans/TESTPLAN-<ATP_KEY>-<slug>.md)
   - <PBI_FOLDER>/test-session-memory.md (READ FIRST — shared memory; contains Stage 2 results)
   - <PBI_FOLDER>/evidence/ (Stage 2 evidence)
   - <PBI_FOLDER>/context.md (ticket summary)
@@ -385,15 +395,19 @@ Skills to load: /acli (issue updates + comments + transitions + bug creation); i
 
 Exact instructions:
   1. Compile TC summary from test-session-memory.md (total, PASSED, FAILED, pass rate).
-  2. Fill <PBI_FOLDER>/test-report.md from the ATR template in reporting-templates.md §"ATR Test Report body".
+  2. Author the ATR body from the template in reporting-templates.md §"ATR Test Report body" (do NOT hand-write a local file — it is materialized from the sync in step 3a).
   3. Update the ATR in TMS:
        - Modality jira-xray: [TMS_TOOL] Update Test Execution / Run statuses; mark ATR complete.
-       - Modality jira-native: [ISSUE_TRACKER_TOOL] Update Issue with {{jira.acceptance_test_results}} field + comment mirror.
+       - Modality jira-native: [ISSUE_TRACKER_TOOL] Update Issue with {{jira.acceptance_test_results}} field (or `## Acceptance Test Results (ATR)` fallback comment when the field is absent).
+  3a. Materialize the local cache per modality (read-only cache; never hand-write it), then read it back to confirm:
+        - Modality jira-native: `bun run jira:sync-issues get <TICKET_KEY> --include-comments` -> <PBI_FOLDER>/acceptance-test-results.md
+        - Modality jira-xray: `bun run jira:sync-issues get <ATR_KEY>` -> .context/PBI/test-executions/TESTEXEC-<ATR_KEY>-<slug>.md (the Test Execution issue; its description holds the ATR body)
   4. Post QA comment on <TICKET_KEY> via [ISSUE_TRACKER_TOOL] Add Comment using the matching template from reporting-templates.md (Story PASSED/FAILED, or Bug Template C/D).
   5. Transition <TICKET_KEY> via [ISSUE_TRACKER_TOOL] Transition Issue. Resolve from substrate:
        - **Story PASSED** -> `{{jira.transition.story.qa_sign_off}}` (`in_test` -> `qa_approved`).
        - **Bug PASSED** -> `{{jira.transition.bug.retest_passed}}` (`ready_for_qa` -> `closed`).
-       - **Story FAILED** -> formal-vs-non-strict branch driven by `{{FORMAL_BLOCKED_GATE}}` from `.agents/project.yaml`:
+       - **Story FAILED — recalibration gate first.** When the failing TC is security/auth/framework-default class, run the §5.0 recalibration gate (`reporting-templates.md`) BEFORE transitioning: state the mitigation hypothesis, cite one verification fact, and surface to the user. If the finding is recalibrated to a non-defect (hypothesis confirmed + fact cited + user OK) -> treat as **GO-with-debt**: set `result = "PASSED WITH ISSUES"`, take the **Story PASSED** transition (`qa_sign_off`, `in_test` -> `qa_approved`), do NOT fire `defect_reported`, and record the gate outcome in the ATR (file a low-priority follow-up if it is genuine pre-prod debt, not a blocker). Only when the defect is confirmed real, continue to the formal-vs-non-strict branch below.
+       - **Story FAILED (confirmed defect)** -> formal-vs-non-strict branch driven by `{{FORMAL_BLOCKED_GATE}}` from `.agents/project.yaml`:
            - If `qa.formal_blocked_gate == true` AND `{{jira.status.story.blocked}}` resolves AND `{{jira.transition.story.defect_reported}}` is available from current status -> execute `defect_reported` (`in_test` -> `blocked`). The bug filed in step 6 belongs to the dev who picks it up via `{{jira.transition.story.fix_defect}}` (`blocked` -> `in_progress`).
            - Otherwise (flag is false, or substrate lacks `blocked` / `defect_reported`) -> non-strict fallback: leave the story in `{{jira.status.story.in_test}}` with the linked bug and emit `transition_skipped: "non_strict_failed_left_in_test"`. The dev fixes the underlying bug; QA re-tests once redeployed.
        - **Bug FAILED** -> non-strict fallback: leave the bug in `{{jira.status.bug.ready_for_qa}}` with the QA comment surfacing the failure. If the bug is already `{{jira.status.bug.closed}}` (regression caught after sign-off), use `{{jira.transition.bug.back}}` (`closed` -> `ready_for_qa`) or `{{jira.transition.bug.re_open}}` (any -> `open`) per project policy.
@@ -403,10 +417,11 @@ Exact instructions:
 
 Report format:
   {
-    "atr_path": "<PBI_FOLDER>/test-report.md",
+    "atr_path": "<PBI_FOLDER>/acceptance-test-results.md (jira-native) | .context/PBI/test-executions/TESTEXEC-<ATR_KEY>-<slug>.md (jira-xray)",
     "atr_id": "<TMS issue key | story-field>",
-    "result": "PASSED | FAILED",
+    "result": "PASSED | FAILED | PASSED WITH ISSUES",
     "tc_summary": { "total": <int>, "passed": <int>, "failed": <int>, "pass_rate": "<percent>" },
+    "recalibration": { "applied": true|false, "hypothesis": "...", "verification_fact": "...", "outcome": "confirmed_defect | go_with_debt", "user_confirmed": true|false },
     "qa_comment_id": "<comment id or 'posted'>",
     "transition": "<from_status> -> <to_status>",
     "bugs_filed": [{ "key": "<TMS_KEY>", "summary": "..." }],
@@ -443,7 +458,7 @@ IMPORTANT: credentials always from .env. Never hardcode. Never ask the user for
 
 ## test-session-memory.md template
 
-Created at `.context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/test-session-memory.md`. Shared memory across sub-agents.
+Created at `.context/PBI/epics/EPIC-<KEY>-<slug>/stories/STORY-{{PROJECT_KEY}}-{number}-{brief-title}/test-session-memory.md`. Hand-authored (NON-Jira) shared memory across sub-agents.
 
 ```markdown
 # Test Session Memory: {{PROJECT_KEY}}-{number}
@@ -465,6 +480,8 @@ Created at `.context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/te
 
 ## Environment
 - Web: {{WEB_URL}} | API: {{API_URL}}
+- WEB_URL_OVERRIDE: {none | ad-hoc URL}   # session-only; when set, beats {{WEB_URL}} for every stage; NEVER written to .agents/project.yaml
+- API_URL_OVERRIDE: {none | ad-hoc URL}   # session-only; when set, beats {{API_URL}} for every stage; NEVER persisted
 - DB MCP: {{DB_MCP}} | API MCP: {{API_MCP}}
 
 ## Test Data
@@ -487,8 +504,8 @@ Created at `.context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/te
 | TC   | -  | -    | -      |
 
 ## Paths
-- PBI: .context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/
-- Module Context: .context/PBI/{module-name}/module-context.md
+- PBI: .context/PBI/epics/EPIC-<KEY>-<slug>/stories/STORY-{{PROJECT_KEY}}-{number}-{brief-title}/
+- Module Context: .context/PBI/epics/EPIC-<KEY>-<slug>/module-context.md
 
 ## Stage Results
 ### Session Start
@@ -508,6 +525,7 @@ Created at `.context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/te
 | Scenario | From | To | Transition ID | Notes |
 |----------|------|----|---------------|-------|
 | Story PASSED | {{jira.status.story.in_test}} | {{jira.status.story.qa_approved}} | <id> | qa_sign_off |
+| Story FAILED → recalibrated (GO-with-debt, §5.0) | {{jira.status.story.in_test}} | {{jira.status.story.qa_approved}} | <id> | qa_sign_off; result PASSED WITH ISSUES, gate outcome in ATR |
 | Story FAILED (formal, `{{FORMAL_BLOCKED_GATE}}=true`) | {{jira.status.story.in_test}} | {{jira.status.story.blocked}} | <id> | defect_reported |
 | Story FAILED (non-strict) | — | — | — | transition_skipped: non_strict_failed_left_in_test |
 | Bug PASSED | {{jira.status.bug.ready_for_qa}} | {{jira.status.bug.closed}} | <id> | retest_passed |
@@ -540,7 +558,7 @@ Created at `.context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/te
 - [ ] TCs created with full traceability
 - [ ] Traceability verified ([TMS_TOOL] trace)
 - [ ] ATP marked complete; TCs transitioned to Ready
-- [ ] test-analysis.md created in PBI
+- [ ] acceptance-test-plan.md materialized via bun run jira:sync-issues in PBI
 
 ### Planning (Bug)
 - [ ] Veto check completed
@@ -563,7 +581,7 @@ Created at `.context/PBI/{module-name}/{{PROJECT_KEY}}-{number}-{brief-title}/te
 
 ### Reporting
 - [ ] ATR report filled and marked complete
-- [ ] test-report.md created in PBI
+- [ ] acceptance-test-results.md materialized via bun run jira:sync-issues in PBI
 - [ ] QA comment posted
 - [ ] Ticket transitioned to the work-type terminal QA state via substrate (or skipped on FAILED)
 ```
@@ -657,7 +675,8 @@ Remaining queue: {list remaining PENDING tickets with priority}
 |--------|--------|
 | Sub-agent returns `Status: BLOCKED` | Do NOT advance. Show reason, wait for user. |
 | Sub-agent reports TOOL FAILURE (MCP / `[AUTOMATION_TOOL]` / `[TMS_TOOL]` / `[ISSUE_TRACKER_TOOL]`) | Stop, surface error, wait for user instructions. |
-| Sub-agent reports BUG_FOUND | Pause, present bug, wait for user decision. |
+| Sub-agent reports a **blocking** BUG_FOUND (smoke/env down, data integrity, security-exploitable) | Pause, present bug, wait for user decision. |
+| Sub-agent reports a **non-blocking** finding | Do NOT pause — the subagent finished the pass; surface the finding at Stage 2 close and continue. |
 | Framework file missing / malformed | Offer to (re)generate via Part 1. |
 | `continue-from` ticket not in file | List available tickets, ask user to confirm. |
 

@@ -215,13 +215,30 @@ bun .claude/skills/acli/scripts/md-to-adf.ts input.md > output.adf.json
 Programmatic usage (when batching across many fields or many work items in one script):
 
 ```typescript
-import { mdToAdf } from "./.claude/skills/acli/scripts/md-to-adf.ts";
+import { mdToAdf, validateAdf } from "./.claude/skills/acli/scripts/md-to-adf.ts";
 const adf = mdToAdf(markdownString);  // returns { type: "doc", version: 1, content: [...] }
+const { valid, errors } = validateAdf(adf);  // gate ANY ADF before publishing
 ```
 
 **Covered markdown subset**: headings 1–6, bullet lists, ordered lists, fenced code blocks (with optional language tag), inline code, bold, italic (snake_case-safe), strikethrough, links, blockquotes, horizontal rule, paragraphs.
 
 **Out of scope** (extend the converter if your project needs them): nested lists, tables, mentions, panels, status macros, expand blocks, media / images.
+
+### Validation gate (fail fast before Jira)
+
+The converter **validates its output by default** against an embedded ADF allowlist, then refuses to write and exits non-zero if the document is invalid. This turns an opaque Jira `HTTP 400 INVALID_INPUT` at publish time into a node-level diagnostic at author time. The gate is **zero-dependency** — it does NOT use `@atlaskit/adf-utils` (that package transitively pulls ProseMirror + Statsig and breaks the converter's zero-dep contract). The rules are inlined in `md-to-adf.ts`.
+
+What it catches: unknown node types, unknown / invalid marks, `code` co-occurring with `strong`/`em`/`strike`/`underline`/`subsup`/`textColor` (the HTTP 400 combined-marks bug), `heading` level outside 1–6, missing `link` `href`, empty `text` nodes, illegal containment (e.g. a `paragraph` directly under a `bulletList`), and a malformed root (`type` ≠ `doc` or `version` ≠ 1).
+
+```bash
+# validate is on by default during conversion; bypass with --no-validate
+bun .claude/skills/acli/scripts/md-to-adf.ts input.md out.adf.json --no-validate
+
+# gate an ALREADY-assembled ADF doc (jq create payload field, or a REST PUT body)
+bun .claude/skills/acli/scripts/md-to-adf.ts --check field.adf.json   # exit 0 valid, 1 invalid
+```
+
+**Recommended habit**: after splicing ADF into a `--from-json` create payload or a REST `PUT` body (where the wrapper is assembled outside the converter), run `--check` on each ADF field before sending. The gate is necessary but not sufficient — a round-trip `GET` of the field after write is still the only way to catch server-side coercion (Jira silently drops some invalid nodes).
 
 ### Recipe by Jira surface
 
@@ -377,13 +394,14 @@ These are tool-level anti-patterns intrinsic to the `acli` binary and its REST c
 
 > **Repo-specific anti-patterns** (workflow abstraction, project-key portability, TMS modality boundaries, prod-workspace safety, CI batching, version pinning, sync-script auth) live in `<repo-core>/references/acli-integration.md`. Load it whenever a session touches the host repo's Jira workflow.
 
-## Five gotchas to keep in mind always
+## Six gotchas to keep in mind always
 
 1. **`--paginate` is opt-in.** Default limit is server-side (30–50 depending on command). No warning on truncation. If you are counting, iterating, or making decisions based on the result, pass `--paginate`.
 2. **Custom fields on `workitem create` go through `additionalAttributes` in `--from-json`.** Numeric IDs only (`customfield_NNNN`), no name-addressing. Documented value shapes in the `create` template are: `{"value": "..."}` (single-select), bare number, bare string. **`workitem edit` actively REJECTS custom-field input — hard error, exit 1, not a silent drop** (empirically confirmed across `additionalAttributes`, `fields`, and flat `customfield_X` shapes). For editing custom-field values on existing items, the **only** working path is REST `PUT /rest/api/3/issue/{KEY}` via `curl` using the session env vars — see the "WORKAROUND" subsection in "Publishing rich text" above, plus `references/gotchas.md` §4 and `references/workitem.md`.
 3. **`acli` cannot enumerate custom fields.** `acli jira field` only does create/update/delete/cancel-delete. To discover field IDs, use `workitem view --json | jq` against an item that has the field set, or call `GET /rest/api/3/field` directly. There is no in-CLI listing. Host repos typically cache the catalog under `.agents/` and resolve fields by slug — see `<repo-core>/references/acli-integration.md`.
 4. **Transitions match by status name, not transition ID.** When two transitions lead to the same status with different validators, the CLI picks one and may fail. No `--transition-id` escape hatch exists — fall back to REST if this hits.
 5. **Trace IDs are the only debug signal.** An `unexpected error, trace id: XXXXXXXX` line is all you get on backend failures. Capture and log the trace ID always; Atlassian Support needs it.
+6. **`workitem link create` flag names are misleading — `--out` and `--in` are EMPIRICALLY INVERTED relative to Jira's outward/inward semantics.** Running `acli jira workitem link create --out X --in Y --type Dependencies` produces "**Y** depends on **X**" — NOT "X depends on Y" as the flag names suggest. Y becomes the outward party (the one that performs the outward verb, e.g. "depends on" / "blocks" / "causes"); X becomes the inward party. Confirmed empirically against Dependencies; the same inversion applies to ALL outward-asymmetric link types (Blocks, Blocking, Causes, Duplicate, Cloners, Defect, Test, Test Automation, Test Design, Test Execute). Symmetric types (Relates) are immune — direction is lost either way. **Reverse-mapping rule of thumb**: `--out` takes the PREREQUISITE (the inward partner in Jira's UI); `--in` takes the DEPENDENT (the outward partner in Jira's UI). **Mandatory verification after every link create**: run `acli jira workitem link list --key <expected-dependent> --json` and confirm the response shows `outwardIssueKey: <expected-prerequisite>`. If the direction is wrong, delete the link and recreate with swapped flags. Deep recipe + per-type mapping table → `references/workitem.md`.
 
 ## Top-level utilities
 

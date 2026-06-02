@@ -66,7 +66,7 @@ Render this verbatim, substituting the placeholders:
 | `{branch}`      | Current branch name (computed by the skill).                                                                                                                                                                               |
 | `{base}`        | PR base branch (resolved from the strategy — see table below).                                                                                                                                                             |
 | `{strategy}`    | Active strategy slug (`solo-main`, `main-integration`, etc.). Helps reviewers understand the merge target.                                                                                                                 |
-| `<<EVIDENCE>>`  | Pointer to `.context/PBI/{module}/{TICKET-ID}-{name}/evidence/` when applicable (screenshots, traces, logs). For backend/CLI PRs without visual evidence, leave the placeholder so the author can fill it in or delete it. |
+| `<<EVIDENCE>>`  | Pointer to `.context/PBI/epics/EPIC-<KEY>-<slug>/stories/STORY-<KEY>-<slug>/evidence/` when applicable (screenshots, traces, logs). For backend/CLI PRs without visual evidence, leave the placeholder so the author can fill it in or delete it. |
 | `<<RISK>>`      | Short risk assessment: blast radius, affected modules, rollback plan. One paragraph.                                                                                                                                       |
 
 Do not pad sections. Empty sections invite skim-reads.
@@ -84,6 +84,7 @@ Do not pad sections. Empty sections invite skim-reads.
 | `gitflow`          | `develop` for `feature/*`; `main` for `release/*` and `hotfix/*` | Release PRs back-merge to `develop` after merging to `main`.    |
 | `github-flow`      | `main`                                                           | Always.                                                         |
 | `gitlab-flow`      | `main`                                                           | Promotion MRs target `pre-production`, then `production`.       |
+| `sdet`             | integration trunk `test/<module>-suite` for `test/{KEY}-*` + Plus Branches | The single final suite PR targets `main` (after the sync gate). Use the `pr-test-automation.md` body for the final PR. See `sdet-integration-trunk.md`. |
 
 The user can override with `--base X` in arguments. When overridden, surface it in the confirmation:
 
@@ -205,7 +206,7 @@ model with unit tests; UI uses the existing table-action slot.
 
 ## Evidence
 
-See `.context/PBI/users/UPEX-123-bulk-assign/evidence/` for the design
+See `.context/PBI/epics/EPIC-UPEX-100-<epic-slug>/stories/STORY-UPEX-123-bulk-assign/evidence/` for the design
 walkthrough screenshots.
 
 ## Risk

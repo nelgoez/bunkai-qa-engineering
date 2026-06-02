@@ -43,7 +43,7 @@
 
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { isAbsolute, join, relative, resolve } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 
 // ============================================================================
 // CONSTANTS
@@ -265,12 +265,11 @@ async function handleRequest(req: Request): Promise<Response> {
   }
 
   // Resolve to an absolute path and verify it stays inside ONBOARDING_DIR_ABS.
-  // Strip leading / for Windows path.join compatibility — join treats later
-  // segments starting with / as absolute, which breaks the guard on win32.
-  const normalized = decoded.startsWith('/') ? decoded.slice(1) : decoded;
-  const candidate = resolve(join(ONBOARDING_DIR_ABS, normalized));
-  const relPath = relative(ONBOARDING_DIR_ABS, candidate);
-  if (relPath.startsWith('..') || isAbsolute(relPath)) {
+  // Using `${dir}/` as the prefix prevents the classic `<dir>foo` bypass
+  // (e.g. ONBOARDING_DIR_ABS = /a/b would otherwise match /a/b-evil).
+  const candidate = resolve(join(ONBOARDING_DIR_ABS, decoded));
+  const guardPrefix = `${ONBOARDING_DIR_ABS}/`;
+  if (candidate !== ONBOARDING_DIR_ABS && !candidate.startsWith(guardPrefix)) {
     return new Response('Forbidden', { status: 403 });
   }
 

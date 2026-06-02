@@ -1,10 +1,10 @@
 ---
 name: git-flow-master
-description: "End-to-end Git operator for any branching strategy. Auto-detects the project's strategy (solo-main, main+integration, enterprise multi-branch, trunk-based, GitFlow, GitHub Flow, GitLab Flow) from .git config, branches, and an CLAUDE.md marker, then adapts every commit, branch, push, PR, conflict-fix, and chained-PR action to that strategy. Use this skill whenever the user wants to: create a branch (`crear branch`, `new feature branch`, `start work on UPEX-123`), commit changes (`commit this`, `commitear esto`, `make a commit`, `commit and push`), push code (`push`, `push to main`, `push to staging`, `subir cambios`), open a pull request (`create PR`, `open PR`, `abrir PR`, `crear pull request`, `gh pr create`), fix merge conflicts (`fix conflict`, `resolver conflicto`, `merge conflict`, `rebase conflict`, `push rejected`), plan stacked or chained PRs (`stack of PRs`, `chained PRs`, `split this PR`, `PR demasiado grande`), or pick / change a branching strategy (`git flow`, `git strategy`, `branching strategy`, `which git flow do we use`). Trigger even when the user does not say `git-flow-master` literally — if the work is git-or-PR-shaped, this is the right tool. Do NOT use for: testing tickets (use /sprint-testing), authoring test cases in TMS (use /test-documentation), writing automated tests (use /test-automation), running regression suites (use /regression-testing), or general code editing — git-flow-master operates strictly on the version-control layer."
+description: "End-to-end Git operator for any branching strategy. Auto-detects the project's strategy (solo-main, main+integration, enterprise multi-branch, trunk-based, GitFlow, GitHub Flow, GitLab Flow, SDET integration-trunk for chained test-automation suites) from .git config, branches, and an CLAUDE.md marker, then adapts every commit, branch, push, PR, conflict-fix, and chained-PR action to that strategy. Use this skill whenever the user wants to: create a branch (`crear branch`, `new feature branch`, `start work on UPEX-123`), commit changes (`commit this`, `commitear esto`, `make a commit`, `commit and push`), push code (`push`, `push to main`, `push to staging`, `subir cambios`), open a pull request (`create PR`, `open PR`, `abrir PR`, `crear pull request`, `gh pr create`), fix merge conflicts (`fix conflict`, `resolver conflicto`, `merge conflict`, `rebase conflict`, `push rejected`), plan stacked or chained PRs (`stack of PRs`, `chained PRs`, `split this PR`, `PR demasiado grande`), set up an isolated git worktree (`worktree`, `work in a worktree`, `isolate this work`, `parallel session`, `aislar el trabajo`, `trabajar aislado`), set up or bootstrap a branching strategy on a fresh repo (`set up our git strategy`, `bootstrap branching`, `configura el flujo de git`, `git strategy setup`, `materialize the git flow`, `create the staging branch and write the runbook`), or pick / change / set up a branching strategy (`git flow`, `git strategy`, `branching strategy`, `which git flow do we use`, `set up our git strategy`, `bootstrap branching`, `configura el flujo de git`). Trigger even when the user does not say `git-flow-master` literally — if the work is git-or-PR-shaped, this is the right tool. Do NOT use for: testing tickets (use /sprint-testing), authoring test cases in TMS (use /test-documentation), writing automated tests (use /test-automation), running regression suites (use /regression-testing), or general code editing — git-flow-master operates strictly on the version-control layer."
 license: MIT
 compatibility: [claude-code, opencode]
 phase: implementation
-complementary_categories: [vcs]
+complementary_categories: []
 ---
 
 <!-- Model preferences (advisory; dispatchers may use to route) -->
@@ -41,9 +41,9 @@ If the user is asking about testing a ticket, authoring test cases, writing auto
 
 ---
 
-## The five operations
+## The six operations
 
-Every git-flow-master invocation maps to one (or a sequence) of these five operations. Operation choice is driven by the user's request; strategy resolution shapes how each operation runs.
+Every git-flow-master invocation maps to one (or a sequence) of these six operations. Operation choice is driven by the user's request; strategy resolution shapes how each operation runs.
 
 | Op           | Trigger phrases (examples)                              | Skill behaviour                                                                                                    |
 | ------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -52,6 +52,7 @@ Every git-flow-master invocation maps to one (or a sequence) of these five opera
 | **Push**     | "push", "push to main", "subir cambios"                 | Diagnose upstream → confirm if pushing to a protected branch → never `--force` without explicit user opt-in        |
 | **PR**       | "create PR", "abrir PR", "gh pr create"                 | Pick base branch from strategy → render body inline → ask labels/reviewers → call `gh pr create`                   |
 | **Conflict** | "fix conflict", "rebase failed", "push rejected"        | Diagnose first (see `references/conflict-resolution.md`) → present options → guide resolution → verify clean state |
+| **Strategy Setup** | "set up our git strategy", "bootstrap branching", "configura el flujo de git", "materialize the flow" | Resolve strategy → run decision questionnaire → conditionally create/ff-sync long-lived branches (never force) → write full runbook into `CLAUDE.md`. Skips questions already answered by markers. See `references/strategy-setup.md`. |
 
 When the operation is ambiguous (user just says "git-flow-master" or "let's do the git stuff"), report the current repo state (Step 1 below) and ask what they need.
 
@@ -86,7 +87,7 @@ This summary is cheap, prevents 90% of mistakes, and is the input to every subse
 
 ## Step 2 — Resolve the branching strategy
 
-The skill supports seven strategies (see `references/branching-strategies.md` for the full catalogue, detection signals, and trade-offs):
+The skill supports eight strategies (see `references/branching-strategies.md` for the full catalogue, detection signals, and trade-offs):
 
 | Strategy           | One-line description                                                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -97,17 +98,18 @@ The skill supports seven strategies (see `references/branching-strategies.md` fo
 | `gitflow`          | Vincent Driessen's classic. `main` (releases) + `develop` (integration) + `feature/*` + `release/*` + `hotfix/*`. Heavyweight; mostly legacy.    |
 | `github-flow`      | `main` always deployable. `feature/*` branches → PR → merge → deploy. No staging/develop branch.                                                 |
 | `gitlab-flow`      | GitHub Flow + environment branches (`pre-production`, `production`) to model deployment promotion.                                               |
+| `sdet`             | SDET Gitflow. `main` (confirmed tests) + ephemeral per-suite integration trunk `test/<module>-suite`. Test tickets chain through the trunk (`--no-ff`); one final PR → `main`. For chained test-automation suites. Opt-in; see `references/sdet-integration-trunk.md`. |
 
 ### Detection algorithm
 
 Apply in order; stop at the first definitive answer:
 
-1. **Marker in `CLAUDE.md`** — search for `<!-- git-flow-master:strategy:VALUE -->` where `VALUE` is one of the seven slugs. If found, use it. This is the persisted decision.
+1. **Marker in `CLAUDE.md`** — search for `<!-- git-flow-master:strategy:VALUE -->` where `VALUE` is one of the eight slugs. If found, use it. This is the persisted decision. Also read the decision markers if present — `<!-- git-flow-master:integration-branch:NAME -->`, `<!-- git-flow-master:promote-method:... -->`, `<!-- git-flow-master:feature-merge:... -->`, `<!-- git-flow-master:hotfix-policy:... -->`. Each marker that resolves a questionnaire answer means Strategy Setup SKIPS that question on re-run (idempotent).
 2. **Single-branch heuristic** — `git branch -a` shows only `main` (or `master`) and no integration branch in the remote → `solo-main`.
 3. **Two-branch heuristic** — exactly `main` (or `master`) + one of `{staging, dev, develop, integration}` exists upstream → `main-integration` (record the integration branch name).
 4. **Multi-branch heuristic** — `main` + integration + active `feature/*` or `release/*` branches in `git branch -a` → `enterprise`.
 5. **Project hints** — look for `.gitlab-ci.yml` (suggests `gitlab-flow`), `release/*` and `hotfix/*` long-lived branches (suggests `gitflow`).
-6. **Fallback** — ask the user. Show the seven options with one-line descriptions; mirror their language. Do NOT pick silently.
+6. **Fallback** — ask the user. Show the options with one-line descriptions; mirror their language. Do NOT pick silently. On a test-automation repo (KATA / Playwright / `/test-automation`), surface `sdet` as the recommended option. `sdet` is opt-in only — never inferred silently from layout; a live `test/<module>-suite` trunk with `test/{KEY}-*` PRs targeting it confirms an already-active `sdet` suite.
 
 ### Persist the decision
 
@@ -128,6 +130,25 @@ This project uses the `main-integration` flow: feature branches merge to `stagin
 The marker is the source of truth. The prose is for humans. The user can edit either; the next invocation re-reads the marker.
 
 If the strategy uses an integration branch with a non-default name (anything other than `staging`), record it as a second marker `<!-- git-flow-master:integration-branch:NAME -->` so commits don't have to re-detect.
+
+**Decision markers and idempotent setup.** The strategy marker is the minimum the first five operations need. Strategy Setup (3.6) writes up to four additional markers — the structural `integration-branch` marker plus the three decision markers (`promote-method`, `feature-merge`, `hotfix-policy`); only the three decision markers gate questionnaire skips. On any later invocation, detection reads whichever of these exist and treats the matching questionnaire question as already answered — Strategy Setup re-run only asks the questions whose markers are missing, and never recreates a branch that already exists.
+
+### Bootstrap trigger — offer setup on a fresh repo (never auto-run)
+
+At the top of any git intent, after Step 1 (repo state) and Step 2 detection have run, evaluate ONE gate:
+
+> **No `git-flow-master:strategy:*` marker in `CLAUDE.md`** AND the repo **looks fresh** — any of: only `main`/`master` exists locally and on the remote; fewer than ~3 commits; or a boilerplate sentinel file is present (e.g. `.agents/project.yaml`, the shipped `## Git Strategy` placeholder).
+
+If the gate is true, **OFFER** (do not auto-execute, do not silently pick a strategy):
+
+> "No git strategy is set up yet. Want me to run Strategy Setup — pick the flow, create the branches it needs, and write the runbook into `CLAUDE.md`? (Y/N)"
+
+Rules:
+
+- **Offer once per session**, then cache the answer. Do not re-prompt every git intent in the same session.
+- **Never auto-run.** A `No` proceeds with the requested operation under the detected (or asked) strategy without writing the full runbook.
+- A `Yes` enters Strategy Setup (3.6) before continuing with the original git intent.
+- The boilerplate ships WITHOUT a `git-flow-master:strategy:*` marker, so this offer fires on first real use — by design (template-trap guard).
 
 ---
 
@@ -168,6 +189,7 @@ In a QA repo most work lands as `test/`, `fix/`, or `chore/` branches. Feature b
 - `main-integration`, `gitlab-flow` → branch off the integration branch (`staging` / `dev` / equivalent).
 - `enterprise` → branch off the integration branch unless it is a `hotfix/*`, which branches off `main`.
 - `gitflow` → `feature/*` branches off `develop`; `hotfix/*` off `main`; `release/*` off `develop`.
+- `sdet` → `test/{KEY}-*` ticket branches + Plus Branches (`docs/*`/`chore/*`/`fix/*`) branch off the **ephemeral integration trunk** `test/<module>-suite`; the trunk itself is cut from `main` on demand when a suite begins. Never stack a ticket on the previous ticket branch. See `references/sdet-integration-trunk.md`.
 
 Always **propose** the name and ask for OK before `git checkout -b`. Never create silently.
 
@@ -217,6 +239,7 @@ Push command depends on Step 1 output:
 - `gitflow` → `main` and `develop` are protected.
 - `github-flow` / `trunk-based` → `main` is protected.
 - `enterprise` → `main`, integration, and any `release/*` are protected.
+- `sdet` → `main` is protected (only the final suite PR lands, reviewed + green CI). The integration trunk is protected-by-convention but its ticket/Plus PRs are self-merged by the maintainer with no ruleset friction.
 
 Ask: _"You are about to push directly to the protected branch `{branch}` in a `{strategy}` flow. Confirm?"_ Wait for explicit yes.
 
@@ -232,6 +255,7 @@ Ask: _"You are about to push directly to the protected branch `{branch}` in a `{
 | `main-integration`, `gitlab-flow`         | integration branch (e.g. `staging`)                                                              |
 | `enterprise`                              | integration branch; `hotfix/*` → `main`                                                          |
 | `gitflow`                                 | `feature/*` → `develop`; `hotfix/*` → `main`; `release/*` → `main` (and back-merge to `develop`) |
+| `sdet`                                    | `test/{KEY}-*` ticket branches + Plus Branches → the integration trunk `test/<module>-suite`; the single final suite PR → `main` (after the sync gate). See `references/sdet-integration-trunk.md`. |
 
 The user can override with `--base X` in arguments. If overridden, surface it in the confirmation: _"PR will target `{base}` instead of the strategy default `{default}`."_
 
@@ -285,6 +309,56 @@ For every type, the playbook follows the same shape:
 5. Teach prevention (one short note on how to avoid this next time).
 
 When in doubt, **abort safely** (`git merge --abort`, `git rebase --abort`, `git cherry-pick --abort`) rather than push forward. Aborting always wins over guessing.
+
+### 3.6 Strategy Setup
+
+The first five operations *adapt to* a strategy that already exists. Strategy Setup is the operation that **establishes** one: it resolves (or asks) the strategy, captures the merge + hotfix decisions the other operations depend on, materializes the long-lived branches the strategy needs, and writes a full runbook into `CLAUDE.md`. It is the only operation that creates branches and edits the strategy section beyond a one-line marker.
+
+**When it runs**
+
+- **Explicit**: the user asks — "set up our git strategy", "bootstrap branching", "configura el flujo de git", "materialize the flow".
+- **Bootstrap offer** (see "Bootstrap trigger" below): a git intent arrives, no strategy marker exists in `CLAUDE.md`, and the repo looks fresh. The skill OFFERS to run setup. It never auto-runs.
+
+**Six-step flow** (mechanics live in `references/strategy-setup.md` — do not inline them here):
+
+1. **Read repo state** — Step 1 (already always runs).
+2. **Resolve strategy** — reuse Step 2 detection. If still undetermined, ask the 7-option question (one slug out).
+3. **Decision questionnaire** — run Q1/Q2/Q3 below, capturing merge methods + hotfix policy. SKIP any question that does not apply to the resolved strategy, and SKIP any question whose decision marker already exists (idempotent re-run — see Step 2 extension).
+4. **Materialize** — conditional on the resolved strategy: create an integration branch ONLY if the strategy needs one and it is missing; ff-sync the integration/production pair if one is a pure ancestor of the other (NEVER `--force`); set up local tracking. Full materialization table + sync mechanics in `references/strategy-setup.md`.
+5. **Persist** — write the marker(s) AND render the full `## Git Strategy` runbook into `CLAUDE.md` (replaces the thin one-line persist). Render rules per strategy in `references/branching-strategies.md` → "Runbook render rules".
+6. **Report** — branches created/synced, decisions captured, runbook location.
+
+**Decision questionnaire (defaults first; each gated on the resolved strategy)**
+
+| Q  | Question                                                   | Applies to                                                                                  | Options (default first)                                                                                                                  | Drives                                                |
+| -- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Q1 | Promotion method, integration → production                 | strategies with an integration branch (`main-integration`, `gitlab-flow`, `enterprise`; `gitflow` = `develop → main`) | **Fast-forward only** / Merge commit (`--no-ff`) / Squash                                                                                | release runbook + whether branches stay byte-identical |
+| Q2 | Merge method, work-branch → integration (or → trunk)       | all multi-branch strategies                                                                 | **Merge commit (`--no-ff`)** / Squash / Rebase + merge                                                                                   | how integration history accrues                       |
+| Q3 | Hotfix policy                                              | strategies with a production branch distinct from where work lands                          | **Branch off production → PR to production → back-merge to integration same day** / Always via integration / No policy                  | hotfix runbook + invariant maintenance                |
+
+Defaults are what the `main-integration` worked example chose; they are DEFAULTS, not hardcoded. The user can override any of them. Single-branch strategies (`solo-main`, `github-flow`, `trunk-based`) answer NONE of Q1/Q2/Q3 — they have no integration branch and no distinct production branch.
+
+**The five markers** (write only the ones that apply; omit decision markers the strategy doesn't use):
+
+```
+<!-- git-flow-master:strategy:VALUE -->
+<!-- git-flow-master:integration-branch:NAME -->
+<!-- git-flow-master:promote-method:ff-only|merge-commit|squash -->
+<!-- git-flow-master:feature-merge:merge-commit|squash|rebase-merge -->
+<!-- git-flow-master:hotfix-policy:branch-off-prod-backmerge|via-integration|none -->
+```
+
+**Non-negotiables**
+
+- **Never `--force`** (not `--force-with-lease` either) during a setup sync. Sync only on a true fast-forward; if the integration/production pair has diverged both ways → STOP and hand to conflict resolution (3.5).
+- **Confirm before any push to a protected branch.** A setup ff-sync push is still a push to a protected branch — ask first.
+- **Propose, don't auto-execute** branch creation. Show the plan (which branch, off what, why) and wait for OK before `git checkout -b` / `git branch`.
+- **No AI attribution** in any commit the setup makes (see this skill's "Critical rules" section and the project `CLAUDE.md`).
+
+**Pointers (do not inline mechanics here)**
+
+- `references/strategy-setup.md` — full questionnaire detail, the per-strategy materialization table, sync mechanics, persist sequence, report format.
+- `references/branching-strategies.md` → "Runbook render rules" — the 4-block render rule per strategy (markers / invariant / branch-role table / merge+promotion+hotfix).
 
 ---
 
@@ -349,10 +423,30 @@ The branch plan that comes out of the decision is the **contract** for execution
 - **G2.** NEVER amend or rebase a pushed commit — creates orphan commits in others' clones and rewrites history that was already replicated.
 - **G3.** NEVER commit secrets, credentials, `.env` contents, or auth tokens — git history is forever; a single commit leaks the secret permanently.
 - **G4.** NEVER include "Generated with Claude Code", "Co-Authored-By: Claude", or any AI-attribution line in commit messages or PR bodies (Critical Rule #3). Commits look human-authored.
-- **G5.** NEVER push to `main` without explicit user confirmation (Critical Rule #4). Strategy-driven protection applies to every protected branch, not just `main`.
+- **G5.** NEVER push to `main` without explicit user confirmation (Critical Rule #5). Strategy-driven protection applies to every protected branch, not just `main`.
 - **G6.** NEVER bypass pre-commit / pre-push hooks with `--no-verify` to "ship faster" — hooks exist to catch the bug you didn't notice. Fix the hook failure and create a new commit.
 - **G7.** NEVER mix concerns in a single commit (feat + refactor + lint fix bundled together) — atomic commits enable surgical revert and clean blame.
 - **G8.** NEVER stack PRs without naming the dependency chain in the PR body — reviewers can't tell which PR to read first or what each one depends on.
+
+---
+
+## Isolated worktrees (parallel / risky work)
+
+When work needs to be isolated from in-progress changes on the current branch — a second
+AI session running in parallel, a hotfix while a feature is open, or unrelated WIP you do
+not want to mix — use a **git worktree** (a second working directory on its own branch,
+sharing one `.git`). Two paths:
+
+- **Manual git** (portable, any tool): `git worktree add ../dir -b feat/x main` → work →
+  `git worktree remove` / `prune`.
+- **Claude Code harness** (this agent only): `EnterWorktree` moves the session into a fresh
+  worktree under `.claude/worktrees/`; `ExitWorktree` (`keep`/`remove`) leaves it. Other
+  coding agents lack this — they use the manual path.
+
+Key gotcha: a fresh worktree contains only the **tracked** files of its base — **untracked
+WIP does not teleport**, so `mv` it in (or commit first). Keep the primary tree's
+`git status` clean. Full lifecycle, multi-session safety rules, and the decision guide:
+`references/worktrees.md`.
 
 ---
 
@@ -366,6 +460,8 @@ The branch plan that comes out of the decision is the **contract** for execution
 - [ ] PR (if created) has Title <70 chars, body with Summary / Changes / Test Plan / Traceability / Risk, base branch matches strategy.
 - [ ] PR URL returned to the user; no merge attempted.
 - [ ] Conflicts (if any) are fully resolved AND verified (`git status` clean, `git log` sensible).
+- [ ] If Strategy Setup ran: branches were proposed (not auto-created), ff-syncs used a true fast-forward only (no `--force`), and a diverged pair was handed to conflict resolution rather than forced.
+- [ ] If Strategy Setup ran: the `## Git Strategy` runbook was rendered per `references/branching-strategies.md` render rules, with only the markers that apply to the resolved strategy.
 
 ---
 
@@ -373,9 +469,12 @@ The branch plan that comes out of the decision is the **contract** for execution
 
 | File                                 | When to read                                                                                                                                           |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `references/branching-strategies.md` | Full catalogue of the 7 strategies + detection signals + trade-offs + chained-PR decision tree. Read when resolving strategy or planning a chain.      |
+| `references/branching-strategies.md` | Full catalogue of the 8 strategies + detection signals + trade-offs + chained-PR decision tree + per-strategy runbook render rules. Read when resolving strategy or planning a chain.      |
+| `references/strategy-setup.md`       | Strategy Setup (3.6) mechanics: decision questionnaire detail, per-strategy materialization table, ff-sync mechanics (never force), persist sequence, report format. Read when running or re-running Strategy Setup. |
+| `references/sdet-integration-trunk.md` | `sdet` strategy runbook: per-ticket loop, ephemeral integration trunk, local double-env gate, Sanity CI + CI-fallback clause, Plus Branches, sync gate, final PR, TC lifecycle. Read when running an `sdet` test-automation suite. |
 | `references/conventional-commits.md` | Full type vocabulary, scope rules, breaking-change syntax, mixed-changes precedence. Read when proposing commits.                                      |
 | `references/pr-templating.md`        | PR body template, placeholder rules, label / reviewer / draft conventions, multi-strategy base-branch table. Read when opening a PR.                   |
 | `references/conflict-resolution.md`  | Per-conflict-type playbooks (merge / rebase / push-rejected / detached-HEAD / stash / unrelated histories / hook rejection). Read when Step 3.5 fires. |
+| `references/worktrees.md`            | Git worktrees for isolated/parallel work — manual git + Claude Code `EnterWorktree`/`ExitWorktree`, the untracked-files gotcha, multi-session safety, cleanup, decision guide. Read when isolating work or running parallel sessions. |
 
 Read references on demand — do not load them all upfront. Each file is self-contained.

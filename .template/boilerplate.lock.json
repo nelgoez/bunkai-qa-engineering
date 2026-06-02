@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 7,
+  "templateRepo": "upex-galaxy/agentic-qa-boilerplate",
+  "templateCommit": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+  "perComponentCommit": {
+    "skills": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "commands": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "scripts": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "docs": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "cli": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "vscode": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "husky": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "agents-docs": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "claude-config": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "tooling": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
+    "env-template": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885"
+  },
+  "syncedComponents": [],
+  "ignoreFileSync": {
+    ".gitignore": {
+      "lastSyncedSha": "597eb91c45f4490cc9ed77cd1204fadc792add6d",
+      "appendedLines": [
+        "**/evidence/"
+      ]
+    },
+    ".prettierignore": {
+      "lastSyncedSha": "1e3f9500969ad5ea6ac33eb186773d0daf90633d",
+      "appendedLines": [
+        ".claude/settings.local.json",
+        ".auth/",
+        ".playwright/",
+        "!.playwright/cli.config.json",
+        ".claude/worktrees/"
+      ]
+    }
+  },
+  "packageJsonSync": {
+    "package.json": {
+      "scripts": {
+        "lastSyncedSha": "f06c50d56ebaa88567056a7dba3a01b6158880a6",
+        "appliedKeys": [
+          "vars:env:check"
+        ]
+      },
+      "devDependencies": {
+        "lastSyncedSha": "f06c50d56ebaa88567056a7dba3a01b6158880a6",
+        "appliedKeys": []
+      }
+    }
+  },
+  "cliVersion": "7.0",
+  "lastSyncedAt": "2026-06-02T01:06:52.950Z",
+  "variableSystemVersion": 1
+}

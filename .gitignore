@@ -135,3 +135,7 @@ dbhub.local.toml
 !skills.lock.json
 !**/skills.lock.json
 nul
+
+# ===== Synced from boilerplate v7.0 =====
+# ----- 2026-06-02 (sync) -----
+**/evidence/

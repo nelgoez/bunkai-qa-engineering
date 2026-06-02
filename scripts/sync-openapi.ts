@@ -18,7 +18,6 @@
  *   bun run api:sync --config                     # Use saved config
  */
 
-import { join, resolve } from 'node:path';
 import { createInterface } from 'node:readline';
 import { $ } from 'bun';
 
@@ -26,9 +25,9 @@ import { $ } from 'bun';
 // Configuration
 // ============================================
 
-const API_DIR = resolve(import.meta.dir, '..', 'api');
-const CONFIG_FILE = join(API_DIR, '.openapi-config.json');
-const TYPES_FILE = join(API_DIR, 'openapi-types.ts');
+const API_DIR = `${import.meta.dir}/../api`;
+const CONFIG_FILE = `${API_DIR}/.openapi-config.json`;
+const TYPES_FILE = `${API_DIR}/openapi-types.ts`;
 
 type SourceType = 'url' | 'github' | 'local';
 
@@ -77,7 +76,7 @@ function detectSpecFilename(source: string): string {
 }
 
 function getOpenAPIFilePath(config: OpenAPIConfig): string {
-  return join(API_DIR, config.specFile || 'openapi.json');
+  return `${API_DIR}/${config.specFile || 'openapi.json'}`;
 }
 
 async function loadConfig(): Promise<OpenAPIConfig | null> {
