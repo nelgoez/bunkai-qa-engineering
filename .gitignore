@@ -134,3 +134,4 @@ dbhub.local.toml
 # matches it, but this guards against future blanket *.lock or skills.* rules.
 !skills.lock.json
 !**/skills.lock.json
+nul
