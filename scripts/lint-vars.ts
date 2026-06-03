@@ -537,7 +537,8 @@ interface ScanResult {
 // IMPORTANT: matchers must be ordered so explicit env refs do NOT also match
 // the bare-form regex. We scan EXPLICIT_ENV_RE first per line, mark covered
 // columns, then scan PROJECT_RE while skipping covered ranges.
-const PROJECT_RE = /\{\{([A-Z_][A-Z0-9_]*)\}\}/g;
+// Triple braces ({{{VAR}}}) are Handlebars/Resend raw-HTML syntax — skip them.
+const PROJECT_RE = /(?<!\{)\{\{([A-Z_][A-Z0-9_]*)\}\}(?!\})/g;
 const EXPLICIT_ENV_RE = /\{\{environments\.([a-z_][a-z0-9_]*)\.([a-z_][a-z0-9_]*)\}\}/g;
 // `{{jira.<slug>}}` (bare custom-field id reference)
 //   OR `{{jira.<slug>.<option>}}` (plain-option value lookup)
