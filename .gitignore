@@ -72,6 +72,9 @@ build/
 .playwright-mcp
 .backups/
 
+# opencode internal lock — regenerated automatically
+.opencode/package-lock.json
+
 # `.template/installer.lock.json` is TRACKED (small, immutable sentinel that
 # marks a repo as bootstrapped from this boilerplate).
 # `.template/installer.state.json` is GITIGNORED (per-dev runtime idempotency
