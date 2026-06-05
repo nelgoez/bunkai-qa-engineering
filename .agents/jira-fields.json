@@ -129,7 +129,7 @@
     }
   },
   "evidence": {
-    "id": "customfield_10140",
+    "id": "customfield_10061",
     "type": "string",
     "name": "🧫EVIDENCE"
   },
@@ -550,7 +550,7 @@
   "workflow": {
     "id": "customfield_10161",
     "type": "string",
-    "name": "🧬WORKFLOW"
+    "name": "Workflow 🧬"
   },
   "xray_begin_date": {
     "id": "customfield_10143",
