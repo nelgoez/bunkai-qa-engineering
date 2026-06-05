@@ -1,0 +1,41 @@
+# TMS-AC | Manage criteria under a user story
+
+**Jira Key:** [BK-15](https://jira.upexgalaxy.com/browse/BK-15)
+**Epic:** [BK-12](https://jira.upexgalaxy.com/browse/BK-12) (User Stories & Acceptance Criteria)
+**Type:** Story
+**Status:** Ready For QA
+**Priority:** Medium
+**Story Points:** 3
+
+---
+
+## Overview
+
+***Source spec:*** FR-008
+
+## User story
+
+***As a*** Senior QA Engineer
+***I want to*** add, edit, reorder and remove Acceptance Criteria under a User Story
+***So that*** each Story spells out its testable behaviours in a clear order, and a Story cannot be marked ready to test until it actually has criteria.
+
+## Definition of done
+
+- [ ] Feature works end-to-end against staging
+- [ ] Covered by an ATC chain anchored to a User Story + Acceptance Criterion
+- [ ] Acceptance Criteria verified by QA
+- [ ] Demoed to the team
+
+---
+
+## Metadata
+
+- **Created:** 19/5/2026
+- **Updated:** 5/6/2026
+- **Reporter:** Ely
+- **Assignee:** maibeth vega
+- **Labels:** acceptance-criteria, mvp, wave-2
+
+---
+
+_Synced from Jira by sync-jira-issues_
