@@ -88,12 +88,15 @@
       },
     },
     "slack": {
-      "type": "remote",
-      "url": "https://mcp.slack.com/mcp",
+      "type": "local",
+      "command": ["npx", "-y", "slack-mcp-server@latest", "--transport", "stdio"],
       "enabled": true,
-      "oauth": {},
-    },
-  },
+      "environment": {
+        "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
+        "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
+        "SLACK_MCP_USERS_CACHE": "./.context/_framework/slack/",
+        "SLACK_MCP_CHANNELS_CACHE": "./.context/_framework/slack/",
+      },
     },
   },
 
