@@ -3,7 +3,7 @@
 **Jira Key:** [BK-16](https://jira.upexgalaxy.com/browse/BK-16)
 **Epic:** [BK-12](https://jira.upexgalaxy.com/browse/BK-12) (User Stories & Acceptance Criteria)
 **Type:** Story
-**Status:** Ready For QA
+**Status:** QA Approved
 **Priority:** Medium
 **Story Points:** 13
 
@@ -28,10 +28,30 @@
 
 ---
 
+## Fields
+
+> Each rich-text field is a separate file in this folder.
+
+- [Acceptance Criteria](./acceptance-criteria.md)
+- [Out Of Scope](./out-of-scope.md)
+- [Workflow](./workflow.md)
+- [Implementation Plan (Dev)](./implementation-plan.md)
+
+---
+
+## Traceability
+
+### Bugs (2)
+
+- [BK-99](https://jira.upexgalaxy.com/browse/BK-99): MarkdownEditor: Description: 50 KB size limit not enforced on submission _(Closed)_
+- [BK-100](https://jira.upexgalaxy.com/browse/BK-100): MarkdownEditor: Description: 90% capacity warning threshold not implemented _(Closed)_
+
+---
+
 ## Metadata
 
 - **Created:** 19/5/2026
-- **Updated:** 5/6/2026
+- **Updated:** 10/6/2026
 - **Reporter:** Ely
 - **Assignee:** Facu Barea
 - **Labels:** markdown, mvp, shift-left-2026-06-01, shift-left-reviewed, ux, wave-2

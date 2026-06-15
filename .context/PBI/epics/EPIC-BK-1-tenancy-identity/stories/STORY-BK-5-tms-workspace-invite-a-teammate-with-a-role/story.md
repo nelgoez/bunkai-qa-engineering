@@ -3,9 +3,9 @@
 **Jira Key:** [BK-5](https://jira.upexgalaxy.com/browse/BK-5)
 **Epic:** [BK-1](https://jira.upexgalaxy.com/browse/BK-1) (Tenancy & Identity)
 **Type:** Story
-**Status:** Ready For QA
+**Status:** QA Approved
 **Priority:** Medium
-**Story Points:** -
+**Story Points:** 13
 
 ---
 
@@ -62,10 +62,32 @@ Implements ***FR-003***.
 
 ---
 
+## Fields
+
+> Each rich-text field is a separate file in this folder.
+
+- [Acceptance Criteria](./acceptance-criteria.md)
+- [Out Of Scope](./out-of-scope.md)
+- [Workflow](./workflow.md)
+- [Acceptance Test Plan (QA)](./acceptance-test-plan.md)
+- [Acceptance Test Results (QA)](./acceptance-test-results.md)
+
+---
+
+## Traceability
+
+### Bugs (3)
+
+- [BK-60](https://jira.upexgalaxy.com/browse/BK-60): [BK-5] BUG-CRIT-1: No email uniqueness check against active workspace members in POST /invites _(Closed)_
+- [BK-61](https://jira.upexgalaxy.com/browse/BK-61): [BK-5] BUG-CRIT-2: No email uniqueness check against pending invites — duplicate invites allowed _(Closed)_
+- [BK-62](https://jira.upexgalaxy.com/browse/BK-62): [BK-5] BUG-CRIT-3: Role overwrite on accept — workspace_members.upsert demotes existing owner/member _(Closed)_
+
+---
+
 ## Metadata
 
 - **Created:** 19/5/2026
-- **Updated:** 5/6/2026
+- **Updated:** 10/6/2026
 - **Reporter:** Ely
 - **Assignee:** Ely
 - **Labels:** mvp, shift-left-2026-05-27, shift-left-reviewed, tenancy, wave-1

@@ -1,6 +1,6 @@
 {
   "acceptance_criteria": {
-    "id": "customfield_10141",
+    "id": "customfield_10063",
     "type": "string",
     "name": "✅ Acceptance Criteria (Gherkin)"
   },
@@ -10,12 +10,12 @@
     "name": "🧪 Acceptance Test Plan (ATP)"
   },
   "acceptance_test_results": {
-    "id": "customfield_10284",
+    "id": "customfield_10147",
     "type": "string",
     "name": "🧪 Acceptance Test Results (ATR)"
   },
   "actual_result": {
-    "id": "customfield_10133",
+    "id": "customfield_10056",
     "type": "string",
     "name": "🐞 Actual Result (Comportamiento)"
   },
@@ -114,18 +114,18 @@
     "provider": "com.pyxis.greenhopper.jira"
   },
   "error_type": {
-    "id": "customfield_10190",
+    "id": "customfield_10141",
     "type": "option",
     "name": "Error Type",
     "options": {
-      "content": "10118",
-      "crash": "10120",
-      "data": "10121",
-      "functional": "10116",
-      "integration": "10122",
-      "performance": "10119",
-      "security": "10123",
-      "visual": "10117"
+      "content": "10166",
+      "crash": "10168",
+      "data": "10169",
+      "functional": "10164",
+      "integration": "10170",
+      "performance": "10167",
+      "security": "10171",
+      "visual": "10165"
     }
   },
   "evidence": {
@@ -134,12 +134,12 @@
     "name": "🧫EVIDENCE"
   },
   "expected_result": {
-    "id": "customfield_10137",
+    "id": "customfield_10059",
     "type": "string",
     "name": "✅ Expected Result (Output)"
   },
   "feature_implementation_plan": {
-    "id": "customfield_10166",
+    "id": "customfield_10083",
     "type": "string",
     "name": "🛠️ Feature Implementation Plan (Dev)"
   },
@@ -149,12 +149,12 @@
     "name": "🧪 Feature Test Plan (QA)"
   },
   "fix": {
-    "id": "customfield_10114",
+    "id": "customfield_10107",
     "type": "option",
     "name": "Fix",
     "options": {
-      "bugfix": "10267",
-      "hotfix": "10266"
+      "bugfix": "10043",
+      "hotfix": "10042"
     }
   },
   "flagged": {
@@ -186,12 +186,12 @@
     "name": "Goals"
   },
   "in_regression_plan": {
-    "id": "customfield_10157",
+    "id": "customfield_10133",
     "type": "option",
     "name": "In Regression Plan (QA)📊",
     "options": {
-      "no": "10198",
-      "yes": "10199"
+      "no": "10040",
+      "yes": "10041"
     }
   },
   "investigation_reason": {
@@ -224,7 +224,7 @@
     "options": {}
   },
   "out_of_scope": {
-    "id": "customfield_10135",
+    "id": "customfield_10075",
     "type": "string",
     "name": "Out Of Scope 🏴"
   },
@@ -278,7 +278,7 @@
     "name": "Project"
   },
   "qa_framework": {
-    "id": "customfield_10124",
+    "id": "customfield_10112",
     "type": "option",
     "name": "QA Framework🤖",
     "options": {
@@ -318,28 +318,25 @@
     "name": "Revision"
   },
   "root_cause": {
-    "id": "customfield_10118",
+    "id": "customfield_10109",
     "type": "option",
     "name": "Root Cause🐞",
     "options": {
-      "code_error": "10233",
-      "config_env_error": "10234",
-      "data_error": "10240",
-      "environment_error": "10235",
-      "integration_error": "10239",
-      "requirement_error": "10236",
-      "third_party_error": "10238",
-      "working_as_designed": "10237"
+      "code_error": "10146",
+      "config_env_error": "10147",
+      "data_error": "10153",
+      "environment_error": "10148",
+      "integration_error": "10152",
+      "requirement_error": "10149",
+      "third_party_error": "10151",
+      "working_as_designed": "10150"
     }
   },
   "scenario": {
-    "id": "customfield_10147",
+    "id": "customfield_10066",
     "type": "option",
     "name": "SCENARIO",
-    "options": {
-      "negativo": "10262",
-      "positivo": "10261"
-    }
+    "options": {}
   },
   "scope": {
     "id": "customfield_10142",
@@ -347,15 +344,15 @@
     "name": "Scope ⛳"
   },
   "severity": {
-    "id": "customfield_10177",
+    "id": "customfield_10143",
     "type": "option",
     "name": "Severity 🚩",
     "options": {
-      "critica": "10188",
-      "mayor": "10189",
-      "menor": "10191",
-      "moderada": "10190",
-      "trivial": "10192"
+      "critica": "10025",
+      "mayor": "10026",
+      "moderada": "10027",
+      "menor": "10028",
+      "trivial": "10029"
     }
   },
   "source": {
@@ -372,7 +369,7 @@
     }
   },
   "spec_implementation_plan": {
-    "id": "customfield_10198",
+    "id": "customfield_10095",
     "type": "string",
     "name": "🛠️ Spec Implementation Plan (Dev)"
   },
@@ -389,7 +386,7 @@
     "name": "Start date"
   },
   "steps": {
-    "id": "customfield_10188",
+    "id": "customfield_10091",
     "type": "string",
     "name": "STEPS"
   },
@@ -444,7 +441,7 @@
     "name": "🔬 Test Analysis"
   },
   "test_data": {
-    "id": "customfield_10187",
+    "id": "customfield_10074",
     "type": "string",
     "name": "TEST DATA"
   },
@@ -454,20 +451,20 @@
     "name": "TEST DESCRIPTION"
   },
   "test_design": {
-    "id": "customfield_10132",
+    "id": "customfield_10114",
     "type": "string",
     "name": "Test Design 🧪"
   },
   "test_environment": {
-    "id": "customfield_10136",
+    "id": "customfield_10057",
     "type": "option",
     "name": "Test Environment 📦️",
     "options": {
-      "dev": "10241",
-      "production": "10245",
-      "qa": "10242",
-      "staging": "10244",
-      "uat": "10243"
+      "dev": "10044",
+      "production": "10048",
+      "qa": "10045",
+      "staging": "10047",
+      "uat": "10046"
     }
   },
   "test_outline": {
@@ -476,18 +473,18 @@
     "name": "Test Outline 🧪 "
   },
   "test_status": {
-    "id": "customfield_10138",
+    "id": "customfield_10118",
     "type": "option",
     "name": "Test Status🧪",
     "options": {
-      "blocked": "10249",
-      "failed": "10248",
-      "n_r": "10246",
-      "passed": "10247"
+      "blocked": "10070",
+      "failed": "10069",
+      "n_r": "10067",
+      "passed": "10068"
     }
   },
   "test_strategy": {
-    "id": "customfield_10105",
+    "id": "customfield_10100",
     "type": "string",
     "name": "🧪 Test Strategy"
   },
@@ -543,12 +540,12 @@
     "name": "Weblink (URL)"
   },
   "workaround": {
-    "id": "customfield_10109",
+    "id": "customfield_10102",
     "type": "string",
     "name": "🚩 Workaround"
   },
   "workflow": {
-    "id": "customfield_10161",
+    "id": "customfield_10082",
     "type": "string",
     "name": "Workflow 🧬"
   },

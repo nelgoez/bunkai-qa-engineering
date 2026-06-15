@@ -20,6 +20,7 @@
 12. **KATA MANIFEST = SOURCE OF TRUTH**. `kata-manifest.json` (root) is authoritative registry of every existing Component + ATC. Before proposing new `Page`, `Api`, `Steps` module, or `@atc('TC-XXX')` ID — MUST load `kata-manifest.json` and check it. Anti-duplication gate. Stale manifest blocks commits via `.husky/pre-commit`. Regenerate: `bun run kata:manifest`. Validate: `bun run kata:manifest:check`.
 13. **DEFAULT COMMUNICATION MODE — CAVEMAN**: If `caveman` skill installed user-level (`~/.claude/skills/caveman/`), respond caveman level `full` by default (drop articles, fillers, pleasantries; fragments OK; technical terms exact; code/commits/PRs/security warnings always write normal English — caveman built-in boundary). Revert verbose ONLY when user explicitly say "normal mode", "habla normal", "stop caveman", "speak normally", "be verbose", "más detallado" or clear semantic equivalent. If caveman skill not installed, rule = no-op.
 14. **LANGUAGE DETECTION + MIRRORING**: At start of every conversation, READ FULL USER MESSAGE (not just opening words) to detect user's working language. Mirror that language in ALL conversational replies (questions, summaries, explanations, status updates). Repo artifacts ALWAYS English regardless of conversation language: code, code comments, commits, PR titles + bodies, branch names, file names, test names, configuration values, + any external action artifact (Jira issues/comments, GitHub issues/PRs/comments, Slack messages, emails, deploy notes, MCP tool inputs). Override: if user explicitly request another language for specific artifact ("crea el ticket en español", "write this PR description in Spanish"), honor that request only for that artifact + continue defaulting to English for next ones unless re-requested.
+15. **AUTONOMOUS MODE**: Levels: `off` (default), `semi`, `full`. Set via `.claude/settings.json` `autonomous` key, or inline `/autonomous <level>`. When `autonomous ≠ off`: BEFORE any workflow skill execution, generate a permission manifest (template at `agentic-qa-core/references/permission-manifest-template.md`), present to user, WAIT for OK. Then execute with gate bypass per `agentic-qa-core/references/autonomous-gates.md`. HARD gates NEVER auto-approve: TOOL_FAILURE, blocking BUG_FOUND (security/data integrity), bug creation confirmation, T4 skill load, environment unreachable, security recalibration. Subagent dispatch patterns UNCHANGED — autonomous mode affects only orchestrator (main thread) blocking at checkpoints. Compose with caveman: independent registers.
 
 ---
 
@@ -29,9 +30,9 @@
 
 **THINK BEFORE CODING.** State assumptions explicit. Multiple interpretations → present them, NEVER pick silently. Simpler approach exists → say so. Unclear → STOP, name confusion, ASK.
 
-**SIMPLICITY FIRST.** Minimum code that solves problem. No features beyond ask. No abstractions for single-use. No "flexibility" not requested. No error handling for impossible scenarios. 200 lines that could be 50 → rewrite. *Scope note*: do NOT collapse KATA layers (TestContext / Base / Domain / Fixture) — framework architecture, not speculative abstraction.
+**SIMPLICITY FIRST.** Minimum code that solves problem. No features beyond ask. No abstractions for single-use. No "flexibility" not requested. No error handling for impossible scenarios. 200 lines that could be 50 → rewrite. _Scope note_: do NOT collapse KATA layers (TestContext / Base / Domain / Fixture) — framework architecture, not speculative abstraction.
 
-**SURGICAL CHANGES.** Touch only what required. Match existing style even if you'd do it differently. Don't refactor unbroken code. Don't improve adjacent comments/formatting. Notice unrelated dead code → mention, don't delete. Remove imports/vars YOUR changes made unused. *Scope note*: regenerative commands (`/sync-ai-memory`, `/business-*-map`, `/master-test-plan`, `/fix-traceability`) and skill phases with explicit generative intent are EXEMPT — regen IS task.
+**SURGICAL CHANGES.** Touch only what required. Match existing style even if you'd do it differently. Don't refactor unbroken code. Don't improve adjacent comments/formatting. Notice unrelated dead code → mention, don't delete. Remove imports/vars YOUR changes made unused. _Scope note_: regenerative commands (`/sync-ai-memory`, `/business-*-map`, `/master-test-plan`, `/fix-traceability`) and skill phases with explicit generative intent are EXEMPT — regen IS task.
 
 **GOAL-DRIVEN EXECUTION.** Define success criteria. Loop until verified. Transform vague tasks into testable goals ("add validation" → "write tests for invalid input, then make them pass"). Multi-step → state plan with explicit `verify:` per step (observable: test passes, file exists, exit 0, type-check clean). Complements 7-component briefing (§3) — doesn't replace it.
 
@@ -68,6 +69,18 @@ Example: ❌ "Added `waitForResponse('**/api/auth/login')` before toast assertio
 
 **SIGNALS THESE WORK**: fewer diff changes, fewer rewrites, clarifying questions BEFORE implementation. PM Voice → fewer "what does that mean?" follow-ups. Visual Mapping → readers grasp impact at-a-glance, paste tables into Confluence / ATR.
 
+**AUTONOMOUS MODE — GATE BYPASS REGISTER.** When `autonomous ≠ off`, the orchestrator skips human checkpoints per the gate bypass policy. This is a **behavioral register** (like caveman, PM Voice, Butler) — it controls WHEN the AI blocks, not WHAT the AI does.
+
+- **Off (default)**: all checkpoints fire. Standard QA workflow with human in the loop.
+- **Semi**: user approves scope/pick/plan upfront via permission manifest. Per-phase WAIT points still fire. Resume prompts still ask.
+- **Full**: only HARD gates surface. Everything else auto-resolves. Auto-resume, auto-archive.
+
+**Gate resolution**: at each checkpoint, cross-reference `autonomous-gates.md` table → mode column → HARD/Block/Ask/Auto. HARD gates NEVER auto-approve regardless of mode (TOOL_FAILURE, blocking BUG_FOUND, bug creation, T4 skills, env dead, security recalibration). Subagents unchanged — autonomous mode only affects the main-thread orchestrator.
+
+**Permission manifest (mandatory pre-flight)**: when `autonomous ≠ off`, BEFORE any skill execution, generate a permission manifest per `permission-manifest-template.md`, present to user, WAIT for OK. Never auto-start without manifest approval. The manifest is the single upfront permission grant — once approved, all non-HARD gates auto-resolve until completion.
+
+**Composition**: autonomous mode composes with caveman (independent registers), PM Voice, and Butler. Example: `autonomous: full, caveman: full` → terse autonomous execution with no human checkpoints except HARD gates.
+
 ---
 
 ## 3. ORCHESTRATION MODE — PERMANENTLY ACTIVE
@@ -90,12 +103,12 @@ Example: ❌ "Added `waitForResponse('**/api/auth/login')` before toast assertio
 
 **EXECUTION PATTERNS**:
 
-| Pattern | When | Example |
-|---|---|---|
-| Parallel | Independent tasks | Read 3 context files at once |
-| Sequential | Dependent tasks | Plan → Code → Test |
-| Background | Long-running | Test suite + plan next ticket |
-| Single | Simple task | One file edit + verification |
+| Pattern    | When              | Example                       |
+| ---------- | ----------------- | ----------------------------- |
+| Parallel   | Independent tasks | Read 3 context files at once  |
+| Sequential | Dependent tasks   | Plan → Code → Test            |
+| Background | Long-running      | Test suite + plan next ticket |
+| Single     | Simple task       | One file edit + verification  |
 
 **ERROR PROTOCOL**: Subagent error → STOP, report full context, NO fix without approval, offer retry/skip/abort.
 
@@ -109,22 +122,22 @@ Example: ❌ "Added `waitForResponse('**/api/auth/login')` before toast assertio
 
 > BEFORE responding to any task: identify task type → load matching skill → read listed context. NEVER guess scripts/commands — READ `package.json` DIRECTLY.
 
-| Task | Trigger phrase | Load skill | Read context | Primary tool |
-|---|---|---|---|---|
-| First-time orientation | "onboard me", "first time using this" | `/agentic-qa-onboard` | (skill self-loads) | — |
-| Onboard target project | "onboard this repo", "set up project" | `/project-discovery` | target repo code, `.context/` if exists | Read + Grep |
-| Adapt KATA to stack | "adapt framework", "wire fixtures" | `/adapt-framework` | `.context/business/*` | Code edit |
-| Shift-Left batch grooming | "shift-left these stories", "groom the backlog", "pre-sprint QA", "refine these N stories" | `/shift-left-testing` | `.context/business/*`, `.context/master-test-plan.md`, `.context/PBI/{module}/{TICKET}-*/` | `[ISSUE_TRACKER_TOOL]` |
-| Sprint testing ticket | "test this", "QA this story", "verify bug" | `/sprint-testing` | `.context/PBI/{module}/{TICKET}-*/` | `[AUTOMATION_TOOL]` + `[ISSUE_TRACKER_TOOL]` |
-| TMS documentation / ROI | "document tests", "ROI", "automate priority" | `/test-documentation` | `.context/master-test-plan.md`, `.agents/jira-required.yaml`, `.agents/jira-fields.json` | `[TMS_TOOL]` |
-| Write automated test | "automate", "E2E test", "API test" | `/test-automation` | `kata-manifest.json`, `tests/components/`, `.context/PBI/.../implementation-plan.md`, skill `references/` | Code edit |
-| Discovery / inventory | "what components exist", "list ATCs", "is TC-X automated" | — | `kata-manifest.json` | Read |
-| Regression / release | "run regression", "GO/NO-GO" | `/regression-testing` | `.context/master-test-plan.md`, CI logs | `gh` + Allure |
-| Sync AI memory | "sync memory", `/sync-ai-memory` | `/sync-ai-memory` | `README.md`, this file, `.context/`, `package.json` | Edit |
-| Git / PR work | any git intent | `/git-flow-master` (auto) | `git status`, `git log` | `git` + `gh` |
-| Browser action | "screenshot", "trace", "record" | `/playwright-cli` | — | Playwright CLI |
-| Jira / Xray operation | "Jira issue", "Xray import" | `/acli` or `/xray-cli` | `.agents/jira-required.yaml`, `.agents/jira-fields.json` | CLI |
-| Any script / build / test command question | "what command runs X", "how do I run tests" | — | **READ `package.json` FIRST** | — |
+| Task                                       | Trigger phrase                                                                             | Load skill                | Read context                                                                                              | Primary tool                                 |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| First-time orientation                     | "onboard me", "first time using this"                                                      | `/agentic-qa-onboard`     | (skill self-loads)                                                                                        | —                                            |
+| Onboard target project                     | "onboard this repo", "set up project"                                                      | `/project-discovery`      | target repo code, `.context/` if exists                                                                   | Read + Grep                                  |
+| Adapt KATA to stack                        | "adapt framework", "wire fixtures"                                                         | `/adapt-framework`        | `.context/business/*`                                                                                     | Code edit                                    |
+| Shift-Left batch grooming                  | "shift-left these stories", "groom the backlog", "pre-sprint QA", "refine these N stories" | `/shift-left-testing`     | `.context/business/*`, `.context/master-test-plan.md`, `.context/PBI/{module}/{TICKET}-*/`                | `[ISSUE_TRACKER_TOOL]`                       |
+| Sprint testing ticket                      | "test this", "QA this story", "verify bug"                                                 | `/sprint-testing`         | `.context/PBI/{module}/{TICKET}-*/`                                                                       | `[AUTOMATION_TOOL]` + `[ISSUE_TRACKER_TOOL]` |
+| TMS documentation / ROI                    | "document tests", "ROI", "automate priority"                                               | `/test-documentation`     | `.context/master-test-plan.md`, `.agents/jira-required.yaml`, `.agents/jira-fields.json`                  | `[TMS_TOOL]`                                 |
+| Write automated test                       | "automate", "E2E test", "API test"                                                         | `/test-automation`        | `kata-manifest.json`, `tests/components/`, `.context/PBI/.../implementation-plan.md`, skill `references/` | Code edit                                    |
+| Discovery / inventory                      | "what components exist", "list ATCs", "is TC-X automated"                                  | —                         | `kata-manifest.json`                                                                                      | Read                                         |
+| Regression / release                       | "run regression", "GO/NO-GO"                                                               | `/regression-testing`     | `.context/master-test-plan.md`, CI logs                                                                   | `gh` + Allure                                |
+| Sync AI memory                             | "sync memory", `/sync-ai-memory`                                                           | `/sync-ai-memory`         | `README.md`, this file, `.context/`, `package.json`                                                       | Edit                                         |
+| Git / PR work                              | any git intent                                                                             | `/git-flow-master` (auto) | `git status`, `git log`                                                                                   | `git` + `gh`                                 |
+| Browser action                             | "screenshot", "trace", "record"                                                            | `/playwright-cli`         | —                                                                                                         | Playwright CLI                               |
+| Jira / Xray operation                      | "Jira issue", "Xray import"                                                                | `/acli` or `/xray-cli`    | `.agents/jira-required.yaml`, `.agents/jira-fields.json`                                                  | CLI                                          |
+| Any script / build / test command question | "what command runs X", "how do I run tests"                                                | —                         | **READ `package.json` FIRST**                                                                             | —                                            |
 
 **Key paths**:
 
@@ -152,51 +165,51 @@ Repo organizes skills in 4 tiers with different discovery + load rules:
 
 Full contract: `.claude/skills/agentic-qa-core/references/skill-composition-strategy.md`
 
-**gentle-ai install scope**: `cli/install.ts` runs `gentle-ai install --preset minimal` → installs ONLY the `engram` component (persistent memory). SDD-* skills are NOT installed by default — our workflow skills (`/sprint-testing`, `/test-automation`, `/test-documentation`, `/regression-testing`) cover Plan → Code → Verify natively without SDD ceremony. Users who explicitly want the SDD suite for framework evolution work can add it manually: `gentle-ai install --components engram,sdd --agent <a>`.
+**gentle-ai install scope**: `cli/install.ts` runs `gentle-ai install --preset minimal` → installs ONLY the `engram` component (persistent memory). SDD-\* skills are NOT installed by default — our workflow skills (`/sprint-testing`, `/test-automation`, `/test-documentation`, `/regression-testing`) cover Plan → Code → Verify natively without SDD ceremony. Users who explicitly want the SDD suite for framework evolution work can add it manually: `gentle-ai install --components engram,sdd --agent <a>`.
 
 ### Skills (lazy-loaded by trigger phrase)
 
-| Skill | Trigger | Purpose |
-|---|---|---|
-| `agentic-qa-core` | (auto, cited by other skills) | Foundation: passive reference host for shared doctrine (briefing template, dispatch patterns, orchestration, skill-composition strategy). Loaded on demand by workflow skills. |
-| `agentic-qa-onboard` | `/agentic-qa-onboard` | First-time orientation tour. Explains stack + 6-stage pipeline + MCPs. Hands off to right downstream skill. |
-| `framework-development` | `/framework-development` | Framework-evolution orchestrator for the boilerplate itself (KATA bases, fixtures, cli/, scripts/, api/schemas/ pipeline). NOT for per-ticket QA. Self-contained Plan → Code → Verify → Archive pipeline; runs under `gentle-ai install --preset minimal` (no SDD-* skills required). |
-| `project-discovery` | `/project-discovery` | 4-phase discovery (Constitution → Architecture → Infrastructure → Specification) → generates PRD, SRS, domain glossary, `.context/`. Reverse-engineering only. |
-| `shift-left-testing` | `/shift-left-testing` | Stage 0 — pre-sprint Shift-Left QA on a batch of backlog Stories. Refines ACs, surfaces gaps/ambiguities, produces ATP DRAFT + per-story `shift-left-refinement.md`, transitions `backlog → shift_left_qa → estimation`. Adds label `shift-left-reviewed` so `/sprint-testing` Stage 1 can short-circuit Phases 1-3 later. |
-| `sprint-testing` | `/sprint-testing` | Stages 1-3: manual QA per ticket (Planning, Execution, Reporting). Produces PBI folder, ATP, ATR, bug reports. |
-| `test-documentation` | `/test-documentation` | Stage 4: TMS docs + ROI scoring. Produces Candidate / Manual / Deferred verdicts. |
-| `test-automation` | `/test-automation` | Stage 5: Plan → Code → Review on KATA + Playwright + TypeScript. |
-| `regression-testing` | `/regression-testing` | Stage 6: regression / smoke / sanity via CI/CD. Classifies failures. Emits GO / CAUTION / NO-GO. |
-| `playwright-cli` | `/playwright-cli` | Browser CLI: screenshots, tracing, video, session mgmt, request mocking. *(community — installed at PROJECT level by `cli/install.ts`; not committed in repo)* |
-| `playwright-best-practices` | `/playwright-best-practices` | Reference skill: flaky-test fixes, POM, accessibility (axe-core), auth/OAuth, fixtures, tags (`@smoke`/`@critical`), perf budgets, i18n, component testing. Auto-loads alongside `/test-automation`. *(community — installed at PROJECT level by `cli/install.ts`; not committed in repo)* |
-| `resend-cli` | `/resend-cli` | Resend email testing CLI. Pairs with the `resend` external binary. *(community — installed at PROJECT level by `cli/install.ts`; not committed in repo)* |
-| `xray-cli` | `/xray-cli` | Xray Cloud test management. |
-| `acli` | `/acli` | Atlassian CLI. Resolves `[ISSUE_TRACKER_TOOL]` and `[TMS_TOOL]` (Modality jira-native). |
-| `git-flow-master` | (auto on git/PR intents) | End-to-end Git operator. Auto-detects branching strategy. Owns branch / commit / push / PR / conflict / chained-PR. |
-| `judgment-day` | `/judgment-day`, `juzgar`, `dual review` | T2 vendored from gentle-ai (Apache-2.0). Adversarial dual-judge review (2 blind judges in parallel, synthesis, fix loop, re-judge). Cited as optional gate by `/test-automation` Phase 3 + `/git-flow-master` pre-PR. Never auto-invoked. |
+| Skill                       | Trigger                                  | Purpose                                                                                                                                                                                                                                                                                                                    |
+| --------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `agentic-qa-core`           | (auto, cited by other skills)            | Foundation: passive reference host for shared doctrine (briefing template, dispatch patterns, orchestration, skill-composition strategy). Loaded on demand by workflow skills.                                                                                                                                             |
+| `agentic-qa-onboard`        | `/agentic-qa-onboard`                    | First-time orientation tour. Explains stack + 6-stage pipeline + MCPs. Hands off to right downstream skill.                                                                                                                                                                                                                |
+| `framework-development`     | `/framework-development`                 | Framework-evolution orchestrator for the boilerplate itself (KATA bases, fixtures, cli/, scripts/, api/schemas/ pipeline). NOT for per-ticket QA. Self-contained Plan → Code → Verify → Archive pipeline; runs under `gentle-ai install --preset minimal` (no SDD-\* skills required).                                     |
+| `project-discovery`         | `/project-discovery`                     | 4-phase discovery (Constitution → Architecture → Infrastructure → Specification) → generates PRD, SRS, domain glossary, `.context/`. Reverse-engineering only.                                                                                                                                                             |
+| `shift-left-testing`        | `/shift-left-testing`                    | Stage 0 — pre-sprint Shift-Left QA on a batch of backlog Stories. Refines ACs, surfaces gaps/ambiguities, produces ATP DRAFT + per-story `shift-left-refinement.md`, transitions `backlog → shift_left_qa → estimation`. Adds label `shift-left-reviewed` so `/sprint-testing` Stage 1 can short-circuit Phases 1-3 later. |
+| `sprint-testing`            | `/sprint-testing`                        | Stages 1-3: manual QA per ticket (Planning, Execution, Reporting). Produces PBI folder, ATP, ATR, bug reports.                                                                                                                                                                                                             |
+| `test-documentation`        | `/test-documentation`                    | Stage 4: TMS docs + ROI scoring. Produces Candidate / Manual / Deferred verdicts.                                                                                                                                                                                                                                          |
+| `test-automation`           | `/test-automation`                       | Stage 5: Plan → Code → Review on KATA + Playwright + TypeScript.                                                                                                                                                                                                                                                           |
+| `regression-testing`        | `/regression-testing`                    | Stage 6: regression / smoke / sanity via CI/CD. Classifies failures. Emits GO / CAUTION / NO-GO.                                                                                                                                                                                                                           |
+| `playwright-cli`            | `/playwright-cli`                        | Browser CLI: screenshots, tracing, video, session mgmt, request mocking. _(community — installed at PROJECT level by `cli/install.ts`; not committed in repo)_                                                                                                                                                             |
+| `playwright-best-practices` | `/playwright-best-practices`             | Reference skill: flaky-test fixes, POM, accessibility (axe-core), auth/OAuth, fixtures, tags (`@smoke`/`@critical`), perf budgets, i18n, component testing. Auto-loads alongside `/test-automation`. _(community — installed at PROJECT level by `cli/install.ts`; not committed in repo)_                                 |
+| `resend-cli`                | `/resend-cli`                            | Resend email testing CLI. Pairs with the `resend` external binary. _(community — installed at PROJECT level by `cli/install.ts`; not committed in repo)_                                                                                                                                                                   |
+| `xray-cli`                  | `/xray-cli`                              | Xray Cloud test management.                                                                                                                                                                                                                                                                                                |
+| `acli`                      | `/acli`                                  | Atlassian CLI. Resolves `[ISSUE_TRACKER_TOOL]` and `[TMS_TOOL]` (Modality jira-native).                                                                                                                                                                                                                                    |
+| `git-flow-master`           | (auto on git/PR intents)                 | End-to-end Git operator. Auto-detects branching strategy. Owns branch / commit / push / PR / conflict / chained-PR.                                                                                                                                                                                                        |
+| `judgment-day`              | `/judgment-day`, `juzgar`, `dual review` | T2 vendored from gentle-ai (Apache-2.0). Adversarial dual-judge review (2 blind judges in parallel, synthesis, fix loop, re-judge). Cited as optional gate by `/test-automation` Phase 3 + `/git-flow-master` pre-PR. Never auto-invoked.                                                                                  |
 
 ### Commands (single-file utilities in `.claude/commands/`)
 
-| Command | Purpose |
-|---|---|
-| `/adapt-framework` | Adapt KATA architecture (`tests/`, `api/schemas/`, `config/`) to target stack. Plan → Approval → Implement. Modifies THIS repo only. |
-| `/sync-ai-memory` | Sync all AI-critical docs (`README.md`, this file, `INSTALLER.md`, `CONTEXT.md`, `docs/**`) against current `.context/` and `package.json`. |
-| `/business-data-map` | Refresh `.context/business/business-data-map.md` (entities, flows, state machines). |
-| `/business-feature-map` | Refresh `.context/business/business-feature-map.md` (feature catalog, CRUD matrix, integrations). |
-| `/business-api-map` | Refresh `.context/business/business-api-map.md` (auth model, critical endpoints, architecture). |
-| `/master-test-plan` | Refresh `.context/master-test-plan.md` (what to test and why). |
-| `/break-down-tests` | Plain-English breakdown of automated tests for a module / spec. |
-| `/fix-traceability` | Repair broken US-ATP-ATR-TC traceability links in TMS. |
+| Command                 | Purpose                                                                                                                                     |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/adapt-framework`      | Adapt KATA architecture (`tests/`, `api/schemas/`, `config/`) to target stack. Plan → Approval → Implement. Modifies THIS repo only.        |
+| `/sync-ai-memory`       | Sync all AI-critical docs (`README.md`, this file, `INSTALLER.md`, `CONTEXT.md`, `docs/**`) against current `.context/` and `package.json`. |
+| `/business-data-map`    | Refresh `.context/business/business-data-map.md` (entities, flows, state machines).                                                         |
+| `/business-feature-map` | Refresh `.context/business/business-feature-map.md` (feature catalog, CRUD matrix, integrations).                                           |
+| `/business-api-map`     | Refresh `.context/business/business-api-map.md` (auth model, critical endpoints, architecture).                                             |
+| `/master-test-plan`     | Refresh `.context/master-test-plan.md` (what to test and why).                                                                              |
+| `/break-down-tests`     | Plain-English breakdown of automated tests for a module / spec.                                                                             |
+| `/fix-traceability`     | Repair broken US-ATP-ATR-TC traceability links in TMS.                                                                                      |
 
 ### MCPs (decision rules)
 
-| MCP | Use for | Rule |
-|---|---|---|
-| Playwright | E2E, UI automation, screenshots | Fallback for `[AUTOMATION_TOOL]` (primary = `/playwright-cli`) |
-| OpenAPI | API endpoint exploration, contract testing | `[API_TOOL]` primary |
-| DBHub | DB queries, data validation | `[DB_TOOL]` primary |
-| Context7 | Library official docs ("how to use X") | `[DOCS_TOOL]` primary. **MANDATORY** for any library / framework / SDK / API / CLI doc lookup (React, Next, Playwright, Prisma, Tailwind, Express, etc.). PREFER OVER built-in `WebSearch` / `WebFetch` — Context7 returns current versioned docs; built-in web search returns stale blog posts. |
-| Tavily | Community solutions ("how to solve X"), troubleshooting, non-doc web research | `[WEB_SEARCH_TOOL]` primary. **MANDATORY** for any general web search — community fixes, error message lookups, "how to solve X". PREFER OVER built-in `WebSearch` / `WebFetch` — Tavily returns ranked + summarized results; built-in is shallower. |
+| MCP        | Use for                                                                       | Rule                                                                                                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Playwright | E2E, UI automation, screenshots                                               | Fallback for `[AUTOMATION_TOOL]` (primary = `/playwright-cli`)                                                                                                                                                                                                                                   |
+| OpenAPI    | API endpoint exploration, contract testing                                    | `[API_TOOL]` primary                                                                                                                                                                                                                                                                             |
+| DBHub      | DB queries, data validation                                                   | `[DB_TOOL]` primary                                                                                                                                                                                                                                                                              |
+| Context7   | Library official docs ("how to use X")                                        | `[DOCS_TOOL]` primary. **MANDATORY** for any library / framework / SDK / API / CLI doc lookup (React, Next, Playwright, Prisma, Tailwind, Express, etc.). PREFER OVER built-in `WebSearch` / `WebFetch` — Context7 returns current versioned docs; built-in web search returns stale blog posts. |
+| Tavily     | Community solutions ("how to solve X"), troubleshooting, non-doc web research | `[WEB_SEARCH_TOOL]` primary. **MANDATORY** for any general web search — community fixes, error message lookups, "how to solve X". PREFER OVER built-in `WebSearch` / `WebFetch` — Tavily returns ranked + summarized results; built-in is shallower.                                             |
 
 ---
 
@@ -204,15 +217,15 @@ Full contract: `.claude/skills/agentic-qa-core/references/skill-composition-stra
 
 > Skills use `[TAG_TOOL]` pseudocode. Resolve via this table. **PRIORITY**: CLI tools first (fewer tokens). MCP = fallback only.
 
-| Tag | Domain | Primary | Fallback |
-|---|---|---|---|
-| `[ISSUE_TRACKER_TOOL]` | Jira Cloud (story / bug / epic) | `/acli` | MCP Atlassian (opt-in — see docs/mcp/) |
-| `[TMS_TOOL]` | Test management | Modality jira-xray: `/xray-cli`. Modality jira-native: `/acli` | MCP Atlassian (opt-in — see docs/mcp/) |
-| `[AUTOMATION_TOOL]` | Browser automation | `/playwright-cli` | MCP Playwright |
-| `[DB_TOOL]` | Database | DBHub MCP | Supabase MCP / raw SQL |
-| `[API_TOOL]` | API exploration | OpenAPI MCP | Postman / curl |
-| `[DOCS_TOOL]` | Library / framework / SDK / API / CLI official docs | Context7 MCP (`mcp__context7__resolve-library-id` → `mcp__context7__query-docs`) | built-in `WebSearch` / `WebFetch` (last resort only) |
-| `[WEB_SEARCH_TOOL]` | General web search, community fixes, troubleshooting, non-doc research | Tavily MCP (`mcp__tavily__tavily_search` / `tavily_extract` / `tavily_research`) | built-in `WebSearch` / `WebFetch` (last resort only) |
+| Tag                    | Domain                                                                 | Primary                                                                          | Fallback                                             |
+| ---------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `[ISSUE_TRACKER_TOOL]` | Jira Cloud (story / bug / epic)                                        | `/acli`                                                                          | MCP Atlassian (opt-in — see docs/mcp/)               |
+| `[TMS_TOOL]`           | Test management                                                        | Modality jira-xray: `/xray-cli`. Modality jira-native: `/acli`                   | MCP Atlassian (opt-in — see docs/mcp/)               |
+| `[AUTOMATION_TOOL]`    | Browser automation                                                     | `/playwright-cli`                                                                | MCP Playwright                                       |
+| `[DB_TOOL]`            | Database                                                               | DBHub MCP                                                                        | Supabase MCP / raw SQL                               |
+| `[API_TOOL]`           | API exploration                                                        | OpenAPI MCP                                                                      | Postman / curl                                       |
+| `[DOCS_TOOL]`          | Library / framework / SDK / API / CLI official docs                    | Context7 MCP (`mcp__context7__resolve-library-id` → `mcp__context7__query-docs`) | built-in `WebSearch` / `WebFetch` (last resort only) |
+| `[WEB_SEARCH_TOOL]`    | General web search, community fixes, troubleshooting, non-doc research | Tavily MCP (`mcp__tavily__tavily_search` / `tavily_extract` / `tavily_research`) | built-in `WebSearch` / `WebFetch` (last resort only) |
 
 **MANDATORY**: LOAD owning skill BEFORE invoking its tool. Skills = WHEN/WHAT. HOW (syntax, flags, auth, errors) lives in skill's `references/`.
 
@@ -225,10 +238,10 @@ Full contract: `.claude/skills/agentic-qa-core/references/skill-composition-stra
 
 **TMS modality fallback** (resolved by `test-documentation/SKILL.md` §Phase 0):
 
-| Modality | `[TMS_TOOL]` resolves to | TMS entities |
-|---|---|---|
-| A — Xray on Jira | `/xray-cli` for Xray entities; `[ISSUE_TRACKER_TOOL]` for generic Jira | Test, Test Plan, Test Execution, Pre-Condition |
-| B — Jira-native (no Xray) | NOT resolvable → falls through to `[ISSUE_TRACKER_TOOL]` (`/acli`) | ATP/ATR = Story custom fields + comments; TCs = Jira `Test` issues. See `test-documentation/references/jira-setup.md` |
+| Modality                  | `[TMS_TOOL]` resolves to                                               | TMS entities                                                                                                          |
+| ------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| A — Xray on Jira          | `/xray-cli` for Xray entities; `[ISSUE_TRACKER_TOOL]` for generic Jira | Test, Test Plan, Test Execution, Pre-Condition                                                                        |
+| B — Jira-native (no Xray) | NOT resolvable → falls through to `[ISSUE_TRACKER_TOOL]` (`/acli`)     | ATP/ATR = Story custom fields + comments; TCs = Jira `Test` issues. See `test-documentation/references/jira-setup.md` |
 
 Skills using `[TMS_TOOL]` MUST include parallel pseudocode branches for both modalities (labeled "Modality jira-native").
 
@@ -240,16 +253,16 @@ Skills using `[TMS_TOOL]` MUST include parallel pseudocode branches for both mod
 
 > Bash invokes these binaries → LOAD matching skill BEFORE running. Skill holds WHEN/WHAT; binary executes HOW. Missing load = flying blind on syntax, flags, auth, errors.
 
-| CLI invoked | Skill(s) to load BEFORE invoking |
-|---|---|
-| `gh` | `/git-flow-master` (in-repo, when command is git/PR-shaped) |
-| `acli` | `/acli` (in-repo) |
-| `playwright-cli` | `/playwright-cli` (community PROJECT) + `/playwright-best-practices` (community PROJECT) |
-| `bunx allure` (run/agent/generate/open/watch) | `/regression-testing` (in-repo) + `/test-automation` (in-repo) |
-| `resend` | `/resend-cli` (community PROJECT) |
-| `jq` | `/acli` (primary consumer of jq pipelines) |
-| `bun` | `/bun` (community USER) |
-| `bun xray` | `/xray-cli` (in-repo) |
+| CLI invoked                                   | Skill(s) to load BEFORE invoking                                                         |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `gh`                                          | `/git-flow-master` (in-repo, when command is git/PR-shaped)                              |
+| `acli`                                        | `/acli` (in-repo)                                                                        |
+| `playwright-cli`                              | `/playwright-cli` (community PROJECT) + `/playwright-best-practices` (community PROJECT) |
+| `bunx allure` (run/agent/generate/open/watch) | `/regression-testing` (in-repo) + `/test-automation` (in-repo)                           |
+| `resend`                                      | `/resend-cli` (community PROJECT)                                                        |
+| `jq`                                          | `/acli` (primary consumer of jq pipelines)                                               |
+| `bun`                                         | `/bun` (community USER)                                                                  |
+| `bun xray`                                    | `/xray-cli` (in-repo)                                                                    |
 
 **RULE**: Before any Bash call naming these binaries, check matching skill loaded. If not → load via Skill tool first. Hard gate, not suggestion.
 
@@ -350,10 +363,10 @@ Git / PR work → `/git-flow-master` auto-loads. Details in `.claude/skills/git-
 
 **Protected branches**:
 
-| Branch | Role |
-|---|---|
-| `main` | Production. PRs merged from `staging` or semantic branch after review. |
-| `staging` | Integration branch for AI commits + pre-release validation. |
+| Branch    | Role                                                                   |
+| --------- | ---------------------------------------------------------------------- |
+| `main`    | Production. PRs merged from `staging` or semantic branch after review. |
+| `staging` | Integration branch for AI commits + pre-release validation.            |
 
 **Critical commit rules**:
 
@@ -375,8 +388,8 @@ Engram MCP configured. Call `mem_save` IMMEDIATELY (no user prompt needed) after
 - **Non-obvious discovery, gotcha, or edge case** found.
 - **Session close** — MANDATORY `mem_session_summary` before saying "done" / "listo".
 
-Self-check after every task: *did I make decision, fix bug, learn something non-obvious, or establish convention? If yes → `mem_save` NOW.*
+Self-check after every task: _did I make decision, fix bug, learn something non-obvious, or establish convention? If yes → `mem_save` NOW._
 
 ---
 
-*AI persistent memory. Update when behaviors / skills / rules change.*
+_AI persistent memory. Update when behaviors / skills / rules change._

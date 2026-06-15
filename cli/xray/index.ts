@@ -73,6 +73,15 @@ ${colors.bold}TEST MANAGEMENT${colors.reset}
                      --action <text>    Step action (required)
                      --data <text>      Step test data
                      --result <text>    Expected result
+  test update-gherkin    Replace the Gherkin definition of an existing Cucumber test
+                     --test <id>        Test issue ID (required)
+                     --gherkin <feature> New Gherkin feature (required)
+  test update-definition Replace the unstructured definition of an existing Generic test
+                     --test <id>        Test issue ID (required)
+                     --definition <text> New definition (required)
+  test update-type   Change the type of an existing test (Manual/Generic/Cucumber)
+                     --test <id>        Test issue ID (required)
+                     --type <name>      New test type (required)
 
 ${colors.bold}TEST EXECUTIONS${colors.reset}
   exec create        Create a test execution
@@ -178,14 +187,20 @@ ${colors.bold}BACKUP & RESTORE${colors.reset}
   backup export      Export the full Xray footprint of a project (v2.0):
                      tests, preconditions, test plans, test sets, repository
                      folders, and (opt-in) executions + run statuses.
-                     --project <key>    Project key (required)
-                     --output <file>    Output file path
+                     --project <key>    Project key (required unless --all)
+                     --all              Export EVERY project on the site that has
+                                        Xray data into .backups/<KEY>-backup.json
+                                        (lists projects via Jira, 504-resilient)
+                     --output <file>    Output file path (single-project mode)
                      --include-runs     Include test executions + run statuses
                      --only-with-data   Only tests with Xray data (steps/gherkin/definition)
                      --limit <n>        Batch size for fetching (default: 100)
                      --tests-only       Legacy v1.0 shape: tests only
                      --no-preconditions / --no-plans / --no-sets / --no-folders
                                         Skip a specific entity type
+                     --no-coverage      Drop the coverableIssues subquery
+                                        (record-only; fixes CloudFront 504 on
+                                        projects with heavy requirement coverage)
 
   backup restore     Restore Xray data into a project. Order: preconditions ->
                      tests (+folder +precondition links) -> folders -> sets ->
@@ -201,6 +216,16 @@ ${colors.bold}BACKUP & RESTORE${colors.reset}
                      per site); a Jira migration preserves the KEY. Use --sync so
                      restore re-resolves ids by key. Re-run 'auth login' to switch
                      sites between export and restore (one site per session).
+
+  backup preflight   Compare a backup's captured source config with the live
+                     destination config and report what to create MANUALLY on the
+                     destination before import (test types, run statuses, test
+                     environments, defect types). Read-only — Xray has no
+                     config-write API. Run it while authed to the DESTINATION.
+                     --file <path>      Single backup file
+                     --dir <dir>        Directory of *-backup.json (default .backups/)
+                     --project <key>    Override destination project key
+                                        (default: each backup's own key)
 
 ${colors.bold}REPAIR${colors.reset}
   repair             Bulk Jira-layer ↔ Xray-layer reconciliation across a project.
@@ -313,9 +338,18 @@ async function main(): Promise<void> {
           case 'add-step':
             await test.addStep(flags);
             break;
+          case 'update-gherkin':
+            await test.updateGherkin(flags);
+            break;
+          case 'update-definition':
+            await test.updateDefinition(flags);
+            break;
+          case 'update-type':
+            await test.updateType(flags);
+            break;
           default:
             log.error(`Unknown test command: ${subcommand}`);
-            log.info('Available: create, get, list, add-step');
+            log.info('Available: create, get, list, add-step, update-gherkin, update-definition, update-type');
         }
         break;
 
@@ -459,9 +493,12 @@ async function main(): Promise<void> {
           case 'restore':
             await backup.restore(flags);
             break;
+          case 'preflight':
+            await backup.preflight(flags);
+            break;
           default:
             log.error(`Unknown backup command: ${subcommand}`);
-            log.info('Available: export, restore');
+            log.info('Available: export, restore, preflight');
         }
         break;
 

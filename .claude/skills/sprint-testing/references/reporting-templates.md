@@ -7,6 +7,7 @@ Stage 3 Reporting artifacts for in-sprint QA: ATR Test Report body, bug report t
 This reference is for manual, in-sprint reporting RIGHT NOW. It does NOT cover Stage 4 formal TMS documentation or ROI scoring (see `test-documentation`), Bug Analysis *planning* variant inside an ATP (see `acceptance-test-planning.md`), or automation review artifacts (see `test-automation`).
 
 > **Before publishing ATR / bug-report / QA comment bodies to Jira rich-text fields**, read `../../agentic-qa-core/references/jira-publishing-gotchas.md` — covers the two ADF conversion gotchas (`md-to-adf` mark collision + MCP batched custom-field rejection) that silently fail HTTP 400.
+> **And format for readability** per `../../acli/references/adf-authoring-style.md` — an ATR reads far better as a table (test case → status) with a `[!WARNING]` / `[!ERROR]` panel for blockers than as flat indented prose; steps-to-reproduce read best as an ordered list or table.
 
 ---
 
@@ -70,6 +71,15 @@ _RELATED STORIES_
 * Related: [{{PROJECT_KEY}}-XXX]
 * Blocks: [other issues]
 ```
+
+**Attach visual evidence** (screenshot of the failing UI, console capture, repro recording). `![](path)` does NOT embed in Jira — use the bundled helper, which uploads the file and posts it inline as a real image:
+
+```bash
+bun .claude/skills/acli/scripts/jira-attach-media.ts {{PROJECT_KEY}}-<bug> ./evidence/repro-step-3.png \
+  --caption "Step 3 — validation error not shown" --publish
+```
+
+One call per evidence file (the image is embedded as a comment on the bug). Full recipe + when-to-use in `../../acli/references/adf-authoring-style.md` §media. This is the high-value case: a reviewer sees the failing screen inline instead of clicking through to the Attachments panel.
 
 ### 1.4 Severity matrix
 
@@ -232,9 +242,20 @@ Before calling `[ISSUE_TRACKER_TOOL] Create issue`, present the full draft (titl
 
 ### 1.13 Post-creation
 
-1. Comment on the related story with a back-reference: `Bug found during exploratory testing: {BUG-KEY} - {title}`.
-2. Assign if user specifies, otherwise leave for triage.
-3. Update the ticket's PBI `context.md` with the new bug key.
+1. **Create the traceability link — Story `causes` Bug.** The `_RELATED STORIES_` prose in the description (§1.3) is human-readable documentation only; the operational edge is a real Jira issuelink. When the Bug is filed against a Story under test, create:
+
+   ```
+   [ISSUE_TRACKER_TOOL] Link Issues:
+     linkType: {{jira.link_types.problem_incident.name}}   # Story causes Bug
+     # Story is the outward party (causes); Bug is the inward party (is caused by)
+     story: {STORY_KEY}
+     bug:   {BUG-KEY}
+   ```
+
+   Resolve the `problem_incident` link type by slug only, create one edge, then run the mandatory direction check (confirm the Story's outward partner is the Bug under `causes`) — full mechanics in `agentic-qa-core/references/traceability-linking.md` (§2 slug resolution, §4 directionality + verification). Defer the `--out`/`--in` flag handling to `/acli` per `[ISSUE_TRACKER_TOOL]`.
+2. Comment on the related story with a back-reference: `Bug found during exploratory testing: {BUG-KEY} - {title}`.
+3. Assign if user specifies, otherwise leave for triage.
+4. Update the ticket's PBI `context.md` with the new bug key.
 
 ---
 
@@ -531,9 +552,20 @@ Record the gate outcome (hypothesis, cited fact, decision) in the ATR Observatio
 2. QA comment posted (Template A, B, C or D) via `[ISSUE_TRACKER_TOOL]`.
 3. Evidence screenshots surfaced to the user with absolute paths.
 4. Ticket transitioned — Story PASSED -> `{{jira.status.story.qa_approved}}` (via `{{jira.transition.story.qa_sign_off}}`); Bug VERIFIED -> `{{jira.status.bug.closed}}` (via `{{jira.transition.bug.retest_passed}}`); Story FAILED **(run the §5.0 recalibration gate first for any security/auth/framework-default FAIL — a recalibrated finding becomes GO-with-debt and takes the PASSED path, not a blocking transition)** with `{{FORMAL_BLOCKED_GATE}}=true` -> `{{jira.status.story.blocked}}` (via `{{jira.transition.story.defect_reported}}`); Story FAILED non-strict -> left in `{{jira.status.story.in_test}}` with linked bug; Bug NOT FIXED -> left in `{{jira.status.bug.ready_for_qa}}` pending dev. See `sprint-orchestration.md` Briefing 4 Step 5 for the full decision tree.
-5. PBI `context.md` updated with `Final Status` block.
-6. Commit the synced `acceptance-test-results.md` + `context.md` changes on branch `test/{JIRA_KEY}/{short-desc}`, message `test({JIRA_KEY}): add Stage 3 test report for {brief-title}`. Never push to `main` without user confirmation.
-7. For batch-sprint mode, only now is the `SPRINT-{N}-TESTING.md` framework file updated (Stage-3 gate).
+5. **Create the blocking traceability link — Story `is blocked by` Bug.** Whenever the `defect_reported` → `blocked` gate fires (`{{FORMAL_BLOCKED_GATE}}=true`), the status transition alone does not record the dependency; create the issuelink so the block gate and coverage consumers can walk it:
+
+   ```
+   [ISSUE_TRACKER_TOOL] Link Issues:
+     linkType: {{jira.link_types.blocks.name}}   # Bug blocks Story → Story is blocked by Bug
+     # The Bug is the outward party (blocks); the Story is the inward party (is blocked by)
+     bug:   {BUG-KEY}
+     story: {STORY_KEY}
+   ```
+
+   Resolve the `blocks` link type by slug only, create one edge, then run the mandatory direction check (confirm the Story's inward partner is the Bug under `is blocked by`) — full mechanics in `agentic-qa-core/references/traceability-linking.md` (§2 slug resolution, §4 directionality + verification, §6 never degrade a `blocks` edge to `relates` silently). Defer `--out`/`--in` flag handling to `/acli` per `[ISSUE_TRACKER_TOOL]`.
+6. PBI `context.md` updated with `Final Status` block.
+7. Commit the synced `acceptance-test-results.md` + `context.md` changes on branch `test/{JIRA_KEY}/{short-desc}`, message `test({JIRA_KEY}): add Stage 3 test report for {brief-title}`. Never push to `main` without user confirmation.
+8. For batch-sprint mode, only now is the `SPRINT-{N}-TESTING.md` framework file updated (Stage-3 gate).
 
 ### 5.2 Next stage routing
 

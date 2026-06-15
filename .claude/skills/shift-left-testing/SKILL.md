@@ -58,9 +58,36 @@ The reuse story is **deliberate**: ~70% of the refinement logic already lives in
 
 ---
 
+## Dependencies
+
+Requires `agentic-qa-core`. Loads on demand:
+
+- `agentic-qa-core/references/test-design-doctrine.md` — **MANDATORY before refining ACs or estimating outline coverage.** A refinement that does not surface risk-beyond-AC and 1:N coverage is incomplete.
+- `agentic-qa-core/references/briefing-template.md`, `./dispatch-patterns.md`, `./orchestration-doctrine.md`, `./session-management.md`, `./preflight-gate.md` — cited inline by the sections that use them.
+
+## Compact Rules
+
+**Test-design doctrine (binding — full canon: `agentic-qa-core/references/test-design-doctrine.md`):**
+
+- ACs are the FLOOR. Refinement's job is to push past the happy-path contract: surface the boundaries, exceptions, states, and anomalies the Story is silent on.
+- 1:N is the default: a non-trivial AC implies multiple outlines (valid partition + each distinct invalid + boundaries + states). A 1-outline AC requires a written "trivially atomic" justification — never the default.
+- Tag each refinement gap to a technique: ranges/limits → BVA; status/lifecycle fields → State-Transition; 2+ interacting conditions → Decision Table; 3+ combinable factors → Pairwise.
+- A refined AC (Given/When/Then) is the business assertion; the outline (`Should <behavior> <condition>`) is its exploration. Keep them distinct.
+
+**Shift-left operational rules:**
+
+- Stories ONLY (no bugs — nothing to refine upstream). Entry status Backlog / Shift-Left QA / Estimation / Ready For Dev.
+- Output = refined ACs + gap/ambiguity questions + ATP DRAFT (outline NAMES + coverage estimate, no test code, no execution).
+- The heart of the skill (Phase 2) = edge cases not in story + ambiguities + gaps — feed them to PO/Dev as questions AND as derived outlines.
+- On completion: add label `shift-left-reviewed`; transition Backlog → Shift-Left QA → Estimation.
+
+**Read full SKILL.md when**: running the batch grooming pipeline, writing the per-Story `shift-left-refinement.md`, or handling the PO/Dev handoff.
+
+---
+
 ## Subagent Dispatch Strategy
 
-> **Orchestration & Session contracts**: this skill follows `./orchestration-doctrine.md` (mandatory subagent dispatch — main thread is command center) AND `./session-management.md` (Phase 0 resume check, plan-first persistence at `.session/<skill-slug>/<scope>/`, archive on completion). Phase 0 (resume check) and Phase 1 (plan write) are NOT optional.
+> **Orchestration & Session contracts**: this skill follows `./orchestration-doctrine.md` (mandatory subagent dispatch — main thread is command center) AND `./session-management.md` (Phase 0 resume check, plan-first persistence at `.session/<skill-slug>/<scope>/`, archive on completion). Phase 0 (resume check) and Phase 1 (plan write) are NOT optional. The orchestrator also applies the per-stage **Definition-of-Done gates** in `./stage-gates.md`: verify a stage's DoD (planning stages include the Test-Design Checklist) BEFORE recording its progress checkpoint and advancing.
 
 This skill is **per-batch scope**: `<scope>` = `<YYYY-MM-DD>-<descriptor>` (e.g. `2026-05-20-payments-area`). Session state lives at `.session/shift-left-testing/<YYYY-MM-DD>-<descriptor>/{plan.md, progress.md}` per `agentic-qa-core/references/session-management.md` §3 + §9. The per-Story `shift-left-refinement.md` files stay under each Story's PBI folder (domain artifact, not session state).
 
@@ -124,6 +151,22 @@ Phase 3 — Handoff
          /sprint-testing reads label `shift-left-reviewed` and short-circuits
          Phases 1-3 to validation-only (sprint-testing/references/acceptance-test-planning.md §Phase 0).
 ```
+
+---
+
+## Readiness Preflight Gate (MANDATORY — runs before Phase 0)
+
+> Full doctrine: `agentic-qa-core/references/preflight-gate.md`. Runs FIRST, before the resume check. Two laws: (1) **args-as-answers** — treat anything the user already stated (the Story IDs, the modality, "groom the backlog") as provided args; ask only real gaps. (2) **probe, don't assume**. Surface gaps + REDs as ONE `AskUserQuestion` checklist; self-fix with approval + explanation; STOP on any blocking RED. This skill does NO live execution (no env/DB/API/browser), so its gate is light — it is mostly a tooling + context readiness check. **Generic baseline** (env resolution, test-user creds, secret/restart handling, the two laws, output contract) is inherited from the reference §3.1 — not repeated here. Below is only this skill's **specific capability delta**.
+
+| Capability | Need | Why here |
+|---|---|---|
+| Issue-tracker (`[ISSUE_TRACKER_TOOL]`) | REQUIRED | All refinement output lands on Jira (description, ATP DRAFT field, comment, labels, transitions). Load `/acli`; validate setup via `bun run jira:check`. |
+| TMS modality resolved | REQUIRED | Decides whether the ATP DRAFT is a Story field/comment (jira-native) or a Test Plan link (jira-xray). 4-step probe; ask only if all auto-checks fail. |
+| `/xray-cli` + `XRAY_*` creds | OPTIONAL | Only when the user opts into a Test Plan link per Story (default is NO Test Plan in shift-left). |
+| Business context files | REQUIRED | `.context/business/*` + `.context/master-test-plan.md` — refinement without them produces low-value questions. Missing → hand off to `/project-discovery`. |
+| Candidate Story list | REQUIRED | Explicit IDs (args) or a backlog JQL. Confirm size with the user before Phase 1. |
+
+Env reachability, test-user creds, DBHub, OpenAPI/`API_TOKEN`, Playwright and `resend` are **N/A** here — shift-left never executes against a running system. After the gate clears (all REQUIRED GREEN), continue to Phase 0 below.
 
 ---
 
@@ -267,7 +310,7 @@ For each refined Story, dispatch a Handoff subagent. Sequential, one Story at a 
        project: {{PROJECT_KEY}}
        title: "Test Plan (Shift-Left DRAFT): {{PROJECT_KEY}}-{n}"
      [ISSUE_TRACKER_TOOL] Link Issues:
-       linkType: "tests"
+       linkType: {{jira.link_types.test.name}}   # Story is tested by Test Plan (resolve by slug + verify direction per agentic-qa-core/references/traceability-linking.md §2/§4)
        outward: {ATP_KEY}
        inward:  {STORY_KEY}
      [ISSUE_TRACKER_TOOL] Update Issue:

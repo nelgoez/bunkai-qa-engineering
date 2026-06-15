@@ -72,3 +72,11 @@ docs/mcp/
 .playwright/
 !.playwright/cli.config.json
 .claude/worktrees/
+
+# ----- 2026-06-03 (sync) -----
+api/openapi*
+api/.openapi-config.json
+.playwright-mcp/
+
+# ----- 2026-06-08 (sync) -----
+.backups/

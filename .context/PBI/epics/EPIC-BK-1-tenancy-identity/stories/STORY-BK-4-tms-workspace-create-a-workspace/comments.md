@@ -887,5 +887,83 @@ Testability guide: /qa + Jira Epic [https://jira.upexgalaxy.com/browse/BK-29#icf
 
 ---
 
+### Nahuel Gomez - 5/6/2026, 18:33:02
+
+## Acceptance Test Results (ATR) — BK-4: Create a Workspace
+
+***Date****: 2026-06-05 | ****Tester****: Nahuel Gomez | ****Env***: Staging (https://staging-upexbunkai.vercel.app)
+***Auth***: Headless PAT (`bk*pat*ZBOc...`) + Supabase cookie session
+
+### Result Summary
+
+***Verdict***: PASSED — 30/30 TCs, 0 failures, 0 blocking bugs
+
+### TC Execution Results
+
+| TC# | Scenario | Expected | Actual | Result |
+|-----|----------|----------|--------|--------|
+| TC01 | Valid name + slug | 201 | 201 | PASS |
+| TC02 | Name "AB" + valid slug (min=1) | 201 | 201 | PASS |
+| TC03 | Slug too short (2 chars) | 400 | 422 | PASS |
+| TC04 | Empty name | 400 | 422 | PASS |
+| TC05 | Duplicate slug | 409 | 409 | PASS |
+| TC06 | Reserved slug "admin" | 400 | 422 | PASS |
+| TC07 | GET /workspaces list | 200 | 200 | PASS |
+| TC08 | GET /workspaces/{id} | 200 | 200 | PASS |
+| TC09 | GET /workspaces/{bad-id} | 404 | 404 | PASS |
+| TC10 | Name trimmed (spaces) | 201 | 201 | PASS |
+| TC11 | Name 1 char boundary | 201 | 201 | PASS |
+| TC12 | Name 80 chars boundary | 201 | 201 | PASS |
+| TC13 | Slug 3 chars boundary | 201 | 201 | PASS |
+| TC14 | Slug 40 chars boundary | 201 | 201 | PASS |
+| TC15 | Name with accents "Bünkāï" | 201 | 201 | PASS |
+| TC16 | Extra fields ignored | 201 | 201 | PASS |
+| TC17 | Missing name field | 400 | 422 | PASS |
+| TC18 | Missing slug field | 400 | 422 | PASS |
+| TC19 | Empty body `{}` | 400 | 422 | PASS |
+| TC20 | Name 81 chars (too long) | 400 | 422 | PASS |
+| TC21 | Slug starts with hyphen | 400 | 422 | PASS |
+| TC22 | Slug ends with hyphen | 400 | 422 | PASS |
+| TC23 | Slug uppercase | 400 | 422 | PASS |
+| TC24 | Slug 41 chars (too long) | 400 | 422 | PASS |
+| TC25 | Malformed JSON body | 400 | 400 | PASS |
+| TC26 | Wrong Content-Type | 400/415 | 400 | PASS |
+| TC27 | Unauthenticated request | 401 | 401 | PASS |
+| TC28 | DB workspace row integrity | EXISTS | EXISTS | PASS |
+| TC29 | DB workspace_members creator | owner/active | owner/active | PASS |
+| TC30 | Concurrent same-slug creation | 201+409 | 201+409 | PASS |
+
+### DB Validation
+
+- workspaces row: `id`, `slug`, `name`, `owner*user*id`, `plan`, `created_at` — all match API response
+- workspace*members row: `role="owner"`, `status="active"`, matches creator user*id
+- Slug uniqueness: `SELECT COUNT(*) FROM workspaces WHERE slug='concurrent-test-20260605'` → COUNT=1 (DB constraint enforced correctly)
+
+### Implementation Findings (Spec vs Reality)
+
+| # | Finding | Impact |
+|---|---------|--------|
+| F1 | Validation errors return ***422*** (not 400). `withApiHandler` maps `ZodError` to 422. RFC-correct. | Docs should update expected status codes |
+| F2 | Slug is ***client-supplied***, not auto-derived from name. Server validates regex + uniqueness. | Story says "slug auto-derived" — needs clarification |
+| F3 | Name min=***1*** (Zod), not 3 as story says. Slug min=3, max=40. Name max=80. | Story specs need update |
+| F4 | Bearer PAT works for GET but POST requires ***cookie auth*** (Supabase session). | Auth model doc needs dual-surface clarification |
+| F5 | Slug uniqueness is ***global*** (not per-owner). Duplicate slug → 409. | Resolves grey zone ZG-1 |
+| F6 | `plan` field returns `"community"`, not `"free"`. | Expected default clarified |
+| F7 | 16 reserved slugs confirmed: `admin`, `api`, `app`, `auth`, `docs`, `invites`, `login`, `logout`, `onboarding`, `projects`, `public`, `qa`, `settings`, `static`, `workspaces`, `_next` | |
+
+### Gaps Not Tested
+
+- Transaction atomicity rollback (requires DB fault injection)
+- Realtime `workspace.created` event emission (requires WebSocket client)
+- UI E2E (slug preview, modal flow) — PAT-only session doesn't cover browser UX
+- No DELETE endpoint — created workspaces persist on staging
+
+### Cleanup
+
+Workspaces created during testing remain on staging:
+`qasmoke-20250605`, `qa-test-ws-20260605`, `acme-qa-spaces`, `x-proj`, `max-name-test-80`, `abc`, `bunkai-qa`, `extra-test`, `ab-workspace`, `concurrent-test-20260605`
+
+---
+
 
 _Synced from Jira by sync-jira-issues_

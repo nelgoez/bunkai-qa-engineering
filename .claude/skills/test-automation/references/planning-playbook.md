@@ -252,6 +252,8 @@ The automation plan is the technical contract — what code to write, which comp
 
 ## 2. Architecture Decisions
 
+> **ADR promotion check.** The decisions in this section are **ticket-local** by default — they stay in this plan. If one is **architectural AND hard to reverse** (a fixture lifecycle reused across tickets, a test-data-isolation contract, a Page-Object-vs-Screenplay shift, an auth-in-tests change, a flake-retry policy), it is no longer ticket-local: promote it to a standalone `ADR-NNNN-<slug>.md` in `.context/ADR/` and leave a `See ADR-NNNN` backlink in the table below. Detection + procedure: `agentic-qa-core/references/adr-doctrine.md` §1–§2; template + lifecycle: `.context/ADR/README.md`. AI drafts `Proposed`; the human approves.
+
 ### Component Strategy
 | Decision | Value | Rationale |
 | Component | {Resource}Api.ts / {Page}Page.ts | New or existing? |
@@ -308,7 +310,8 @@ Teardown: ...
 - [ ] Update TMS status to "Automated"
 
 ## 7. Success Criteria
-- [ ] All ACs covered
+- [ ] All ACs covered — **the floor, not the bar.** Also: risk-beyond-AC covered (invalid/boundary inputs, auth/error paths, state transitions, anomalies the AC is silent on) per `agentic-qa-core/references/test-design-doctrine.md`
+- [ ] Boundary cases (BVA) automated wherever an AC has a range / limit / length / date-window (EP-merge does NOT cover off-by-one)
 - [ ] KATA compliance
 - [ ] Fixture correct
 - [ ] No hardcoded waits
@@ -393,8 +396,18 @@ async {methodName}({params}): {ReturnType} { /* ... */ }
 
 ## 5. Code Template              — copy-pasteable skeleton with placeholders
 
-## 6. Equivalence Partitioning check
+## 6. Technique-derivation check (decides the ATC set — 1:N per AC)
+> Full canon + triggers: `agentic-qa-core/references/test-design-doctrine.md`. EP-merge collapses inputs only WITHIN a partition — never across partitions, boundaries, or states.
+
+| AC | Technique fired | ATCs produced |
+|----|-----------------|---------------|
+| (per AC) | EP (always) / BVA (range·limit·length·date) / State-Transition (status field) / Decision Table (2+ interacting conditions) / Pairwise (3+ factors) | … |
+
+**Equivalence Partitioning detail:**
 | Input | Expected output | Same ATC? |
+
+**Boundary Value Analysis detail** (mandatory if any range/limit exists — else state N/A):
+| Field + range | Boundary ATCs (`min-1·min·min+1 … max-1·max·max+1`, zero/empty/null) |
 
 ## 7. Dependencies
 - Precondition Steps

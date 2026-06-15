@@ -2,7 +2,10 @@
 # KATA Architecture - .gitignore
 # ====================================
 
-# Dependencies
+# Local artifacts (screenshots, cookies, crash dumps)
+*.stackdump
+cookies*.txt
+/bk98-login-smoke.png
 node_modules/
 
 # ===== Playwright Test Artifacts =====

@@ -158,6 +158,24 @@ required:
     description: Per-Test issue execution status (Jira-native TMS).
     used_by: [test-documentation]
 
+link_types:
+  required:
+    test:
+      name: Test
+      outward: tests
+      inward: is tested by
+      description: Links a Test issue to the Story/Epic it validates
+    blocks:
+      name: Blocks
+      outward: blocks
+      inward: is blocked by
+      description: Marks a blocking dependency between issues
+    problem_incident:
+      name: Problem/Incident
+      outward: causes
+      inward: is caused by
+      description: Links a Bug/defect to the Story it impacts
+
 optional:
   # Fields that enhance the workflow but won't break it if missing.
   to_be_automated:

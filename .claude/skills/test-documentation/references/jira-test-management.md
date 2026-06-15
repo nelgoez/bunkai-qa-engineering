@@ -201,7 +201,7 @@ Rules:
 
 ## 7. Description template (full TC documentation)
 
-The Description is load-bearing in Jira Native mode and still recommended in Xray mode (Xray's structured Steps field is minimal). Paste this after the Test is created with `[ISSUE_TRACKER_TOOL] Update Issue`.
+The Description is load-bearing in Jira Native mode and still recommended in Xray mode (Xray's structured Steps field is minimal). Paste this after the Test is created with `[ISSUE_TRACKER_TOOL] Update Issue`. **Format per `../../acli/references/adf-authoring-style.md`**: prefer a table for the step → expected grid (more scannable than bullet lists), nested lists for multi-level preconditions, and a panel for a critical assumption — richness with purpose, not decoration.
 
 ```
 ## Related Story
@@ -297,7 +297,7 @@ Notes:
 [ISSUE_TRACKER_TOOL] Link Issues:
   from: {TEST_KEY}
   to:   {STORY_KEY}
-  linkType: "is tested by"
+  linkType: {{jira.link_types.test.name}}   # Story is tested by Test
 
 [ISSUE_TRACKER_TOOL] Update Issue:
   issue: {TEST_KEY}
@@ -309,6 +309,8 @@ Notes:
   # later: ready to run
   # later: for manual OR automation review -> approve to automate
 ```
+
+> Resolve the `test` link type by slug only and verify direction after creation — see `agentic-qa-core/references/traceability-linking.md` (§2 slug resolution, §4 directionality + mandatory verification).
 
 ### Jira + Xray (Cucumber)
 
@@ -329,17 +331,35 @@ Notes:
 [ISSUE_TRACKER_TOOL] Link Issues:
   from: {TEST_KEY}
   to:   {STORY_KEY}
-  linkType: "is tested by"
+  linkType: {{jira.link_types.test.name}}   # Story is tested by Test
 
-[ISSUE_TRACKER_TOOL] Link Issues:
-  from: {TEST_KEY}
-  to:   {TEST_SET_KEY}
-  linkType: "is part of test set"   # if using Test Sets
+# Test ↔ Test Set membership is NOT a Jira issuelink — do NOT create it via
+# [ISSUE_TRACKER_TOOL] link create. It is Xray-internal state managed via the
+# /xray-cli skill (add-to-set). See traceability-linking.md §9.
+[TMS_TOOL] Add Test to Test Set:   # /xray-cli only — Xray-internal, NOT a Jira link
+  test:    {TEST_KEY}
+  testSet: {TEST_SET_KEY}
 
 [ISSUE_TRACKER_TOOL] Transition Issue:
   issue: {TEST_KEY}
   transition: start design
 ```
+
+> Resolve the `test` link type by slug only and verify direction after creation — see `agentic-qa-core/references/traceability-linking.md` (§2 slug resolution, §4 directionality, §9 Test Set caveat: membership goes through `/xray-cli`, never `acli link create`).
+
+### Stage-4 promote + enrich — tool resolution map (Modality jira-xray)
+
+When `/test-documentation` Stage 4 promotes a sprint Xray Test into regression, resolve each operation to its tool via pseudocode — load `/xray-cli` for the exact command (HOW lives there, never here). The `[TMS_TOOL]` operations below were verified to exist before this map was written:
+
+| Promote / enrich op | Resolves via | Coverage |
+|---|---|---|
+| Add Test → feature **Test Set** | `[TMS_TOOL]` (Xray-internal membership) | ✓ supported |
+| Add Test → **Regression Test Plan** | `[TMS_TOOL]` | ✓ supported |
+| Label `regression-candidate` on an **existing** Test | `[ISSUE_TRACKER_TOOL]` (labels are a Jira field) | ✓ (no `[TMS_TOOL]` update-label for an existing Test; route via the issue tracker) |
+| Enrich **Manual** Test steps | `[TMS_TOOL]` | ✓ supported |
+| Enrich **Gherkin** / definition / change **test type** on an existing Test | `[TMS_TOOL]` | ✓ supported (update-gherkin / update-definition / update-type) |
+
+**Implication for our flow**: every Stage-4 promote + enrich op now resolves through a tool — `[TMS_TOOL]` for Test Set / Test Plan membership, step + Gherkin/definition/type enrichment; `[ISSUE_TRACKER_TOOL]` for labels on an existing Test. You may either author rich Gherkin at creation time or enrich an existing sprint Test in place during promotion — both paths are supported. Load `/xray-cli` for the exact command.
 
 ### Jira + Xray (Manual)
 

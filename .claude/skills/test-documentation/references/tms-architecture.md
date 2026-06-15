@@ -276,9 +276,10 @@ A User Story is fully documented when:
 1. ATP exists, is linked, and is marked Complete.
 2. ATR exists, is linked, and is marked Complete.
 3. Every TC has a Test Status (`PASSED`, `FAILED`, or `NOT RUN`).
-4. Every AC is covered by at least one TC.
-5. ATP and ATR are bidirectionally linked.
-6. Every TC links to US, ATP, and ATR.
+4. Every AC has either at least one **documented** TC OR an explicit Deferred note in the prioritization report. The documented TC set is intentionally sparse — only the regression-worthy scenarios (Candidate + Manual) are persisted; the wide 1:N derivation happened upstream (in `/sprint-testing` planning + exploration) and most of it is correctly Deferred (no TMS TC). Do NOT inflate documentation to "N TCs per AC" — that is a design/execution concern, not a documentation one.
+5. Where a regression-worthy scenario IS persisted, its TC is technique-shaped: a documented boundary TC uses BVA values, a documented state TC covers the transition, etc. (`agentic-qa-core/references/test-design-doctrine.md`). Technique governs the SHAPE of what you document, not how MUCH you document.
+6. ATP and ATR are bidirectionally linked.
+7. Every TC links to US, ATP, and ATR.
 
 Any failing criterion -> the story is not ready to close QA.
 
@@ -373,7 +374,7 @@ Exact instructions:
      c. [ISSUE_TRACKER_TOOL] Update Issue: issue=<TEST_KEY>, description={full Description template per jira-test-management.md §7}.
      d. [TMS_TOOL] AddTests: testPlan=<ATP_KEY>, tests=[<TEST_KEY>].
      e. [TMS_TOOL] AddTests: execution=<ATR_KEY>, tests=[<TEST_KEY>].
-     f. [ISSUE_TRACKER_TOOL] Link Issues: linkType="is tested by", outward=<TEST_KEY>, inward=<STORY_KEY>.
+     f. [ISSUE_TRACKER_TOOL] Link Issues: linkType={{jira.link_types.test.name}}, outward=<TEST_KEY>, inward=<STORY_KEY>.   # Story is tested by Test (resolve by slug + verify direction per agentic-qa-core/references/traceability-linking.md §2/§4)
   2. Apply labels per the methodology naming convention (see `tms-conventions.md` §Labels).
 
 Report format:
@@ -420,7 +421,7 @@ Exact instructions:
      a. [ISSUE_TRACKER_TOOL] Create Issue: project=<PROJECT_KEY>, issueType=Test, summary="{per TC naming convention}", priority={Critical|High|Medium|Low}, labels=[regression, ...], epic=<REGRESSION_EPIC_KEY>.
      b. Capture the returned issue key as <TEST_KEY>.
      c. [ISSUE_TRACKER_TOOL] Update Issue: issue=<TEST_KEY>, description={full Description template per jira-test-management.md §7}, fields={ {{jira.test_status}}: Draft, {{jira.to_be_automated}}: <bool> }.
-     d. [ISSUE_TRACKER_TOOL] Link Issues: linkType="is tested by", outward=<TEST_KEY>, inward=<STORY_KEY>.
+     d. [ISSUE_TRACKER_TOOL] Link Issues: linkType={{jira.link_types.test.name}}, outward=<TEST_KEY>, inward=<STORY_KEY>.   # Story is tested by Test
   2. Do NOT recreate ATP/ATR custom fields on the Story — those were already populated by the orchestrator before dispatch.
 
 Report format:
@@ -473,12 +474,12 @@ For N <= 10 TCs, classify inline — the dispatch overhead is not justified. The
   environment: {from session context}
 
 [ISSUE_TRACKER_TOOL] Link Issues:
-  linkType: "tests"
+  linkType: {{jira.link_types.test.name}}   # Story is tested by Test Plan
   outward: {ATP_KEY}
   inward:  {STORY_KEY}
 
 [ISSUE_TRACKER_TOOL] Link Issues:
-  linkType: "is tested by"
+  linkType: {{jira.link_types.test.name}}   # Story is tested by Test Execution
   outward: {ATR_KEY}
   inward:  {STORY_KEY}
 
@@ -537,7 +538,7 @@ For N <= 10 TCs, classify inline — the dispatch overhead is not justified. The
     Test Status: Draft
 
 [ISSUE_TRACKER_TOOL] Link Issues:
-  linkType: "is tested by"
+  linkType: {{jira.link_types.test.name}}   # Story is tested by Test
   outward: {TEST_KEY}
   inward:  {STORY_KEY}
 ```

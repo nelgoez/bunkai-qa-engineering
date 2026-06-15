@@ -20,11 +20,15 @@ This skill does NOT orchestrate workflows, does NOT generate files, and does NOT
 
 | File | Cited by | Purpose |
 |------|----------|---------|
+| `references/test-design-doctrine.md` | `shift-left-testing`, `sprint-testing`, `test-documentation`, `test-automation` | **Canonical doctrine for deriving test cases / ATCs from acceptance criteria**: the 5 principles (AC-verify ≠ testing; AC = floor not ceiling; criterion-vs-test-case; 1:N explode-default/justify-collapse; risk-outside-criterion), the redefined coverage model, and the formal techniques (EP, BVA, State-Transition, Decision Tables, Pairwise, Error Guessing, Risk-based) with binding triggers + the Test-Design Checklist gate. |
 | `references/briefing-template.md` | `shift-left-testing`, `sprint-testing`, `test-documentation`, `test-automation`, `regression-testing`, `project-discovery` | The 7-component subagent briefing template, with concrete filled examples per dispatch pattern. |
 | `references/dispatch-patterns.md` | All workflow skills with a "Subagent Dispatch Strategy" section | Decision table + heuristic for picking Single / Sequential / Parallel / Background. |
+| `references/stage-gates.md` | All workflow skills (`shift-left-testing`, `sprint-testing`, `test-documentation`, `test-automation`, `regression-testing`) | Definition-of-Done checklist per workflow stage. The orchestrator verifies each stage's DoD (planning stages include the Test-Design Checklist) before appending the progress checkpoint and advancing — turns the prose doctrine into an enforced gate. |
 | `references/orchestration-doctrine.md` | Subagents that need orchestration rules without pulling the whole `CLAUDE.md` | Cacheable mirror of `CLAUDE.md` §"Orchestration Mode (Subagent Strategy)". |
 | `references/skill-composition-strategy.md` | `framework-development`, every workflow skill | T1-T4 tier model + SDD boundary + composition contract. |
 | `references/skill-resolver.md` | Skills that resolve composable skills at runtime via the registry | Skill Resolver Protocol used by sub-agent launches. Companion: `scripts/build-skill-registry.ts` → `.claude/skills/REGISTRY.md`. |
+| `references/preflight-gate.md` | `shift-left-testing`, `sprint-testing`, `test-documentation`, `test-automation`, `regression-testing`, `framework-development` | Readiness Preflight Gate doctrine — probe tools/MCPs/CLIs/credentials and surface a user checklist BEFORE a skill starts its real work. Owns the secret/token handling + OpenAPI `api-login` → RESTART flow. |
+| `references/adr-doctrine.md` | `project-discovery`, `framework-development`, `sprint-testing`, `test-automation` | When a test-architecture decision earns an ADR (two-gate test: architectural AND hard-to-reverse) + the detect → draft → record procedure. Test architecture = runner/framework choice, Page-Object vs Screenplay, fixture/data strategy, isolation & parallelization, auth-in-tests, selector contract, exploratory-vs-scripted boundary, reporting/CI sharding, flake-retry policy. |
 
 When a skill cites one of these, it includes a Dependencies block at the top so the AI knows to load `agentic-qa-core` before continuing.
 
