@@ -482,5 +482,77 @@ Full ATR in the Acceptance Test Results field. Everything else (validation codes
 
 ---
 
+### Nahuel Gomez - 15/6/2026, 18:08:42
+
+## Acceptance Test Results (ATR)
+
+BK-8 TEST RESULTS
+
+Tested: 2026-06-15
+
+Environment: Staging
+
+Tester: nahuelgomez.cti@gmail.com
+
+Result: PASSED (All tests passing)
+
+SUMMARY
+
+BK-8 Create Project — retest after fixes for 3 defects
+
+All 3 bugs verified as FIXED. Full regression PASSED.
+
+RETEST RESULTS
+
+| Bug | Description | Verdict |
+| --- | --- | --- |
+| BK-51 | Reserved project slugs not rejected | VERIFIED — 422 slug_reserved |
+| BK-52 | Project detail not workspace-scoped | VERIFIED — workspace-scoped |
+| BK-53 | Non-Latin names rejected | VERIFIED — 201 with fallback slug |
+
+REGRESSION
+
+Full ATP suite: PASSED (AC-1 through AC-11)
+
+BUGS VERIFIED
+
+BK-51 — Major — VERIFIED
+
+BK-52 — Major — VERIFIED
+
+BK-53 — Minor — VERIFIED
+
+OBSERVATIONS
+
+All 3 fixes confirmed in staging. No regression found.
+
+PR #36 (merged) addressed all 3 defects.
+
+RECOMMENDATIONS
+
+Close bugs. Move BK-8 to QA Approved.
+
+---
+
+### Nahuel Gomez - 15/6/2026, 18:08:48
+
+QA Testing Complete — BK-8
+
+Environment: Staging
+
+Result: PASSED (All TCs passing)
+
+RETEST VERIFICATION:
+
+- BK-51: Reserved slugs rejected (422 slug_reserved) — VERIFIED
+- BK-52: Workspace-scoped project detail — VERIFIED
+- BK-53: Non-Latin names accepted (201 with fallback slug) — VERIFIED
+
+REGRESSION: Full suite PASSED (AC-1 through AC-11)
+
+All 3 bugs verified as FIXED. Ready for QA Approved.
+
+---
+
 
 _Synced from Jira by sync-jira-issues_

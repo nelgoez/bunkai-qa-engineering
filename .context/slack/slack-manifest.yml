@@ -1,0 +1,25 @@
+display_information:
+  name: Bunkai QA MCP
+  description: AI agent Slack integration for QA engineering
+  background_color: "#4A154B"
+oauth_config:
+  scopes:
+    user:
+      - channels:history
+      - channels:read
+      - chat:write
+      - files:read
+      - groups:history
+      - groups:read
+      - im:history
+      - im:read
+      - mpim:history
+      - mpim:read
+      - reactions:write
+      - search:read
+      - users:read
+      - users:read.email
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

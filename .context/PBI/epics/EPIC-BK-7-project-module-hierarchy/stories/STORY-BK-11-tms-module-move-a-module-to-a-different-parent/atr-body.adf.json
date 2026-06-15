@@ -1,0 +1,474 @@
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "BK-11 TEST RESULTS\nTested"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " 2026-06-15\nEnvironment"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Staging (https"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": "//staging-upexbunkai.vercel.app)\nTester"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Nahuel Gomez (qa-headless"
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "bunkai.io)\nResult"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " PASSED (14/18)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "SUMMARY\n  Completed full ATP execution for BK-11 (TMS-Module | Move a module to a different parent).\n  14 of 18 outlines passed. 0 failures, 1 blocked (TC-12"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " no viewer user), 3 observations.\n  Core ACs (1-5) all verified. Cycle detection, depth enforcement, and subtree carry work correctly."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "TEST CASES\n  TC-01"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Move leaf module under another ... PASSED\n  TC-02"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Move parent with subtree ... PASSED\n  TC-03"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Descendant breadcrumbs after ancestor move ... PASSED\n  TC-04"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Move onto descendant (cycle) ... PASSED\n  TC-05"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Self-move (cycle) ... PASSED\n  TC-06"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Depth exceeded (>6) ... PASSED\n  TC-07"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Depth boundary (=6) ... PASSED\n  TC-08"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Move nested to root ... PASSED\n  TC-09"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " No-op (same parent) ... PASSED\n  TC-10"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Archived source module ... PASSED\n  TC-11"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Unauthenticated caller ... PASSED\n  TC-12"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Viewer 403 ... BLOCKED\n  TC-13"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Non-existent UUID ... PASSED\n  TC-14"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Cross-project move ... PASSED\n  TC-15"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Duplicate slug at destination ... PASSED\n  TC-16"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Invalid UUID format ... OBSERVATION\n  TC-17"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Concurrent move ... OBSERVATION\n  TC-18"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Root module no-op ... PASSED"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "TEST DATA\n  Module"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Payment (root) - moved under Checkout\n  Module"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Refunds (sub-module) - subtree carry verified\n  Module"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " ModuleA/B/C/D - 4-level descendant path rebase verified\n  Module"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " L1-L6 - depth boundary verified\n  Target"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Checkout, Target, X (various targets for different TCs)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "BUGS FOUND\n  None"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "OBSERVATIONS"
+        }
+      ]
+    },
+    {
+      "type": "orderedList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "TC-16"
+                },
+                {
+                  "type": "text",
+                  "text": ":"
+                },
+                {
+                  "type": "text",
+                  "text": " Invalid UUID returns 422 validation"
+                },
+                {
+                  "type": "text",
+                  "text": "_"
+                },
+                {
+                  "type": "text",
+                  "text": "failed instead of 400 bad"
+                },
+                {
+                  "type": "text",
+                  "text": "_"
+                },
+                {
+                  "type": "text",
+                  "text": "request (Zod validation behaviors) — minor spec discrepancy"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "TC-17"
+                },
+                {
+                  "type": "text",
+                  "text": ":"
+                },
+                {
+                  "type": "text",
+                  "text": " Concurrent move — basic test done, both concurrent requests complete. P2, not fully provable without race-condition harness"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Modules table lacks "
+                },
+                {
+                  "type": "text",
+                  "text": "updated_at",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " column — cannot verify \"zero DB writes\" via timestamp for TC-09 no-op. Verified by path unchanged instead."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "RECOMMENDATIONS"
+        }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Add "
+                },
+                {
+                  "type": "text",
+                  "text": "updated_at",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " column to modules table for future no-op/idempotency verification"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Provision a viewer-role test user for auth/permission regression coverage"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Consider adding "
+                },
+                {
+                  "type": "text",
+                  "text": "GET /api/v1/modules/{id}",
+                  "marks": [
+                    {
+                      "type": "code"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "text": " endpoint for direct state verification after PATCH"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

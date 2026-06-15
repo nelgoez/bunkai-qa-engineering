@@ -1,0 +1,117 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: 分
+          - generic [ref=e7]: Bunkai
+        - link "New project" [ref=e8] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e9]
+      - button "Q2 QASmoke-20250605" [ref=e11] [cursor=pointer]:
+        - generic [ref=e12]:
+          - generic [ref=e13]: Q2
+          - generic [ref=e14]: QASmoke-20250605
+        - img [ref=e15]
+      - button "Search or jump to… ⌘ K" [ref=e18] [cursor=pointer]:
+        - generic [ref=e19]:
+          - img [ref=e20]
+          - text: Search or jump to…
+        - generic [ref=e23]:
+          - generic [ref=e24]: ⌘
+          - generic [ref=e25]: K
+      - navigation [ref=e26]:
+        - generic "Coming soon" [ref=e27]:
+          - generic [ref=e28]
+          - generic [ref=e32]: soon
+        - link "Projects 9" [ref=e33] [cursor=pointer]:
+          - /url: /projects
+          - generic [ref=e34]
+          - generic [ref=e37]: "9"
+        - generic "Coming soon" [ref=e38]:
+          - generic [ref=e39]
+          - generic [ref=e42]: soon
+        - generic "Coming soon" [ref=e43]:
+          - generic [ref=e44]
+          - generic [ref=e47]: soon
+        - generic "Coming soon" [ref=e48]:
+          - generic [ref=e49]
+          - generic [ref=e59]: soon
+        - generic "Coming soon" [ref=e60]:
+          - generic [ref=e61]
+          - generic [ref=e64]: soon
+        - generic "Coming soon" [ref=e65]:
+          - generic [ref=e66]
+          - generic [ref=e70]: soon
+      - generic [ref=e72]: Pinned projects
+      - generic [ref=e73]:
+        - link "BK11 BK-11 Module Move Test" [ref=e74] [cursor=pointer]:
+          - /url: /projects/bk-11-module-move-test
+          - generic [ref=e75]: BK11
+          - generic [ref=e76]: BK-11 Module Move Test
+        - link "PROJ проект" [ref=e77] [cursor=pointer]:
+          - /url: /projects/project-6b955fb3
+          - generic [ref=e78]: PROJ
+          - generic [ref=e79]: проект
+        - link "PROJ プロジェクト" [ref=e80] [cursor=pointer]:
+          - /url: /projects/project-c91cfa2b
+          - generic [ref=e81]: PROJ
+          - generic [ref=e82]: プロジェクト
+        - link "SCOP Scoping Test Project" [ref=e83] [cursor=pointer]:
+          - /url: /projects/scoping-test-project
+          - generic [ref=e84]: SCOP
+          - generic [ref=e85]: Scoping Test Project
+        - link "PROJ 测试项目" [ref=e86] [cursor=pointer]:
+          - /url: /projects/project-309d13f6
+          - generic [ref=e87]: PROJ
+          - generic [ref=e88]: 测试项目
+        - link "REGR Regression Test Alpha" [ref=e89] [cursor=pointer]:
+          - /url: /projects/regression-test-alpha
+          - generic [ref=e90]: REGR
+          - generic [ref=e91]: Regression Test Alpha
+        - link "CREM Crème Brûlée" [ref=e92] [cursor=pointer]:
+          - /url: /projects/creme-brulee
+          - generic [ref=e93]: CREM
+          - generic [ref=e94]: Crème Brûlée
+        - link "DESC Desc Test 5120" [ref=e95] [cursor=pointer]:
+          - /url: /projects/desc-test-5120
+          - generic [ref=e96]: DESC
+          - generic [ref=e97]: Desc Test 5120
+        - link "TEST Test 🚀 Project" [ref=e98] [cursor=pointer]:
+          - /url: /projects/test-project
+          - generic [ref=e99]: TEST
+          - generic [ref=e100]: Test 🚀 Project
+      - button "Q qa-headless@bunkai.io Signed in" [ref=e103] [cursor=pointer]:
+        - generic [ref=e104]: Q
+        - generic [ref=e105]:
+          - generic [ref=e106]: qa-headless@bunkai.io
+          - generic [ref=e107]: Signed in
+        - img [ref=e108]
+    - generic [ref=e113]:
+      - generic [ref=e114]:
+        - generic [ref=e116]:
+          - generic [ref=e117]: QASmoke-20250605
+          - generic [ref=e118]: /
+          - generic [ref=e119]: Scoping Test Project
+          - generic [ref=e120]: /
+          - generic [ref=e121]: All ATCs
+        - tablist "Project view" [ref=e123]:
+          - tab "Tree" [selected] [ref=e124] [cursor=pointer]
+          - tab "Table" [ref=e128] [cursor=pointer]
+          - tab "Mind map" [ref=e131] [cursor=pointer]
+        - generic [ref=e137]:
+          - button "Search… ⌘ K" [ref=e138] [cursor=pointer]
+          - link "New ATC" [ref=e145] [cursor=pointer]:
+            - /url: /projects/scoping-test-project/atcs/new
+          - link "New Test" [ref=e147] [cursor=pointer]:
+            - /url: /projects/scoping-test-project/tests/new
+      - generic [ref=e149]:
+        - generic [ref=e150]:
+          - generic [ref=e151]
+          - complementary [ref=e159]
+          - generic [ref=e171]
+        - separator "Drag to resize" [ref=e180]
+        - main [ref=e181]:
+          - generic [ref=e183]: Select an ATC from the explorer to preview it here.
+  - region "Notifications alt+T"
+  - alert [ref=e184]
