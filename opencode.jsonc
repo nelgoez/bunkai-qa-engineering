@@ -84,8 +84,16 @@
       "environment": {
         "JIRA_URL": "{env:ATLASSIAN_URL}",
         "JIRA_USERNAME": "{env:ATLASSIAN_EMAIL}",
-        "JIRA_API_TOKEN": "{env:ATLASSIAN_API_TOKEN}",
+        "JIRA_API_TOKEN": "{env:ATLASSIAN_API_TOKEN}"
       },
+    },
+    "slack": {
+      "type": "remote",
+      "url": "https://mcp.slack.com/mcp",
+      "enabled": true,
+      "oauth": {},
+    },
+  },
     },
   },
 

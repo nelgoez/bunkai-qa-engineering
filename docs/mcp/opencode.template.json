@@ -68,6 +68,12 @@
       "headers": {
         "Authorization": "Bearer {env:POSTMAN_API_KEY}"
       }
+    },
+    "slack": {
+      "type": "remote",
+      "url": "https://mcp.slack.com/mcp",
+      "enabled": true,
+      "oauth": {}
     }
   }
 }
