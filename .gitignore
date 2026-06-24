@@ -146,3 +146,9 @@ nul
 # ----- 2026-06-02 (sync) -----
 **/evidence/
 nul
+
+# ===== Playwright MCP / Browser snapshots =====
+*.snapshot.md
+
+# ===== Skill reference temp files =====
+.claude/skills/*/references/tmp/

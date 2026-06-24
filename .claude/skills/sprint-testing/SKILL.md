@@ -235,7 +235,8 @@ Every invocation starts by initializing the session, even in batch mode. Session
    - On hard failure: **STOP and surface to the user before Stage 1.** Do NOT dispatch the Session Start subagent and do NOT author an ATP against a dead env — that is the single highest-cost waste in a run. Offer the user a session env override (see Gotcha 15) if they have a working alternate URL.
    - **Inbox receive-check** (only when the ticket is email / magic-link / auth-token dependent — inferred from the invocation, ticket type, labels, or title): confirm the configured mailbox/provider can actually *receive*, not just send. A send-only provider (e.g. a domain configured for outbound only) cannot complete a magic-link flow. If it cannot receive, STOP and surface before Stage 1.
    - This is a *reachability* gate (is the env even up? can we get the email?), distinct from the Stage 2 smoke test (does the *feature* work?). Both run; they answer different questions — keep anti-pattern S7 and the smoke pass as-is.
-1. Fetches the ticket via `bun run jira:sync-issues get <KEY> --include-comments` (title, ACs, priority, comments), then reads the synced `.md` files under the STORY folder. NEVER `acli workitem view` for custom fields.
+1. Assigns the issue to yourself (the QA engineer) via `[ISSUE_TRACKER_TOOL]` if unassigned — a ticket left unassigned invites confusion mid-sprint.
+1.1. Fetches the ticket via `bun run jira:sync-issues get <KEY> --include-comments` (title, ACs, priority, comments), then reads the synced `.md` files under the STORY folder. NEVER `acli workitem view` for custom fields.
 2. Extracts Team Discussion from the synced `comments.md` (decisions, tech notes, edge cases, blockers). Non-blocking.
 3. Loads the project-wide context files: `.context/business/business-data-map.md`, `.context/business/business-feature-map.md`, `.context/business/business-api-map.md`, `.context/master-test-plan.md`.
 4. Loads or creates `module-context.md` (3-level hierarchy: project -> module -> ticket).
@@ -309,6 +310,7 @@ Run the same 4 dispatches; the Stage 1 briefing additionally applies the veto + 
 13. **Environment + inbox preflight before ATP**: Session Start §0.6 probes `{{WEB_URL}}` / `{{API_URL}}` for reachability (and, for email/auth-dependent stories, that the inbox can *receive*) BEFORE any ATP/Jira write. A dead env or send-only inbox is caught here with a STOP, not at Stage 2 after the ATP is already authored. Reachability gate ≠ Stage 2 smoke — see S7.
 14. **Severity recalibration before blocking a Story**: a Story TC FAIL is NOT automatically a blocking defect. When the failing TC is security/auth/framework-default class (cookie flags, CSP/HSTS headers, SDK-by-design behavior), run the recalibration gate (`references/reporting-templates.md` §5.0) BEFORE firing `{{jira.transition.story.defect_reported}}`/blocked: state the framework-default/mitigation hypothesis, cite one verification fact, surface to the user. A recalibrated finding becomes GO-with-debt (`PASSED WITH ISSUES`), not a blocker. Mechanical path stays the default for ordinary functional FAILs. **Once the gate confirms a real blocking defect and the `defect_reported` → `blocked` transition fires, also create the Story `is blocked by` Bug issuelink** via `{{jira.link_types.blocks.name}}` (the Bug `blocks` the Story) — methodology step in `references/reporting-templates.md` §5.1, mechanics in `agentic-qa-core/references/traceability-linking.md` (§2/§4/§6). The status transition alone does not record the dependency edge.
 15. **Session env override**: to test against an ad-hoc URL not in `.agents/project.yaml` (broken staging, ephemeral preview deploy, hotfix branch URL), record it ONCE in `test-session-memory.md` §Environment as `WEB_URL_OVERRIDE` / `API_URL_OVERRIDE`. When set, it beats the `project.yaml` active-env value for every stage and is read automatically by all four dispatches — never re-thread it per briefing, and never write it to `project.yaml` (session-only). Distinct from `active_env` switching, which picks a *named* env from `project.yaml`.
+16. **Assign issue to yourself before working**: Before Session Start dispatch, assign the Jira issue to yourself (the QA engineer) via `[ISSUE_TRACKER_TOOL]` so the ticket shows who owns it. A ticket left unassigned invites confusion mid-sprint. Skip if already assigned to you.
 
 ---
 
@@ -385,6 +387,7 @@ All references are self-contained. Load one at a time.
 
 - [ ] Phase 0 — Session resume check ran (read `.session/sprint-testing/<scope>/progress.md`); user chose resume / restart / abort if prior state existed
 - [ ] Mode picked (single-ticket / bug / batch)
+- [ ] Issue assigned to yourself before Session Start (skip if already you)
 - [ ] Session Start complete, user confirmed the story explanation
 - [ ] `.session/sprint-testing/<scope>/plan.md` written (per `session-management.md` §6 schema)
 - [ ] Project-wide context files present (if missing, hand off to `project-discovery`)
