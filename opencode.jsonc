@@ -26,7 +26,7 @@
     "context7": {
       "type": "local",
       "command": ["npx", "-y", "@upstash/context7-mcp"],
-      "enabled": true,
+      "enabled": true
     },
     "tavily": {
       "type": "local",
@@ -34,9 +34,9 @@
         "npx",
         "-y",
         "mcp-remote",
-        "https://mcp.tavily.com/mcp/?tavilyApiKey={env:TAVILY_API_KEY}",
+        "https://mcp.tavily.com/mcp/?tavilyApiKey={env:TAVILY_API_KEY}"
       ],
-      "enabled": true,
+      "enabled": true
     },
     "playwright": {
       "type": "local",
@@ -50,14 +50,14 @@
         "--timeout-navigation",
         "30000",
         "--viewport-size",
-        "1920x1080",
+        "1920x1080"
       ],
-      "enabled": true,
+      "enabled": true
     },
     "dbhub": {
       "type": "local",
       "command": ["bunx", "-y", "@bytebase/dbhub@0.21.2", "--config", "dbhub.toml"],
-      "enabled": true,
+      "enabled": true
     },
     "openapi": {
       "type": "local",
@@ -66,16 +66,16 @@
       "environment": {
         "API_BASE_URL": "{env:API_BASE_URL}",
         "OPENAPI_SPEC_PATH": "{env:OPENAPI_SPEC_PATH}",
-        "API_HEADERS": "Authorization:Bearer {env:API_TOKEN}",
-      },
+        "API_HEADERS": "Authorization:Bearer {env:API_TOKEN}"
+      }
     },
     "postman": {
       "type": "remote",
       "url": "https://mcp.postman.com/mcp",
       "enabled": true,
       "headers": {
-        "Authorization": "Bearer {env:POSTMAN_API_KEY}",
-      },
+        "Authorization": "Bearer {env:POSTMAN_API_KEY}"
+      }
     },
     "atlassian": {
       "type": "local",
@@ -85,7 +85,7 @@
         "JIRA_URL": "{env:ATLASSIAN_URL}",
         "JIRA_USERNAME": "{env:ATLASSIAN_EMAIL}",
         "JIRA_API_TOKEN": "{env:ATLASSIAN_API_TOKEN}"
-      },
+      }
     },
     "slack": {
       "type": "local",
@@ -95,9 +95,9 @@
         "SLACK_MCP_XOXP_TOKEN": "{env:SLACK_MCP_XOXP_TOKEN}",
         "SLACK_MCP_ADD_MESSAGE_TOOL": "true",
         "SLACK_MCP_USERS_CACHE": "./.context/_framework/slack/",
-        "SLACK_MCP_CHANNELS_CACHE": "./.context/_framework/slack/",
-      },
-    },
+        "SLACK_MCP_CHANNELS_CACHE": "./.context/_framework/slack/"
+      }
+    }
   },
 
   // Permissions — mirrors .claude/settings.json 1:1.
@@ -160,7 +160,7 @@
       "truncate *": "deny",
       "shred *": "deny",
       "dd if=*": "deny",
-      "mkfs*": "deny",
-    },
-  },
+      "mkfs*": "deny"
+    }
+  }
 }

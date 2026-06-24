@@ -36,8 +36,8 @@ qa:
 
 team:
   # Jira assignee accountIds for key team members (resolved 2026-06-10)
-  ely: { display_name: 'Ely', role: 'PO/EM', account_id: '61179bdd01072b0069c94a26' }
-  nahuel: { display_name: 'Nahuel Gomez', role: 'QA', account_id: '609005c5f0db130069a64294' }
+  ely: { display_name: Ely, role: PO/EM, account_id: 61179bdd01072b0069c94a26 }
+  nahuel: { display_name: Nahuel Gomez, role: QA, account_id: 609005c5f0db130069a64294 }
 
 # Per-environment config. Add/remove environments freely (production, dev, qa, uat, etc.).
 # Each environment must define ALL four keys: web_url, api_url, db_mcp, api_mcp.
