@@ -40,6 +40,7 @@ const {
   LOCAL_USER_PASSWORD, // Required if TEST_ENV=local
   STAGING_USER_EMAIL, // Required if TEST_ENV=staging
   STAGING_USER_PASSWORD, // Required if TEST_ENV=staging
+  STAGING_USER_PAT, // PAT for API auth (bypasses /auth/login which is broken (BK-177))
 
   // === TMS Configuration ===
   TMS_PROVIDER = 'xray', // Used: config.tms.provider (jiraSync) - 'xray' | 'jira'
@@ -87,7 +88,7 @@ export const env = {
 // After validation, current environment credentials are guaranteed to exist
 // ============================================
 
-const userCredentialsMap: Record<Environment, { email: string, password: string }> = {
+const userCredentialsMap: Record<Environment, { email: string, password: string, pat?: string }> = {
   local: {
     email: LOCAL_USER_EMAIL ?? '',
     password: LOCAL_USER_PASSWORD ?? '',
@@ -95,6 +96,7 @@ const userCredentialsMap: Record<Environment, { email: string, password: string 
   staging: {
     email: STAGING_USER_EMAIL ?? '',
     password: STAGING_USER_PASSWORD ?? '',
+    pat: STAGING_USER_PAT ?? undefined,
   },
 };
 
@@ -104,7 +106,7 @@ const userCredentialsMap: Record<Environment, { email: string, password: string 
 
 const envDataMap: Record<
   Environment,
-  { base: string, api: string, user: { email: string, password: string } }
+  { base: string, api: string, user: { email: string, password: string, pat?: string } }
 > = {
   local: {
     base: 'http://localhost:3000',

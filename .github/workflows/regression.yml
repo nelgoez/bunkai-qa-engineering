@@ -41,6 +41,7 @@ env:
   LOCAL_USER_PASSWORD: ${{ secrets.LOCAL_USER_PASSWORD }}
   STAGING_USER_EMAIL: ${{ secrets.STAGING_USER_EMAIL }}
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
+  STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   # TMS Configuration (for Xray sync)
   AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'false' }}
   XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
@@ -82,6 +83,9 @@ jobs:
 
       - name: Install Playwright (API context)
         run: bun run pw:install
+
+      - name: Run Sandbox Tests (PAT-driven API)
+        run: bunx playwright test --project=sandbox
 
       - name: Run Integration Tests on ${{ env.TEST_ENV }}
         run: bun run test:integration

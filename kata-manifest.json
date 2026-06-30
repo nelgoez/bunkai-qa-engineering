@@ -1,8 +1,30 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-06-09T21:16:46.959Z",
+  "generatedAt": "2026-06-30T23:32:33.154Z",
   "components": {
     "api": [
+      {
+        "name": "AtcsApi",
+        "file": "AtcsApi.ts",
+        "relativePath": "tests\\components\\api\\AtcsApi.ts",
+        "atcs": [
+          {
+            "id": "BK-149",
+            "method": "createAtcSuccessfully",
+            "line": 31
+          },
+          {
+            "id": "BK-150",
+            "method": "createAtcWithInvalidAuth",
+            "line": 76
+          },
+          {
+            "id": "BK-156",
+            "method": "patchAtcSuccessfully",
+            "line": 53
+          }
+        ]
+      },
       {
         "name": "AuthApi",
         "file": "AuthApi.ts",
@@ -82,9 +104,9 @@
   },
   "preconditions": [],
   "summary": {
-    "totalComponents": 4,
-    "totalATCs": 9,
-    "apiComponents": 2,
+    "totalComponents": 5,
+    "totalATCs": 12,
+    "apiComponents": 3,
     "uiComponents": 2,
     "preconditionModules": 0
   }

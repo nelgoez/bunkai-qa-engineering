@@ -17,6 +17,7 @@
 import type { TestContextOptions } from '@TestContext';
 
 import { ApiBase } from '@api/ApiBase';
+import { AtcsApi } from '@api/AtcsApi';
 import { AuthApi } from '@api/AuthApi';
 import { ExampleApi } from '@api/ExampleApi';
 
@@ -25,6 +26,9 @@ import { ExampleApi } from '@api/ExampleApi';
 // ============================================
 
 export class ApiFixture extends ApiBase {
+  /** ATC component - create and edit ATCs via REST API */
+  readonly atcs: AtcsApi;
+
   /** Auth component - handles login and token management */
   readonly auth: AuthApi;
 
@@ -35,6 +39,7 @@ export class ApiFixture extends ApiBase {
     super(options);
 
     // All components receive the same options (same request context)
+    this.atcs = new AtcsApi(options);
     this.auth = new AuthApi(options);
     this.example = new ExampleApi(options);
   }
@@ -49,6 +54,7 @@ export class ApiFixture extends ApiBase {
    */
   override setAuthToken(token: string) {
     super.setAuthToken(token);
+    this.atcs.setAuthToken(token);
     this.auth.setAuthToken(token);
     this.example.setAuthToken(token);
   }
@@ -58,6 +64,7 @@ export class ApiFixture extends ApiBase {
    */
   override clearAuthToken() {
     super.clearAuthToken();
+    this.atcs.clearAuthToken();
     this.auth.clearAuthToken();
     this.example.clearAuthToken();
   }

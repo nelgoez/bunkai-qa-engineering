@@ -138,6 +138,15 @@ export const VAR_MANIFEST: VarSpec[] = [
     obtainHint: 'test-user creds for your project-under-test; set when adapting the framework to your project.',
     note: 'Staging test user password. Required when TEST_ENV=staging. Project-dependent — set later.',
   },
+  {
+    name: 'STAGING_USER_PAT',
+    destinations: ['local', 'github'],
+    secret: true,
+    required: { ifEnv: 'TEST_ENV=staging' },
+    critical: false,
+    obtainHint: 'Generate from Bunkai UI: Settings → API Tokens.',
+    note: 'Personal Access Token for staging API auth. Bypasses /auth/login which is broken (BK-177). CI secret in all workflows.',
+  },
 
   // --- Xray (TMS, optional) ---
   {

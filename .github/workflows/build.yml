@@ -18,6 +18,7 @@ env:
   # Credentials (required to validate environment configuration)
   STAGING_USER_EMAIL: ${{ secrets.STAGING_USER_EMAIL }}
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
+  STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
 
 jobs:
   TestBuild:
@@ -56,3 +57,11 @@ jobs:
         run: |
           echo "Validating Playwright configuration..."
           bunx playwright test --config=playwright.config.ts --list > /dev/null 2>&1 && echo "Configuration valid" || echo "Configuration warning detected"
+
+      - name: Install Playwright (API context)
+        run: bun run pw:install
+
+      - name: Run Sandbox Tests (PAT-driven API tests)
+        run: bunx playwright test --project=sandbox
+        # Fast API-only tests using PAT auth (no browser needed).
+        # These bypass the broken /auth/login endpoint (BK-177).
