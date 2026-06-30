@@ -19,6 +19,7 @@ export interface EnvVarsToValidate {
   LOCAL_USER_PASSWORD?: string
   STAGING_USER_EMAIL?: string
   STAGING_USER_PASSWORD?: string
+  STAGING_USER_PAT?: string
   XRAY_CLIENT_ID?: string
   XRAY_CLIENT_SECRET?: string
   ATLASSIAN_URL?: string
@@ -45,11 +46,11 @@ export function validateTestEnvironment(vars: EnvVarsToValidate): void {
     }
   }
   else if (vars.TEST_ENV === 'staging') {
-    if (!vars.STAGING_USER_EMAIL) {
-      errors.push('STAGING_USER_EMAIL is required for TEST_ENV=staging');
-    }
-    if (!vars.STAGING_USER_PASSWORD) {
-      errors.push('STAGING_USER_PASSWORD is required for TEST_ENV=staging');
+    // PAT is an alternative to email+password (bypasses broken /auth/login - BK-177)
+    const hasPatauth = !!vars.STAGING_USER_PAT;
+    const hasLoginCreds = !!vars.STAGING_USER_EMAIL && !!vars.STAGING_USER_PASSWORD;
+    if (!hasPatauth && !hasLoginCreds) {
+      errors.push('STAGING_USER_PAT or (STAGING_USER_EMAIL + STAGING_USER_PASSWORD) required for TEST_ENV=staging');
     }
   }
   else {
@@ -100,6 +101,7 @@ if (import.meta.main) {
     LOCAL_USER_PASSWORD: process.env.LOCAL_USER_PASSWORD,
     STAGING_USER_EMAIL: process.env.STAGING_USER_EMAIL,
     STAGING_USER_PASSWORD: process.env.STAGING_USER_PASSWORD,
+    STAGING_USER_PAT: process.env.STAGING_USER_PAT,
     XRAY_CLIENT_ID: process.env.XRAY_CLIENT_ID,
     XRAY_CLIENT_SECRET: process.env.XRAY_CLIENT_SECRET,
     ATLASSIAN_URL: process.env.ATLASSIAN_URL,
