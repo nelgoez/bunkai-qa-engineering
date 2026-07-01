@@ -1,0 +1,7 @@
+[API Setup] Starting API authentication...
+[API Setup] Target: https://staging-upexbunkai.vercel.app/api/v1/auth/login
+---- API NOK: 404 - https://staging-upexbunkai.vercel.app/api/v1/auth/login
+❌ [PROJ-101] authenticateSuccessfully - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 404
