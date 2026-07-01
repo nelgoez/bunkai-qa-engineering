@@ -1,0 +1,106 @@
+{
+  "user": {
+    "id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "email": "qa-headless@bunkai.io"
+  },
+  "workspaces": [
+    {
+      "id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9",
+      "slug": "qasmoke-20250605",
+      "name": "QASmoke-20250605",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:26:27.428995+00:00"
+    },
+    {
+      "id": "aed86386-2ed8-424e-934b-ca7a0ef6af37",
+      "slug": "qa-test-ws-20260605",
+      "name": "QA Test Workspace",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:01.367656+00:00"
+    },
+    {
+      "id": "a8fbd0f6-e6a1-4915-97f2-4a91adeee75c",
+      "slug": "acme-qa-spaces",
+      "name": "Acme   QA",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:01.986624+00:00"
+    },
+    {
+      "id": "26462c06-49bd-4763-86eb-91efc3559db1",
+      "slug": "x-proj",
+      "name": "X",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:02.558141+00:00"
+    },
+    {
+      "id": "aca56422-7774-45cd-9175-100a3dff1279",
+      "slug": "max-name-test-80",
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:03.122865+00:00"
+    },
+    {
+      "id": "443f4825-1787-43c5-8454-710701cd051a",
+      "slug": "abc",
+      "name": "Min Slug",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:03.693691+00:00"
+    },
+    {
+      "id": "0d31b4d1-6462-4b9e-a707-2d8cf4c2186d",
+      "slug": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabc",
+      "name": "Max Slug",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:04.321032+00:00"
+    },
+    {
+      "id": "a808499e-f437-43b8-9fdb-8cee7dcceb3e",
+      "slug": "bunkai-qa",
+      "name": "Bünkāï QA",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:04.92533+00:00"
+    },
+    {
+      "id": "9a2c3de7-18af-45e5-a36f-e0ef9377af69",
+      "slug": "extra-test",
+      "name": "Extra Test",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:05.494154+00:00"
+    },
+    {
+      "id": "7d14c652-1daa-4275-a4c7-f7af529e8a6a",
+      "slug": "ab-workspace",
+      "name": "AB",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:19.982809+00:00"
+    },
+    {
+      "id": "6d2f06ed-4759-42de-a2ff-adb814708b89",
+      "slug": "concurrent-test-20260605",
+      "name": "Concurrent",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:29:48.923837+00:00"
+    }
+  ],
+  "active_workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9",
+  "active_workspace_role": "owner",
+  "auth": {
+    "source": "bearer",
+    "scopes": [
+      "atc:read",
+      "atc:write",
+      "run:execute"
+    ]
+  }
+}
