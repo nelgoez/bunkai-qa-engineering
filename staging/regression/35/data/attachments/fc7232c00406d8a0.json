@@ -1,0 +1,35 @@
+{
+  "title": "ATC cascade test 1782866218912",
+  "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+  "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+  "acceptance_criterion_ids": [
+    "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+  ],
+  "layer": "UI",
+  "steps": [
+    {
+      "position": 1,
+      "content": "Step 1"
+    },
+    {
+      "position": 2,
+      "content": "Step 2"
+    },
+    {
+      "position": 3,
+      "content": "Step 3"
+    }
+  ],
+  "assertions": [
+    {
+      "content": "Assertion 1"
+    },
+    {
+      "content": "Assertion 2"
+    }
+  ],
+  "tags": [
+    "smoke",
+    "login"
+  ]
+}
