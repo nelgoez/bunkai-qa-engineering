@@ -75,6 +75,7 @@
     "test:integration": "playwright test --project=integration",
     "test:last-failed": "playwright test --last-failed",
     "test:report": "playwright show-report",
+    "test:sandbox": "playwright test --project=sandbox",
     "test:retries": "playwright test --retries=2",
     "test:smoke": "playwright test --project=smoke",
     "test:sync": "bun tests/utils/jiraSync.ts",
