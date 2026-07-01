@@ -152,3 +152,7 @@ nul
 
 # ===== Skill reference temp files =====
 .claude/skills/*/references/tmp/
+
+# Temporary session artifacts
+/tmp/
+/cookies*.txt
