@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-01T01:08:00.837Z",
+  "generatedAt": "2026-07-01T01:42:58.724Z",
   "components": {
     "api": [
       {
@@ -31,14 +31,14 @@
         "relativePath": "tests\\components\\api\\AuthApi.ts",
         "atcs": [
           {
-            "id": "PROJ-101",
+            "id": "BK-166",
             "method": "authenticateSuccessfully",
             "line": 73
           },
           {
             "id": "PROJ-102",
             "method": "loginWithInvalidCredentials",
-            "line": 112
+            "line": 119
           }
         ]
       },

@@ -132,9 +132,9 @@ export const config = {
 
   // Authentication config (UPEX Dojo endpoints - relative to apiUrl)
   auth: {
-    loginEndpoint: '/auth/login',
-    tokenEndpoint: '/auth/login', // Endpoint to intercept for token (used by page.waitForResponse)
-    meEndpoint: '/auth/me',
+    loginEndpoint: '/auth/signin',
+    tokenEndpoint: '/auth/signin', // Endpoint to intercept for token (used by page.waitForResponse)
+    meEndpoint: '/me',
     tokenLifetimeSeconds: 86400, // 24 hours (1 day)
     // Storage paths for authenticated sessions
     storageStatePath: '.auth/user.json',

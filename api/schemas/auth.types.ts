@@ -72,25 +72,33 @@ export interface TokenResponse {
  * TODO: Replace with OpenAPI endpoint type after sync (if documented in spec).
  */
 export interface AuthErrorResponse {
-  error: string
-  statusCode?: number
-  identityServerError?: {
-    error: string
-    error_description: string
+  error: {
+    code: string
+    message: string
+    request_id?: string
   }
-  hint?: string
 }
 
 /**
- * User info response from /api/auth/me.
+ * User info response from /api/v1/me.
  * TODO: Replace with OpenAPI endpoint type after sync.
  */
 export interface UserInfoResponse {
   user: {
     id: string
     email: string
+  }
+  workspaces: Array<{
+    id: string
+    slug: string
     name: string
-    createdAt: string
-    updatedAt: string
+    plan: string
+    owner_user_id: string
+  }>
+  active_workspace_id: string
+  active_workspace_role?: string
+  auth?: {
+    source: string
+    scopes: string[]
   }
 }

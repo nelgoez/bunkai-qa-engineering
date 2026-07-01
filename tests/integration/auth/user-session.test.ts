@@ -24,8 +24,8 @@ test.describe('UPEX-100: User Session API', { tag: ['@critical'] }, () => {
     expect(userData.user).toBeDefined();
     expect(userData.user.id).toBeDefined();
     expect(userData.user.email).toBeDefined();
-    expect(userData.user.name).toBeDefined();
-    expect(typeof userData.user.name).toBe('string');
+    expect(userData.workspaces).toBeDefined();
+    expect(userData.active_workspace_id).toBeDefined();
   });
 
   /**

@@ -3,7 +3,7 @@
 **Jira Key:** [BK-8](https://jira.upexgalaxy.com/browse/BK-8)
 **Epic:** [BK-7](https://jira.upexgalaxy.com/browse/BK-7) (Project & Module Hierarchy)
 **Type:** Story
-**Status:** In Test
+**Status:** Ready For Release
 **Priority:** Medium
 **Story Points:** 8
 
@@ -59,6 +59,7 @@ As a Workspace member, I want to create a Project inside a Workspace so that I c
 - [Out Of Scope](./out-of-scope.md)
 - [Workflow](./workflow.md)
 - [Implementation Plan (Dev)](./implementation-plan.md)
+- [Acceptance Test Plan (QA)](./acceptance-test-plan.md)
 - [Acceptance Test Results (QA)](./acceptance-test-results.md)
 
 ---
@@ -81,9 +82,9 @@ As a Workspace member, I want to create a Project inside a Workspace so that I c
 ## Metadata
 
 - **Created:** 19/5/2026
-- **Updated:** 15/6/2026
+- **Updated:** 26/6/2026
 - **Reporter:** Ely
-- **Assignee:** Ely
+- **Assignee:** Nahuel Gomez
 - **Labels:** hierarchy, mvp, shift-left-2026-05-28, shift-left-reviewed, wave-1
 
 ---

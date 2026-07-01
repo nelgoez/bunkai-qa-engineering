@@ -365,7 +365,7 @@ rollback. El resto puede resolverse durante el desarrollo, pero estos dos genera
 
 ---
 
-### Jürgen Salinas - 19/5/2026, 21:40:40
+### Jurgen Salinas - 19/5/2026, 21:40:40
 
 - ***El Rol del Creador (Múltiples Organizaciones):**** La regla dice **"Duplicate name per owner"**. En sistemas B2B/SaaS modernos, la restricción de duplicados suele aplicar a nivel de toda la base de datos (global) para evitar colisiones en la URL (ej. `app.bunkai.io/acme-qa`). Si es por dueño, significa que el Usuario A puede crear "Acme" y el Usuario B también puede crear "Acme". Si tu arquitectura maneja subdominios o URLs dinámicas, la unicidad del **slug** debería ser global. He asumido que prefieres ****unicidad global del slug*** para proteger las URLs.
 - ***Sanitización del Slug:*** ¿Qué pasa con los caracteres especiales o acentos? (Ej: "Logística & QA" -> `logistica-qa`). Vale la pena aclarar cómo se procesa.

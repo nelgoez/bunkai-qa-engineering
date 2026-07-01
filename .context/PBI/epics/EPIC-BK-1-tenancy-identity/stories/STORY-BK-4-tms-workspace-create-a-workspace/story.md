@@ -65,7 +65,6 @@
 - [Acceptance Criteria](./acceptance-criteria.md)
 - [Out Of Scope](./out-of-scope.md)
 - [Workflow](./workflow.md)
-- [Acceptance Test Plan (QA)](./acceptance-test-plan.md)
 
 ---
 
@@ -73,7 +72,7 @@
 
 ### Story (1)
 
-- [BK-8](https://jira.upexgalaxy.com/browse/BK-8): TMS-Project | Create a project inside a workspace _(In Test)_
+- [BK-8](https://jira.upexgalaxy.com/browse/BK-8): TMS-Project | Create a project inside a workspace _(Ready For Release)_
 
 ---
 
