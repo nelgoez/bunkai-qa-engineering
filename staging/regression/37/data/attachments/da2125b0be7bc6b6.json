@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "bad_request",
+    "message": "Import id must be a UUID.",
+    "request_id": "8b9001fa-ecc0-41e2-9ca5-87e3837b8b22"
+  }
+}
