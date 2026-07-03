@@ -147,6 +147,15 @@ export const VAR_MANIFEST: VarSpec[] = [
     obtainHint: 'Generate from Bunkai UI: Settings → API Tokens.',
     note: 'Personal Access Token for staging API auth. Bypasses /auth/login which is broken (BK-177). CI secret in all workflows.',
   },
+  {
+    name: 'STAGING_USER_READONLY_PAT',
+    destinations: ['local', 'github'],
+    secret: true,
+    required: { ifEnv: 'TEST_ENV=staging' },
+    critical: false,
+    obtainHint: 'Generate from Bunkai UI: Settings → API Tokens, or POST /api/v1/tokens { scopes: ["atc:read"] } via browser session.',
+    note: 'Restricted-scope PAT (only atc:read) for 403 scope rejection tests. CI secret in all workflows.',
+  },
 
   // --- Xray (TMS, optional) ---
   {
