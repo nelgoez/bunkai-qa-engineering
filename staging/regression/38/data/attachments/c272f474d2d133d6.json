@@ -1,0 +1,226 @@
+{
+  "user": {
+    "id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "email": "qa-headless@bunkai.io"
+  },
+  "workspaces": [
+    {
+      "id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9",
+      "slug": "qasmoke-20250605",
+      "name": "QASmoke-20250605",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:26:27.428995+00:00"
+    },
+    {
+      "id": "aed86386-2ed8-424e-934b-ca7a0ef6af37",
+      "slug": "qa-test-ws-20260605",
+      "name": "QA Test Workspace",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:01.367656+00:00"
+    },
+    {
+      "id": "a8fbd0f6-e6a1-4915-97f2-4a91adeee75c",
+      "slug": "acme-qa-spaces",
+      "name": "Acme   QA",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:01.986624+00:00"
+    },
+    {
+      "id": "26462c06-49bd-4763-86eb-91efc3559db1",
+      "slug": "x-proj",
+      "name": "X",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:02.558141+00:00"
+    },
+    {
+      "id": "aca56422-7774-45cd-9175-100a3dff1279",
+      "slug": "max-name-test-80",
+      "name": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:03.122865+00:00"
+    },
+    {
+      "id": "443f4825-1787-43c5-8454-710701cd051a",
+      "slug": "abc",
+      "name": "Min Slug",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:03.693691+00:00"
+    },
+    {
+      "id": "0d31b4d1-6462-4b9e-a707-2d8cf4c2186d",
+      "slug": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabc",
+      "name": "Max Slug",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:04.321032+00:00"
+    },
+    {
+      "id": "a808499e-f437-43b8-9fdb-8cee7dcceb3e",
+      "slug": "bunkai-qa",
+      "name": "Bünkāï QA",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:04.92533+00:00"
+    },
+    {
+      "id": "9a2c3de7-18af-45e5-a36f-e0ef9377af69",
+      "slug": "extra-test",
+      "name": "Extra Test",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:05.494154+00:00"
+    },
+    {
+      "id": "7d14c652-1daa-4275-a4c7-f7af529e8a6a",
+      "slug": "ab-workspace",
+      "name": "AB",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:28:19.982809+00:00"
+    },
+    {
+      "id": "6d2f06ed-4759-42de-a2ff-adb814708b89",
+      "slug": "concurrent-test-20260605",
+      "name": "Concurrent",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-06-05T21:29:48.923837+00:00"
+    },
+    {
+      "id": "7e4e1346-f9bf-4cc3-9bca-f913c5c54456",
+      "slug": "test-auto-ws-166",
+      "name": "Test Automation WS",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:18:40.909407+00:00"
+    },
+    {
+      "id": "a9603f2d-3a79-4c4e-a92f-91eb3cf9ebb8",
+      "slug": "ws-auto-mr1e0w31",
+      "name": "Workspace mr1e0w31",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:19:16.517695+00:00"
+    },
+    {
+      "id": "610bf84c-18ac-4f0f-8713-983659072247",
+      "slug": "ws-dup-mr1e0x83",
+      "name": "Dup Test mr1e0x83",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:19:17.825879+00:00"
+    },
+    {
+      "id": "185d2cfe-5f9a-470c-a555-12fdac93366b",
+      "slug": "ws-auto-mr1e8nq2",
+      "name": "Workspace mr1e8nq2",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:25:20.424882+00:00"
+    },
+    {
+      "id": "fdf62627-cdce-4e70-b1fb-fc7e503869c1",
+      "slug": "ws-dup-mr1e8pz1",
+      "name": "Dup Test mr1e8pz1",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:25:21.015756+00:00"
+    },
+    {
+      "id": "ddac3767-ff9f-4c9b-a566-0611915562c6",
+      "slug": "ws-auto-mr1et8t6",
+      "name": "Workspace mr1et8t6",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:41:19.256894+00:00"
+    },
+    {
+      "id": "c9b2e166-6035-4b71-8fe5-2c6f7d511365",
+      "slug": "ws-dup-mr1et9px",
+      "name": "Dup Test mr1et9px",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:41:20.408444+00:00"
+    },
+    {
+      "id": "a07a180c-8981-4f59-8ac5-5670c4e31bbe",
+      "slug": "ws-auto-mr1f013z",
+      "name": "Workspace mr1f013z",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:46:35.832634+00:00"
+    },
+    {
+      "id": "706ed695-722e-4a7f-95b6-620191628763",
+      "slug": "ws-dup-mr1f020j",
+      "name": "Dup Test mr1f020j",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:46:37.007067+00:00"
+    },
+    {
+      "id": "6b645af8-059d-4c40-9ef9-c063ef6007d3",
+      "slug": "ws-auto-mr1f5ess",
+      "name": "Workspace mr1f5ess",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:50:46.863517+00:00"
+    },
+    {
+      "id": "e23cd7c9-8c30-4617-bda0-4194a5d9e870",
+      "slug": "ws-dup-mr1f5fwa",
+      "name": "Dup Test mr1f5fwa",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T01:50:48.280273+00:00"
+    },
+    {
+      "id": "5efd7521-af72-4366-af90-622307444f75",
+      "slug": "ws-auto-mr1hg7xm",
+      "name": "Workspace mr1hg7xm",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T02:55:09.71559+00:00"
+    },
+    {
+      "id": "6645a443-7df3-48fa-aef6-4164dc4fe9fd",
+      "slug": "ws-dup-mr1hg874",
+      "name": "Dup Test mr1hg874",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-01T02:55:10.04505+00:00"
+    },
+    {
+      "id": "8c0152fc-1c1c-4b0c-9c09-795ad8699ec5",
+      "slug": "ws-auto-mr2wjdpg",
+      "name": "Workspace mr2wjdpg",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-02T02:45:17.643666+00:00"
+    },
+    {
+      "id": "cede64ca-b69c-4997-8cd8-0aa19a722eeb",
+      "slug": "ws-dup-mr2wje2q",
+      "name": "Dup Test mr2wje2q",
+      "plan": "community",
+      "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+      "created_at": "2026-07-02T02:45:18.0826+00:00"
+    }
+  ],
+  "active_workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9",
+  "active_workspace_role": "owner",
+  "auth": {
+    "source": "bearer",
+    "scopes": [
+      "atc:read",
+      "atc:write",
+      "run:execute"
+    ]
+  }
+}
