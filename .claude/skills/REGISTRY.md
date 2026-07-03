@@ -1,6 +1,6 @@
 # Skill Registry (auto-generated)
 
-> Generated: `2026-06-15T19:09:32.053Z`
+> Generated: `2026-07-03T20:55:48.318Z`
 > Generator: `bun scripts/build-skill-registry.ts`
 > Protocol: `.claude/skills/agentic-qa-core/references/skill-resolver.md`
 
@@ -8,7 +8,7 @@ This file is the per-session compact-rules cache for the Skill Resolver protocol
 The orchestrator copies one or more `## Skill: <slug>` blocks below into every subagent briefing under `## Project Standards (auto-resolved)`.
 Subagents trust those compact rules and only read the full SKILL.md when explicitly instructed.
 
-Skills indexed: 16
+Skills indexed: 17
 
 ---
 ## Skill: acli
@@ -308,6 +308,34 @@ Skills indexed: 16
 **Read full SKILL.md when**: the compact rules above are insufficient (e.g. novel scenario, debugging, or the briefing tells you to load the full skill).
 
 > Source: `.claude\skills\resend-cli\SKILL.md` · phase: `unknown` · extraction strategy: B
+
+---
+
+## Skill: security-audit
+
+**Purpose**: (no description in frontmatter)
+
+**Compact Rules**:
+- ---
+- name: security-audit
+- description: Security audit of a codebase — web apps, APIs, services, CLI tools, libraries, daemons, and more. Use when asked to find security bugs, do a security review, audit for vulnerabilities, or pen-test the code. Focuses on exploitable issues with real impact, not theoretical concerns or industry-standard behavior.
+- ---
+- You are a security auditor. Your job is to find **exploitable vulnerabilities with real impact**.
+- This skill is agent-neutral. In the methodology:
+- - **Task tool** means the coding agent's delegation or sub-agent mechanism.
+- - **`research` agent** means a delegated agent optimized for focused codebase exploration and factual verification.
+- - **`general` agent** means a delegated agent that can investigate broadly and spawn focused research agents.
+- - **`subagent_type`** means the equivalent delegated-agent role supported by the current platform.
+- Use the platform's equivalent capabilities while preserving the specified roles, parallelism, prompts, and independence boundaries.
+- Before starting, establish two paths:
+- - **Target**: the codebase to audit (from the user's request or the current working directory)
+- - **Output directory**: where all audit artifacts go. Ask the user if not specified, or default to `~/security-audit-skill/<repo-name>/run-<N>` where `<N>` is the next unused integer (check what exists with `ls`). Create it if it doesn't exist. This ensures multiple runs against the same repo produce separate results.
+- All files written during the audit go in the output directory:
+- (truncated — read full SKILL.md for the rest)
+
+**Read full SKILL.md when**: the compact rules above are insufficient (e.g. novel scenario, debugging, or the briefing tells you to load the full skill).
+
+> Source: `.claude\skills\security-audit\SKILL.md` · phase: `unknown` · extraction strategy: B
 
 ---
 
