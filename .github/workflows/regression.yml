@@ -42,6 +42,7 @@ env:
   STAGING_USER_EMAIL: ${{ secrets.STAGING_USER_EMAIL }}
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
+  STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
   # TMS Configuration (for Xray sync)
   AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'false' }}
   XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
