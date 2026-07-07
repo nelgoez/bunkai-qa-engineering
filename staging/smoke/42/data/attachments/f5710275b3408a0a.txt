@@ -1,0 +1,6 @@
+[UI Setup] Starting UI authentication...
+[UI Setup] Target: /login
+❌ [PROJ-101] loginSuccessfully - FAIL: locator.fill: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="login-email-input"]')
+
