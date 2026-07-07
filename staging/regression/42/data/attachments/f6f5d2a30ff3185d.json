@@ -1,0 +1,26 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Request body failed validation.",
+    "details": [
+      {
+        "origin": "string",
+        "code": "too_small",
+        "minimum": 3,
+        "inclusive": true,
+        "path": [
+          "slug"
+        ],
+        "message": "Invalid input"
+      },
+      {
+        "code": "custom",
+        "path": [
+          "slug"
+        ],
+        "message": "Slug must be lowercase letters/digits/hyphens, 3–40 chars, no edge hyphen."
+      }
+    ],
+    "request_id": "d599f1dd-0f8f-450a-8c26-87475e5fc4fd"
+  }
+}
