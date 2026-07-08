@@ -1,0 +1,28 @@
+{
+  "featured": true,
+  "thumbnail": "docs/media/demo.png",
+  "displayName": "Bunkai QA Engineering",
+  "shortDescription": "AI-driven Quality Engineering boilerplate — Playwright + KATA + Jira/Xray for the full testing lifecycle, driven by agentic skills.",
+  "category": "qa-platform",
+  "tags": ["playwright", "typescript", "bun", "kata", "allure", "agentic-qa", "jira-xray", "ci-cd"],
+  "order": 1,
+  "screenshots": [
+    {
+      "path": "bk147-app-shell-with-sidebar.png",
+      "alt": "Bunkai app shell with sidebar — UI layout test"
+    },
+    {
+      "path": "bk147-multi-tab.png",
+      "alt": "Bunkai multi-tab navigation — state consistency across tabs"
+    },
+    {
+      "path": "bk147-tc10-not-found.png",
+      "alt": "Bunkai TC-10 — 404 handling on invalid routes"
+    }
+  ],
+  "links": {
+    "allure_staging": "https://nelgoez.github.io/bunkai-qa-engineering/staging/sanity/",
+    "allure_production": "https://nelgoez.github.io/bunkai-qa-engineering/production/sanity/",
+    "docs": "https://github.com/nelgoez/bunkai-qa-engineering/tree/main/docs"
+  }
+}

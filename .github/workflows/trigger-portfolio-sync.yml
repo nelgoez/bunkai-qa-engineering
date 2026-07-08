@@ -1,0 +1,19 @@
+name: Trigger Portfolio Sync
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          gh api repos/nelgoez/career-profile-up/dispatches \
+            -f event_type=portfolio-sync \
+            -f client_payload[repo]="${{ github.repository }}" \
+            -f client_payload[ref]="${{ github.ref }}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
