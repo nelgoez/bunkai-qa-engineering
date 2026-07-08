@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "An import is already running for this project.",
+    "details": {
+      "reason": "import_in_progress"
+    },
+    "request_id": "6c8c8b12-6b93-4bb0-8380-8f9aeafa9ce8"
+  }
+}

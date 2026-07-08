@@ -1,0 +1,32 @@
+{
+  "title": "Immutable test 1783476543018",
+  "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+  "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+  "acceptance_criterion_ids": [
+    "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+  ],
+  "layer": "UI",
+  "steps": [
+    {
+      "position": 1,
+      "content": "Navigate to login page"
+    },
+    {
+      "position": 2,
+      "content": "Enter email test@example.com"
+    },
+    {
+      "position": 3,
+      "content": "Click submit"
+    }
+  ],
+  "assertions": [
+    {
+      "content": "Response time < 2s"
+    }
+  ],
+  "tags": [
+    "smoke",
+    "login"
+  ]
+}
