@@ -1,0 +1,32 @@
+{
+  "title": "Foreign AC test 1783650572365",
+  "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+  "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+  "acceptance_criterion_ids": [
+    "e7e3b1c4-5a6b-7c8d-9e0f-1a2b3c4d5e6f"
+  ],
+  "layer": "UI",
+  "steps": [
+    {
+      "position": 1,
+      "content": "Navigate to login page"
+    },
+    {
+      "position": 2,
+      "content": "Enter email test@example.com"
+    },
+    {
+      "position": 3,
+      "content": "Click submit"
+    }
+  ],
+  "assertions": [
+    {
+      "content": "Response time < 2s"
+    }
+  ],
+  "tags": [
+    "smoke",
+    "login"
+  ]
+}
