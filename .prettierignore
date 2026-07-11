@@ -80,3 +80,6 @@ api/.openapi-config.json
 
 # ----- 2026-06-08 (sync) -----
 .backups/
+
+# Graphify knowledge graph (generated, AI context only)
+graphify-out/
