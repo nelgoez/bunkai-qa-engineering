@@ -1,0 +1,16 @@
+# BK-188 — Acceptance Criteria
+
+> Jira field: `customfield_10063` · [View in Jira](https://jira.upexgalaxy.com/browse/BK-188)
+
+Feature:
+
+Background:
+Given ...
+
+Scenario: ...
+Given ...
+When ...
+Then ...
+
+---
+_Synced from Jira by sync-jira-issues_

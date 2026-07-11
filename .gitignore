@@ -153,6 +153,9 @@ nul
 # ===== Skill reference temp files =====
 .claude/skills/*/references/tmp/
 
+# Graphify knowledge graph (generated artifact, kept on disk for AI context)
+/graphify-out/
+
 # Temporary session artifacts
 /tmp/
 /cookies*.txt

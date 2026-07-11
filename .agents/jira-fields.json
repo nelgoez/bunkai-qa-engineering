@@ -489,7 +489,7 @@
     "name": "🧪 Test Strategy"
   },
   "to_be_automated": {
-    "id": "customfield_10104",
+    "id": "customfield_10047",
     "type": "option",
     "name": "To Be Automated (QA)🧪",
     "options": {

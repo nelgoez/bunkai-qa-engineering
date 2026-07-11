@@ -44,7 +44,7 @@ env:
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
   # TMS Configuration (for Xray sync)
-  AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'false' }}
+  AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'true' }}
   XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
   XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
   # Atlassian credentials — uncomment when AUTO_SYNC=true (Jira issue lookups
