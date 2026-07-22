@@ -30,13 +30,16 @@ on:
 env:
   CI: true
   TEST_ENV: ${{ github.event.inputs.environment || 'staging' }}
-  # Credentials (required for test execution)
   LOCAL_USER_EMAIL: ${{ secrets.LOCAL_USER_EMAIL }}
   LOCAL_USER_PASSWORD: ${{ secrets.LOCAL_USER_PASSWORD }}
   STAGING_USER_EMAIL: ${{ secrets.STAGING_USER_EMAIL }}
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
+  XRAY_CLIENT_ID: ${{ secrets.XRAY_CLIENT_ID }}
+  XRAY_CLIENT_SECRET: ${{ secrets.XRAY_CLIENT_SECRET }}
+  XRAY_PROJECT_KEY: ${{ secrets.XRAY_PROJECT_KEY }}
+  AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'true' }}
 
 jobs:
   SmokeTest:
