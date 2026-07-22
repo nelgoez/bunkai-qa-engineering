@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-03T20:53:23.113Z",
+  "generatedAt": "2026-07-22T23:40:07.086Z",
   "components": {
     "api": [
       {
@@ -39,6 +39,83 @@
             "id": "PROJ-102",
             "method": "loginWithInvalidCredentials",
             "line": 119
+          }
+        ]
+      },
+      {
+        "name": "DefectsApi",
+        "file": "DefectsApi.ts",
+        "relativePath": "tests\\components\\api\\DefectsApi.ts",
+        "atcs": [
+          {
+            "id": "BK-43-TDS01",
+            "method": "createDefectSyncs",
+            "line": 55
+          },
+          {
+            "id": "BK-43-TDS02",
+            "method": "createDefectFireAndForget",
+            "line": 73
+          },
+          {
+            "id": "BK-43-TDS03",
+            "method": "createDefectAutoRetries",
+            "line": 90
+          },
+          {
+            "id": "BK-43-TDS04",
+            "method": "getDefectSyncFailed",
+            "line": 107
+          },
+          {
+            "id": "BK-43-TDS05",
+            "method": "externalUpdateDoesNotFlowBack",
+            "line": 124
+          },
+          {
+            "id": "BK-43-TDS06",
+            "method": "createDefectNoIntegration",
+            "line": 147
+          },
+          {
+            "id": "BK-43-TDS07",
+            "method": "reSyncDoesNotDuplicate",
+            "line": 163
+          },
+          {
+            "id": "BK-43-TDS08",
+            "method": "syncFailsOnPermanentAuth",
+            "line": 191
+          },
+          {
+            "id": "BK-43-TDS09",
+            "method": "updateDefectReSyncs",
+            "line": 207
+          },
+          {
+            "id": "BK-43-TDS10",
+            "method": "deleteDoesNotRemoveExternal",
+            "line": 225
+          },
+          {
+            "id": "BK-43-TDS11",
+            "method": "rateLimitBackoff",
+            "line": 244
+          },
+          {
+            "id": "BK-43-TDS12",
+            "method": "fieldMappingAccuracy",
+            "line": 260
+          },
+          {
+            "id": "BK-43-TDS13",
+            "method": "workspaceIsolation",
+            "line": 277
+          },
+          {
+            "id": "BK-43-TDS14",
+            "method": "createDefectCarriesExternalLink",
+            "line": 293
           }
         ]
       },
@@ -104,9 +181,9 @@
   },
   "preconditions": [],
   "summary": {
-    "totalComponents": 5,
-    "totalATCs": 12,
-    "apiComponents": 3,
+    "totalComponents": 6,
+    "totalATCs": 26,
+    "apiComponents": 4,
     "uiComponents": 2,
     "preconditionModules": 0
   }
