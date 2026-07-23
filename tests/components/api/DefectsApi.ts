@@ -52,7 +52,7 @@ export class DefectsApi extends ApiBase {
     );
   }
 
-  @atc('BK-43-TDS01')
+  @atc('BK-234')
   async createDefectSyncs(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -70,7 +70,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS02')
+  @atc('BK-235')
   async createDefectFireAndForget(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectCreatePayload]> {
@@ -87,7 +87,7 @@ export class DefectsApi extends ApiBase {
     return [response, sent];
   }
 
-  @atc('BK-43-TDS03')
+  @atc('BK-236')
   async createDefectAutoRetries(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -104,7 +104,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS04')
+  @atc('BK-237')
   async getDefectSyncFailed(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -121,7 +121,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS05')
+  @atc('BK-238')
   async externalUpdateDoesNotFlowBack(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -144,7 +144,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS06')
+  @atc('BK-239')
   async createDefectNoIntegration(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectCreatePayload]> {
@@ -160,7 +160,7 @@ export class DefectsApi extends ApiBase {
     return [response, sent];
   }
 
-  @atc('BK-43-TDS07')
+  @atc('BK-240')
   async reSyncDoesNotDuplicate(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -188,7 +188,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS08')
+  @atc('BK-241')
   async syncFailsOnPermanentAuth(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -204,7 +204,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS09')
+  @atc('BK-242')
   async updateDefectReSyncs(
     id: string,
     payload: DefectUpdatePayload,
@@ -222,7 +222,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS10')
+  @atc('BK-243')
   async deleteDoesNotRemoveExternal(
     id: string,
   ): Promise<[APIResponse, DefectResponse]> {
@@ -241,7 +241,7 @@ export class DefectsApi extends ApiBase {
     return [deleteResponse, defect as DefectResponse];
   }
 
-  @atc('BK-43-TDS11')
+  @atc('BK-244')
   async rateLimitBackoff(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -257,7 +257,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS12')
+  @atc('BK-245')
   async fieldMappingAccuracy(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -274,7 +274,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS13')
+  @atc('BK-246')
   async workspaceIsolation(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
@@ -290,7 +290,7 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-43-TDS14')
+  @atc('BK-247')
   async createDefectCarriesExternalLink(
     payload: DefectCreatePayload,
   ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
