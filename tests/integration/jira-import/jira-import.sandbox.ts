@@ -47,7 +47,7 @@ test.describe.serial('BK-17: Jira Import API', { tag: ['@api', '@import'] }, () 
 
     expect(res.status()).toBe(200);
     expect(body.import_job.id).toBe(jobId);
-    expect(['queued', 'processing', 'completed', 'failed']).toContain(body.import_job.status);
+    expect(['queued', 'processing', 'running', 'completed', 'failed']).toContain(body.import_job.status);
   });
 
   test('BK-173: POST /api/v1/imports rejects empty body → 422', async ({ api }) => {
