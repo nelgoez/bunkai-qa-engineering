@@ -19,37 +19,34 @@ interface ImportJobResponse {
   }
 }
 
+let jobId: string;
+
 const pat = config.testUser.pat!;
 const projectId = '1a6fdae6-8b0c-47bb-b444-0e2563deab4b';
 
-test.describe('BK-17: Jira Import API', { tag: ['@api', '@import'] }, () => {
+test.describe.serial('BK-17: Jira Import API', { tag: ['@api', '@import'] }, () => {
   test('BK-169: POST /api/v1/imports with valid project_id + jql returns 202 + job_id', async ({ api }) => {
     api.setAuthToken(pat);
 
     const [res, body] = await api.apiPOST<ImportCreateResponse, { project_id: string, jql: string }>(
       '/imports',
-      { project_id: projectId, jql: 'project = DEMO' },
+      { project_id: projectId, jql: `project = DEMO AND description ~ ${Date.now()}` },
     );
 
     expect(res.status()).toBe(202);
     expect(body.import_job_id).toBeDefined();
     expect(body.import_job_id).toMatch(/^[0-9a-f-]{36}$/);
     expect(body.status).toBe('queued');
+    jobId = body.import_job_id;
   });
 
   test('BK-169: GET /api/v1/imports/{id} returns job status', async ({ api }) => {
     api.setAuthToken(pat);
 
-    // Create an import job first
-    const [, created] = await api.apiPOST<ImportCreateResponse, { project_id: string, jql: string }>(
-      '/imports',
-      { project_id: projectId, jql: 'project = DEMO' },
-    );
-
-    const [res, body] = await api.apiGET<ImportJobResponse>(`/imports/${created.import_job_id}`);
+    const [res, body] = await api.apiGET<ImportJobResponse>(`/imports/${jobId}`);
 
     expect(res.status()).toBe(200);
-    expect(body.import_job.id).toBe(created.import_job_id);
+    expect(body.import_job.id).toBe(jobId);
     expect(['queued', 'processing', 'completed', 'failed']).toContain(body.import_job.status);
   });
 
