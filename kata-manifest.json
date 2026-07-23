@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-03T20:53:23.113Z",
+  "generatedAt": "2026-07-23T00:00:52.549Z",
   "components": {
     "api": [
       {
@@ -39,6 +39,83 @@
             "id": "PROJ-102",
             "method": "loginWithInvalidCredentials",
             "line": 119
+          }
+        ]
+      },
+      {
+        "name": "DefectsApi",
+        "file": "DefectsApi.ts",
+        "relativePath": "tests\\components\\api\\DefectsApi.ts",
+        "atcs": [
+          {
+            "id": "BK-234",
+            "method": "createDefectSyncs",
+            "line": 55
+          },
+          {
+            "id": "BK-235",
+            "method": "createDefectFireAndForget",
+            "line": 73
+          },
+          {
+            "id": "BK-236",
+            "method": "createDefectAutoRetries",
+            "line": 90
+          },
+          {
+            "id": "BK-237",
+            "method": "getDefectSyncFailed",
+            "line": 107
+          },
+          {
+            "id": "BK-238",
+            "method": "externalUpdateDoesNotFlowBack",
+            "line": 124
+          },
+          {
+            "id": "BK-239",
+            "method": "createDefectNoIntegration",
+            "line": 147
+          },
+          {
+            "id": "BK-240",
+            "method": "reSyncDoesNotDuplicate",
+            "line": 163
+          },
+          {
+            "id": "BK-241",
+            "method": "syncFailsOnPermanentAuth",
+            "line": 191
+          },
+          {
+            "id": "BK-242",
+            "method": "updateDefectReSyncs",
+            "line": 207
+          },
+          {
+            "id": "BK-243",
+            "method": "deleteDoesNotRemoveExternal",
+            "line": 225
+          },
+          {
+            "id": "BK-244",
+            "method": "rateLimitBackoff",
+            "line": 244
+          },
+          {
+            "id": "BK-245",
+            "method": "fieldMappingAccuracy",
+            "line": 260
+          },
+          {
+            "id": "BK-246",
+            "method": "workspaceIsolation",
+            "line": 277
+          },
+          {
+            "id": "BK-247",
+            "method": "createDefectCarriesExternalLink",
+            "line": 293
           }
         ]
       },
@@ -104,9 +181,9 @@
   },
   "preconditions": [],
   "summary": {
-    "totalComponents": 5,
-    "totalATCs": 12,
-    "apiComponents": 3,
+    "totalComponents": 6,
+    "totalATCs": 26,
+    "apiComponents": 4,
     "uiComponents": 2,
     "preconditionModules": 0
   }

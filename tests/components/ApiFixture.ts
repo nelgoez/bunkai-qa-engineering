@@ -19,6 +19,7 @@ import type { TestContextOptions } from '@TestContext';
 import { ApiBase } from '@api/ApiBase';
 import { AtcsApi } from '@api/AtcsApi';
 import { AuthApi } from '@api/AuthApi';
+import { DefectsApi } from '@api/DefectsApi';
 import { ExampleApi } from '@api/ExampleApi';
 
 // ============================================
@@ -32,6 +33,9 @@ export class ApiFixture extends ApiBase {
   /** Auth component - handles login and token management */
   readonly auth: AuthApi;
 
+  /** Defects component - defect CRUD and sync operations */
+  readonly defects: DefectsApi;
+
   /** Example component - reference only */
   readonly example: ExampleApi;
 
@@ -41,6 +45,7 @@ export class ApiFixture extends ApiBase {
     // All components receive the same options (same request context)
     this.atcs = new AtcsApi(options);
     this.auth = new AuthApi(options);
+    this.defects = new DefectsApi(options);
     this.example = new ExampleApi(options);
   }
 
@@ -56,6 +61,7 @@ export class ApiFixture extends ApiBase {
     super.setAuthToken(token);
     this.atcs.setAuthToken(token);
     this.auth.setAuthToken(token);
+    this.defects.setAuthToken(token);
     this.example.setAuthToken(token);
   }
 
@@ -66,6 +72,7 @@ export class ApiFixture extends ApiBase {
     super.clearAuthToken();
     this.atcs.clearAuthToken();
     this.auth.clearAuthToken();
+    this.defects.clearAuthToken();
     this.example.clearAuthToken();
   }
 }
