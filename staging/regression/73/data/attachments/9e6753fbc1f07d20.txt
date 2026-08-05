@@ -1,0 +1,5 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/tests
+❌ [BK-273] createTestForeignAtc - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 404
+Received: 422

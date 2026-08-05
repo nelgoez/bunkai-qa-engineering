@@ -1,0 +1,2 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/workspaces
+✅ [BK-131] createWorkspaceNameTooShort - PASS (244ms)

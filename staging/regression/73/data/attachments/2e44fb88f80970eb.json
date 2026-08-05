@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "workspace_id does not reference an existing workspace.",
+    "request_id": "8a3ff9d6-2f44-4bf6-bb02-e551b1cd6170"
+  }
+}

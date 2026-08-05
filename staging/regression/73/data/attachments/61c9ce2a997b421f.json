@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "forbidden",
+    "message": "Missing required capability: atc:write",
+    "request_id": "8f04f099-8a1f-40d3-97df-57b4d1cafb40"
+  }
+}

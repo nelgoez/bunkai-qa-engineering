@@ -1,0 +1,7 @@
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-149] createAtcSuccessfully - PASS (342ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/tests
+❌ [BK-270] createTestSuccessfully - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 422

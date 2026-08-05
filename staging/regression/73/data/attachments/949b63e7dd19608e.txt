@@ -1,0 +1,2 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/tests
+✅ [BK-271] createTestEmptyChain - PASS (905ms)

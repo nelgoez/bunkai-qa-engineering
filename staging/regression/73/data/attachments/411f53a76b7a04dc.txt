@@ -1,0 +1,15 @@
+
+============================================================
+KATA Architecture - Global Teardown
+============================================================
+
+ATC Coverage:
+   8 unique ATC tracked (14 total executions)
+   ✅ Passed: 5 | ❌ Failed: 3 | ⏭️ Skipped: 0
+
+[SYNC] Syncing results to TMS...
+
+============================================================
+[OK] Global teardown complete
+============================================================
+

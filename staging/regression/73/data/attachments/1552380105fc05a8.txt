@@ -1,0 +1,4 @@
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/workspaces
+✅ [BK-130] createWorkspaceSuccessfully - PASS (301ms)
+---- API NOK: 409 - https://staging-upexbunkai.vercel.app/api/v1/workspaces
+✅ [BK-133] createWorkspaceDuplicateSlug - PASS (244ms)

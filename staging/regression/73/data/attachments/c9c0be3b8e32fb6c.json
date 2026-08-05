@@ -1,0 +1,10 @@
+{
+  "workspace": {
+    "id": "fa1e1079-88a0-4b64-959a-c66463bd8f51",
+    "slug": "ws-db-msgmfwtc",
+    "name": "DB-Persist msgmfwtc",
+    "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "plan": "community",
+    "created_at": "2026-08-05T21:51:08.466121+00:00"
+  }
+}
