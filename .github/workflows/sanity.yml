@@ -58,6 +58,11 @@ env:
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
+  TMS_PROVIDER: ${{ secrets.TMS_PROVIDER || 'jira' }}
+  ATLASSIAN_URL: ${{ secrets.ATLASSIAN_URL }}
+  ATLASSIAN_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
+  ATLASSIAN_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
+  AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'false' }}
 
 jobs:
   SanityTest:
