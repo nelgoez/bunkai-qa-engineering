@@ -3,28 +3,32 @@
   "templateRepo": "upex-galaxy/agentic-qa-boilerplate",
   "templateCommit": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
   "perComponentCommit": {
-    "skills": "61a99500e18b6f70cc52f60a85b3b8950f5fa4f0",
-    "commands": "b99a2689f4d2a85f4d6fe0997d7627d0e1f20b16",
-    "scripts": "61a99500e18b6f70cc52f60a85b3b8950f5fa4f0",
-    "docs": "b99a2689f4d2a85f4d6fe0997d7627d0e1f20b16",
+    "skills": "78597763963061453470eebd872be393157f2adc",
+    "commands": "78597763963061453470eebd872be393157f2adc",
+    "scripts": "78597763963061453470eebd872be393157f2adc",
+    "docs": "78597763963061453470eebd872be393157f2adc",
     "cli": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
     "vscode": "61a99500e18b6f70cc52f60a85b3b8950f5fa4f0",
-    "husky": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
-    "agents-docs": "b99a2689f4d2a85f4d6fe0997d7627d0e1f20b16",
+    "husky": "78597763963061453470eebd872be393157f2adc",
+    "agents-docs": "78597763963061453470eebd872be393157f2adc",
     "claude-config": "b99a2689f4d2a85f4d6fe0997d7627d0e1f20b16",
     "tooling": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
-    "env-template": "b99a2689f4d2a85f4d6fe0997d7627d0e1f20b16"
+    "env-template": "78597763963061453470eebd872be393157f2adc"
   },
   "syncedComponents": [],
   "ignoreFileSync": {
     ".gitignore": {
-      "lastSyncedSha": "597eb91c45f4490cc9ed77cd1204fadc792add6d",
+      "lastSyncedSha": "36a1a683d89bb8c2c9376a25ec204cbbdfd4c5a4",
       "appendedLines": [
-        "**/evidence/"
+        "**/evidence/",
+        "/.allure/",
+        "/.agents/prompts/",
+        ".template/claude-md.upstream.sha",
+        ".template/upstream-sha/"
       ]
     },
     ".prettierignore": {
-      "lastSyncedSha": "c458761b1ac4605ca54f82dcf30411797bfc6b0a",
+      "lastSyncedSha": "642f57f0d23c79095d66c0edd02994c983ec7ca9",
       "appendedLines": [
         ".claude/settings.local.json",
         ".auth/",
@@ -34,26 +38,37 @@
         "api/openapi*",
         "api/.openapi-config.json",
         ".playwright-mcp/",
-        ".backups/"
+        ".backups/",
+        "packages/decks/"
       ]
     }
   },
   "packageJsonSync": {
     "package.json": {
       "scripts": {
-        "lastSyncedSha": "da8e0cd10ebee88a102e5595a478f92580b48ea1",
+        "lastSyncedSha": "a5f848544f56080ceff9a25cade06ccd4b05a35d",
         "appliedKeys": [
           "vars:env:check",
           "env"
         ]
       },
       "devDependencies": {
-        "lastSyncedSha": "da8e0cd10ebee88a102e5595a478f92580b48ea1",
+        "lastSyncedSha": "a5f848544f56080ceff9a25cade06ccd4b05a35d",
+        "appliedKeys": [
+          "allure-js-commons"
+        ]
+      },
+      "dependencies": {
+        "lastSyncedSha": "a5f848544f56080ceff9a25cade06ccd4b05a35d",
+        "appliedKeys": []
+      },
+      "lint-staged": {
+        "lastSyncedSha": "a5f848544f56080ceff9a25cade06ccd4b05a35d",
         "appliedKeys": []
       }
     }
   },
   "cliVersion": "7.0",
-  "lastSyncedAt": "2026-06-15T19:09:31.518Z",
+  "lastSyncedAt": "2026-08-05T19:03:54.150Z",
   "variableSystemVersion": 1
 }

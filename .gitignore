@@ -159,3 +159,9 @@ nul
 # Temporary session artifacts
 /tmp/
 /cookies*.txt
+
+# ----- 2026-08-05 (sync) -----
+/.allure/
+/.agents/prompts/
+.template/claude-md.upstream.sha
+.template/upstream-sha/

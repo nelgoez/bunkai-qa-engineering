@@ -1,0 +1,4 @@
+# PENDING — ATC IDs need test issues created in Xray
+# 5 validation tests PASS against staging
+# 3 positive tests + 1 security test blocked by server idempotency bug (Idempotency insert failed)
+# Expected ATCs once Xray test issues created: 8 total

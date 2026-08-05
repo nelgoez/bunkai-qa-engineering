@@ -15,6 +15,22 @@ This reference is for manual, in-sprint reporting RIGHT NOW. It does NOT cover S
 
 > **Prerequisite**: Load `/acli` skill before executing any `[ISSUE_TRACKER_TOOL]` call in this section (duplicate search, Create issue, comment back-reference, search fields). Skip if Session Start §0.1 in `SKILL.md` already loaded it.
 
+### 1.0 Classify and frame the report first (Bug vs Defect vs Improvement)
+
+This template files all three sibling types — they share one Jira workflow. Before filing, settle the **upstream decisions** per `agentic-qa-core/references/defect-management-doctrine.md` (the canonical, shared doctrine — do not re-derive it here):
+
+- **Issue type** (Part 1) — classify by the affected **FEATURE's lifecycle stage, not where the problem was found** (you may reproduce on localhost/qa yet the feature is pre-release → Defect):
+  - **Bug** — feature already live above Staging (production / superior env, end-user visible) — escaped the sprint gate.
+  - **Defect** — feature still pre-release (Staging or below); found during sprint testing — the normal output of in-sprint QA (contained, not escaped).
+  - **Improvement** — not a broken AC: an enhancement, or an under-specified / absent AC surfaced by a test-beyond-AC.
+  The create call (`--type`) follows this classification — do NOT hardcode `Bug`.
+- **Components** (Part 3) — native, MANDATORY: set the affected product module / Epic (must pre-exist in the Jira Components module). The `<COMPONENT>` token in the §1.2 summary is a title string; the native `components` field is set separately.
+- **Three-axis parenting** (Part 4) — **parent** the issue to the **QA Defect Management** process epic (`qa.qa_epics.defect_epic`, found-or-created — NEVER a product/dev epic and NEVER the Story); KEEP the **source-Story link** for traceability (§1.13); **components** carries the product area. Keep the three axes separate.
+- **QA Assignee** (Part 2) — self-assign, never-overwrite; set per §1.13.
+- **Priority** (Part 5.1) — auto-derived from Severity (§1.5), written to native `priority`.
+
+Write mechanics (acli `workitem create --from-json` for create-time customfields + native `components`; REST `PUT` for edits) → doctrine Part 6 + `/acli`.
+
 ### 1.1 When to file a bug
 
 File a bug when Stage 2 execution reveals a confirmed defect. Before filing:
@@ -101,6 +117,8 @@ One call per evidence file (the image is embedded as a comment on the bug). Full
 | Minor | Low |
 | Trivial | Lowest |
 
+Priority is **auto-derived** from Severity by this matrix and written to the **native `priority`** field. Override only with a one-line justification when business urgency diverges from technical severity (e.g. a `Trivial` typo in the landing hero warranting `High`). See `agentic-qa-core/references/defect-management-doctrine.md` Part 5.1.
+
 ### 1.6 Error type (infer from behaviour)
 
 | Error Type | When to use |
@@ -129,8 +147,8 @@ One call per evidence file (the image is embedded as a comment on the bug). Full
 | Value | When |
 |-------|------|
 | Code Error | Logic bug in source |
-| Config/Env Error | Env var, feature flag, config |
-| Environment Error | Infra / deploy / CI |
+| Configuration Error | Env var, feature flag, config |
+| Infrastructure Error | Infra / deploy / CI |
 | Requirement Error | Spec wrong or ambiguous |
 | Working As Designed (WAD) | Not a bug |
 | Third-Party Error | Library / framework defect |
@@ -236,6 +254,10 @@ There are two distinct failure modes:
 
 Use absolute paths under the ticket's `evidence/` folder. Supported: `.png`, `.jpg`, `.gif`, `.mp4`, `.log`, `.txt`, `.pdf`. Provide the 1-2 most informative screenshots (the bug state, not navigation screens).
 
+**Evidence file naming (mandatory).** Name every file in `evidence/` as `{KEY}-step{NN}-{action}.{ext}` — `{KEY}` = the ticket key, `step{NN}` = zero-padded step number tying the file to a specific reproduction / test step, `{action}` = short kebab-case description, `{ext}` ∈ `png` · `jpg` · `gif` · `mp4` · `log` · `txt` · `pdf` (plus capture-format extensions such as `har` for network traces). Examples: `UPEX-411-step1-form-validation.png`, `UPEX-101-step3-error-shown.png`, `GX-202-step2-network-trace.har`. The `step{NN}` token lets bug reports (§1.3 Steps to Reproduce) and regression analysis reference each piece of evidence by step.
+
+Shared bucket model (auto-logs vs real evidence vs annotation intermediates), the annotated-image suffix, and the verify-on-disk discipline live in `../../agentic-qa-core/references/evidence-conventions.md` — this section stays authoritative for bug-attachment naming only. When the bug is visual/positional and got a marked-up capture via the `bug-screenshot-annotation` skill, that annotated PNG leads the attachment list ahead of the raw shot.
+
 ### 1.12 Human confirmation gate
 
 Before calling `[ISSUE_TRACKER_TOOL] Create issue`, present the full draft (title, severity, error type, environment, custom-field summary, attachments list) and wait for user OK. Never skip this gate.
@@ -254,7 +276,7 @@ Before calling `[ISSUE_TRACKER_TOOL] Create issue`, present the full draft (titl
 
    Resolve the `problem_incident` link type by slug only, create one edge, then run the mandatory direction check (confirm the Story's outward partner is the Bug under `causes`) — full mechanics in `agentic-qa-core/references/traceability-linking.md` (§2 slug resolution, §4 directionality + verification). Defer the `--out`/`--in` flag handling to `/acli` per `[ISSUE_TRACKER_TOOL]`.
 2. Comment on the related story with a back-reference: `Bug found during exploratory testing: {BUG-KEY} - {title}`.
-3. Assign if user specifies, otherwise leave for triage.
+3. **Set QA Assignee = self** (`{{jira.qa_assignee}}`) — the authenticated session user who filed the report (the same identity that becomes `reporter`). **Never-overwrite**: read the current value first; write only if empty, or on an explicit, justified handover. This is the QA owner of the issue and is DISTINCT from the native dev `assignee` (which stays free for dev triage — do NOT set it). Per `agentic-qa-core/references/defect-management-doctrine.md` Part 2; customfield write mechanics (REST `PUT`, read-before-write) → Part 6 + `/acli`.
 4. Update the ticket's PBI `context.md` with the new bug key.
 
 ---
@@ -307,6 +329,8 @@ RECOMMENDATIONS
 Apply the branch that matches the resolved modality (do not mix).
 
 > **Prerequisite (both modalities)**: Load `/acli` skill before any `[ISSUE_TRACKER_TOOL]` call below. In Modality jira-xray additionally load `/xray-cli` for `[TMS_TOOL] Update Run` and `[TMS_TOOL] Import Results`. Skip if Session Start §0.1 in `SKILL.md` already loaded them.
+
+> **ATR item (excellence default)** — by excellence the ATR is the **Test Execution** issue titled `ATR: {STORY-KEY}: Story Testing` (the Story-level run, named **Story Testing**, runs ONCE per sprint), created in Stage 1 and parented to the **QA Test Artifacts** epic; Stage 3 fills its body + run results below. The Story custom field (`{{jira.acceptance_test_results}}`) is a **fallback ONLY** when the Test Execution work type is unavailable.
 
 #### Modality jira-xray (ATR = Test Execution)
 
@@ -398,6 +422,8 @@ Present Total / PASSED / FAILED / Pass Rate % as a 4-row summary when closing th
 
 Four comment templates cover the two paths (Story, Bug) and two outcomes (pass, fail). Pick by ticket type and result.
 
+**Real-link rule (binding).** Any ticket the comment names as a blocker or filed defect — the `DEFECT:` line in Template B, back-references to bugs, blocking-ticket mentions in prose — MUST be a real, clickable link to the issue (Markdown `[KEY: title](browse-URL)` → ADF `link` mark), never a bare plain-text key: plain keys do NOT auto-link in ADF, and an unclickable blocker reference defeats the point of naming it. Mechanics + exceptions: `../../acli/references/adf-authoring-style.md` §Issue links. The traceability issuelink (§1.13, §5.1) is separate and still mandatory — the link mark serves the human reader, the issuelink serves the graph.
+
 ### 3.1 Template A — Story PASSED
 
 ```
@@ -442,7 +468,7 @@ FAILED VERIFICATION:
   Actual: {what happened}
   Impact: {user/business impact}
 
-DEFECT: {Bug key and short description}
+DEFECT: [{BUG-KEY}: {short description}]({jira-browse-url-of-BUG-KEY})   <- real link, never a bare key (§3 real-link rule)
 
 Artifacts: ATP-{id}, ATR-{id}, TC-{ids}
 ```
@@ -489,19 +515,40 @@ Returning to dev for review.
 Artifacts: ATP-{id}, ATR-{id}
 ```
 
-### 3.5 Evidence attachments (after comment)
+### 3.5 Evidence Handoff (emit at Stage 3 close whenever UI or API evidence exists)
 
-After posting any Template A-D comment, surface 1-2 screenshot paths so the user can attach them to the TMS comment:
+A ranked, captioned shortlist of exactly what belongs on the ticket, emitted in chat after the Template A-D comment posts — **on ANY verdict** (pass, fail, bug, open question): a reader trusts a finding far more when they can see it, UI work especially. It never goes inside the Jira comment body itself.
+
+Format:
 
 ```
-Comment posted to TMS.
+### Evidence Handoff — evidence for the {KEY} thread
+Evidence folder: {absolute path}/evidence/
 
-Evidence screenshots to attach:
-1. {abs-path-to-evidence}/{{PROJECT_KEY}}-{number}-{primary}.png — {desc}
-2. {abs-path-to-evidence}/{{PROJECT_KEY}}-{number}-{secondary}.png — {desc, if applicable}
+Recommended (in this order):
+1. {file} — {business caption}
+2. {file} — {business caption}
+
+Skipped (available, not needed): {smoke shot}, raw console/page logs.
+
+API evidence (paste as a thread reply):       <- only if the API was tested
+    GET /api/{endpoint}?{params}
+    Authorization: <redacted>
+    -> 200 · {proving field}: {value}
 ```
 
-Rules: pick the most informative 1-2 shots; for bugs show the fix working (Template C) or the persisting failure (Template D); for stories show key ACs verified; never list intermediate navigation shots.
+**Delivery — this repo can auto-embed.** Jira accepts inline images via the bundled helper (§1.3), so after emitting the ranked list, OFFER to publish the recommended images directly onto the target issue (one helper call per file, human confirms first); the human-attaches path stays as fallback for surfaces the helper can't reach. Either way the AI never claims an attachment happened unless the helper call verifiably succeeded.
+
+Rules:
+
+- **Curate ruthlessly — do not dump the folder.** 1-4 shots is typical. Lead with the headline / "money" shot; if a bug got an annotated capture via the `bug-screenshot-annotation` skill, that annotated PNG IS the money shot — rank it first, ahead of the raw capture. Then edge cases / controls. For bugs show the fix working (Template C) or the persisting failure (Template D); for stories show key ACs verified; never list intermediate navigation shots.
+- **Captions are business outcomes, not mechanism** — "discount now its own line, total unchanged", NOT "panel screenshot at 1280px".
+- **Verify each file exists on disk first** (`ls` the evidence dir) — never recommend a capture a subagent only claimed to take (`../../agentic-qa-core/references/evidence-conventions.md` §3).
+- **Skip list, one line** — name the captured-but-not-recommended files so the human knows they were considered, not forgotten.
+- **API evidence blocks carry ZERO credentials** — redact `Authorization` / Bearer / cookies / API keys / passwords / session tokens → `<redacted>`; drop any token query-param. Show only what proves the behavior (status + the one field that makes the point).
+- **Absolute paths here** (the human may open the OS file browser to drag files); the session-footer consolidated list (`../../agentic-qa-core/references/session-footer-contract.md`) uses repo-relative paths — produce both where both apply.
+
+Naming: files in `evidence/` follow §1.11 (`{KEY}-step{NN}-{action}.{ext}`) or the Stage 2 exploration family; annotated images use the dedicated suffix — full model in `../../agentic-qa-core/references/evidence-conventions.md` §2.
 
 ---
 
@@ -550,7 +597,7 @@ Record the gate outcome (hypothesis, cited fact, decision) in the ATR Observatio
 
 1. ATR marked complete in TMS via `[TMS_TOOL]`.
 2. QA comment posted (Template A, B, C or D) via `[ISSUE_TRACKER_TOOL]`.
-3. Evidence screenshots surfaced to the user with absolute paths.
+3. Evidence Handoff emitted per §3.5 (ranked + captioned, absolute paths, auto-embed offered via the §1.3 helper).
 4. Ticket transitioned — Story PASSED -> `{{jira.status.story.qa_approved}}` (via `{{jira.transition.story.qa_sign_off}}`); Bug VERIFIED -> `{{jira.status.bug.closed}}` (via `{{jira.transition.bug.retest_passed}}`); Story FAILED **(run the §5.0 recalibration gate first for any security/auth/framework-default FAIL — a recalibrated finding becomes GO-with-debt and takes the PASSED path, not a blocking transition)** with `{{FORMAL_BLOCKED_GATE}}=true` -> `{{jira.status.story.blocked}}` (via `{{jira.transition.story.defect_reported}}`); Story FAILED non-strict -> left in `{{jira.status.story.in_test}}` with linked bug; Bug NOT FIXED -> left in `{{jira.status.bug.ready_for_qa}}` pending dev. See `sprint-orchestration.md` Briefing 4 Step 5 for the full decision tree.
 5. **Create the blocking traceability link — Story `is blocked by` Bug.** Whenever the `defect_reported` → `blocked` gate fires (`{{FORMAL_BLOCKED_GATE}}=true`), the status transition alone does not record the dependency; create the issuelink so the block gate and coverage consumers can walk it:
 
@@ -601,9 +648,29 @@ When some TCs pass and others fail, set ATR result to `PASSED WITH ISSUES`. File
 - [ ] ATR body written in the §2.2 plain-text format and uploaded via `[TMS_TOOL]` (or to `{{jira.acceptance_test_results}}` / `## Acceptance Test Results (ATR)` fallback comment)
 - [ ] Synced ATR cache materialized (not hand-written) — jira-native: `acceptance-test-results.md` via `bun run jira:sync-issues get <STORY_KEY> --include-comments`; jira-xray: `test-executions/TESTEXEC-<ATR_KEY>-<slug>.md` via `bun run jira:sync-issues get <ATR_KEY>` (per-TC run results read via `[TMS_TOOL]`, not synced)
 - [ ] Correct QA comment template chosen (A/B/C/D) and posted via `[ISSUE_TRACKER_TOOL]`
-- [ ] 1-2 evidence screenshot paths surfaced to the user
+- [ ] Evidence Handoff emitted (§3.5): ranked 1-4 shots with business captions, skip list, API blocks redacted, files ls-verified; auto-embed offered
+- [ ] Blocking/defect ticket mentions in the posted comment are real links, not bare keys (§3 real-link rule)
 - [ ] Ticket transitioned (story PASSED -> `{{jira.status.story.qa_approved}}`; bug VERIFIED -> `{{jira.status.bug.closed}}`)
 - [ ] `context.md` updated with Final Status block
 - [ ] synced `acceptance-test-results.md` + `context.md` committed on `test/{JIRA_KEY}/{short-desc}` with conventional prefix
 - [ ] Batch mode only: `SPRINT-{N}-TESTING.md` framework file updated AFTER the above
 - [ ] Next-stage routing identified (`test-documentation` / `test-automation` / `regression-testing`, or none)
+
+---
+
+## 7. Slack reports with tables (macOS clipboard paste — optional delivery channel)
+
+Slack does NOT render markdown tables, tab-separated text, or `[label](url)` pasted from the composer. It DOES render rich content when the clipboard carries the canonical `public.html` flavor — the same thing copying cells from Google Sheets produces. So when the user asks for a QA report "for Slack", deliver it through the clipboard via the bundled helper `cli/slack-clip.js` (JXA, macOS-only, zero config, zero network — it never talks to the Slack API; the human pastes manually).
+
+**Delivery model: `report = 1 PROSE message + 1 message per TABLE`.**
+
+- **Prose piece** — one HTML file using `<p>`, `<ul><li>`, `<b>/<i>/<u>/<s>/<code>/<a>`. Pastes as one rich message.
+- **Table piece** — its OWN paste from a **table-only** HTML file (`<table>…</table>`, nothing before or after). Slack allows one table per message and detects "render as table" from the clean-TSV plain-text flavor the helper derives. Mixing table with prose in one paste flattens the table into a run-on line.
+
+**Flow:**
+
+1. Author each piece as a small HTML file in the session scratchpad. Use entities for non-ASCII (`&#8594;` for →, `&#8212;` for —, `&gt;`); header cells in `<b>`; links as `<a href>`.
+2. Run: `osascript -l JavaScript cli/slack-clip.js <piece.html>` — expect `public.html=true plain-text=true`.
+3. Tell the user the clipboard is live — paste with Cmd+V before copying anything else. Multi-piece: set → paste → confirm → set the next piece.
+
+**Gotchas the helper already handles:** a trailing newline after `</table>` and blank lines between TSV rows both make Slack silently drop the table (the helper trims + emits clean single-newline rows). **Not viable alternatives** (verified): `pbcopy`/plain-TSV (raw text, no table), AppleScript `«data HTML»` (dynamic UTI Slack ignores), Slack Block Kit (no multi-column table block for channel messages).

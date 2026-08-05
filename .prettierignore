@@ -83,3 +83,6 @@ api/.openapi-config.json
 
 # Graphify knowledge graph (generated, AI context only)
 graphify-out/
+
+# ----- 2026-08-05 (sync) -----
+packages/decks/

@@ -1,6 +1,6 @@
 # Skill Registry (auto-generated)
 
-> Generated: `2026-07-11T00:24:08.290Z`
+> Generated: `2026-08-05T19:03:54.331Z`
 > Generator: `bun scripts/build-skill-registry.ts`
 > Protocol: `.claude/skills/agentic-qa-core/references/skill-resolver.md`
 
@@ -8,7 +8,7 @@ This file is the per-session compact-rules cache for the Skill Resolver protocol
 The orchestrator copies one or more `## Skill: <slug>` blocks below into every subagent briefing under `## Project Standards (auto-resolved)`.
 Subagents trust those compact rules and only read the full SKILL.md when explicitly instructed.
 
-Skills indexed: 16
+Skills indexed: 18
 
 ---
 ## Skill: acli
@@ -65,25 +65,53 @@ Skills indexed: 16
 
 **Compact Rules**:
 - **Speak like a human, not a terminal.** For the whole explanation, **suspend any compressed / caveman register** — full sentences, warm tone, simple words, zero unexplained jargon. Define each technical term the first time you use it ("an ATC — basically one complete test case, start to finish"). This is an explicit in-skill override of the default register; resume your normal style once the person is oriented.
-- **Mirror the user's language.** Spanish in → explain in Spanish (the repo ships Spanish versions of every presentation — see below). English in → English.
+- **Mirror the user's language.** Spanish in → explain in Spanish. English in → explain in English — but note that the visual decks ship in Spanish only (technical terms stay in English inside them).
 - **Start from where they are.** If the goal is unclear, ask ONE quick question ("are you trying to test a ticket, or understand the whole flow?"). Don't dump all six stages on someone who asked about one.
 - **Concept first, in plain words** — what the activity is and *why* it matters — before any command, flag, or file path.
-- **Then offer the visual presentation.** Each workflow skill has a `how-it-works` deck that teaches the activity as a craft (Part 1) and then how the AI does it from the terminal (Part 2). Offer to open it in their browser — follow the opening protocol below.
+- **Then offer the visual presentation.** Each workflow skill has a `how-it-works` deck that walks the skill's workflow step by step: a cover slide, a full workflow map (main path + adjacent paths), then one phase per slide with the craft concepts embedded where they apply. Offer to open it in their browser — follow the opening protocol below.
 - **Hand off when oriented.** Once they know which skill to call, point them at it and step back.
-- **Announce + ask.** "I can open a short visual deck that walks through how `/sprint-testing` works — first the manual craft, then how the skill does it from the terminal. Want me to open it in your browser?"
-- **Match the language** of the conversation: Spanish user → the `.es.html` file; English user → the `.html` file.
-- **On a yes, open exactly one deck** (pick the OS command for the user's platform):
+- **Announce + ask.** "I can open a short visual deck that walks through how `/sprint-testing` works — the full workflow map first, then each phase step by step. Want me to open it in your browser?"
+- **Decks are Spanish-only** (`.es.html`). If the user speaks English, mention the deck is in Spanish (technical terms stay in English) before opening it.
+- **On a yes, open exactly one deck** — published URL first; local file as offline fallback (pick the OS command for the user's platform):
 - **One at a time.** Let the person watch and come back with questions before offering the next skill's deck. Do not batch-open several.
 - **After it opens,** tell them the keys (`←` `→` to move, `S` for speaker notes) and offer to walk the slides together or answer questions as they go.
+- **For "how does KATA work" / architecture questions,** also offer the interactive KATA Academy (`.../kata/`) — 8 interactive chapters, Spanish, presentation mode with the `P` key.
 - Syncs the ticket from Jira via `bun run jira:sync-issues get <KEY> --include-comments` (canonical detailed read — `acli view` returns null for custom fields), then reads the materialized `.md` files.
 - Loads the synced context from `.context/PBI/epics/EPIC-<KEY>-<slug>/stories/STORY-<KEY>-<slug>/` (Module = Epic; Jira-synced files are a read-only cache).
 - Explores the relevant code in the target repo.
-- Authors the ATP (Acceptance Test Plan) → writes it to the Jira field (or fallback comment) → re-syncs; hand-writes only NON-Jira files (context.md, evidence/).
 - (truncated — read full SKILL.md for the rest)
 
 **Read full SKILL.md when**: the compact rules above are insufficient (e.g. novel scenario, debugging, or the briefing tells you to load the full skill).
 
 > Source: `.claude\skills\agentic-qa-onboard\SKILL.md` · phase: `bootstrap` · extraction strategy: B
+
+---
+
+## Skill: bug-screenshot-annotation
+
+**Purpose**: Turns a raw bug screenshot into a QA-style annotated evidence image — circles/ovals around the broken region, arrows, callout text boxes,...
+
+**Compact Rules**:
+- A quota-walled image MCP was simply unavailable (429 across every tier). Not a design problem — just dead.
+- A second generative service got hard-blocked by the agent runtime's own data-exfiltration classifier, because QA screenshots carry real product/customer/competitor data and the destination was not a trusted host. Critically, **explicit user authorization in chat did not lift the block** — and one screenshot had already leaked to the service's public S3/CloudFront bucket before the second attempt was caught.
+- **Input**: a raw screenshot that already exists on disk (typically in the ticket's PBI `evidence/` folder). This skill overlays shapes; it does not generate or edit images from a text description.
+- **Output**: exactly ONE file that counts as evidence — the final rendered annotated PNG, in the ticket's `evidence/` folder. The crop and the annotation HTML are Bucket C working files (see `../agentic-qa-core/references/evidence-conventions.md` §1): session scratchpad only, never referenced from Jira/ATR/bug tickets.
+- **Not for**: filing the bug (reporting-templates owns that), plain before/after shots that read clearly raw, photos of physical objects/documents.
+- **Identify the region.** From the raw screenshot (or its accessibility snapshot), work out the pixel crop box and roughly where each annotation shape lands relative to it.
+- **Crop with Python + PIL — scratchpad only.**
+- **Build the annotation HTML — scratchpad only.** The crop goes in as a background `<img>`; each annotation is one absolutely-positioned `<div>` overlay. Do NOT design from scratch — copy/adjust the commented blocks in `references/shapes.html` (circle-callout, arrow-to-region, callout-box, badge-corner, axis-tick + axis-tag, before-after) and keep its z-index scale.
+- **Serve it over loopback.** The browser-automation CLI refuses `file://` URLs (errors out before rendering) — a local HTTP server is the only way, and loopback binding is also what keeps this approach exfiltration-safe, not just a workaround:
+- **Capture with the browser-automation CLI.** Load `/playwright-cli` first (CLI → skill auto-load rule) for exact verbs/flags. Flow: open `http://127.0.0.1:<port>/annotation.html`, resize the viewport to the HTML's real dimensions (equal or larger — a smaller viewport clips callouts), then screenshot with an explicit destination path into the ticket's `evidence/` folder, named:
+- **Inspect and iterate.** Read the PNG back and check it reads cleanly. Not optional and not one-shot — expect at least one adjustment pass: move/resize a circle or callout box, rewrap/shorten callout text, nudge the badge or arrow out of a collision.
+- **Clean up.** Kill the HTTP server process (`kill <pid>` or `pkill -f "http.server <port>"`). Never leave it running past the session.
+- **Report the path — immediately, unprompted.** The moment the final PNG lands in `evidence/`, state its repo-relative path in chat, in that same turn (standing contract: `../agentic-qa-core/references/session-footer-contract.md` Part 1). The path must also reappear in the session-close consolidated screenshot list, leading the "Bug annotations" group.
+- **(Optional — this repo's upgrade over the manual-attach model.) Embed into the bug issue.** Jira accepts inline images via the bundled helper — offer to publish the annotated PNG directly as an evidence comment on the bug (human confirms first):
+- **Badge hidden behind a callout box.** Both are `position: absolute`; without explicit stacking, DOM order (not visual intent) decides paint order. `references/shapes.html` fixes this with an explicit z-index scale — base image `1` → circles/arrows/ticks `10` → callout boxes `20` → corner badge `30` (always topmost). Skipping the scale is the #1 source of annotation bugs; don't let a copy-pasted block quietly drop its `z-index`.
+- (truncated — read full SKILL.md for the rest)
+
+**Read full SKILL.md when**: the compact rules above are insufficient (e.g. novel scenario, debugging, or the briefing tells you to load the full skill).
+
+> Source: `.claude\skills\bug-screenshot-annotation\SKILL.md` · phase: `unknown` · extraction strategy: B
 
 ---
 
@@ -132,7 +160,7 @@ Skills indexed: 16
 - Unpushed / unpulled commits (ahead / behind upstream).
 - Upstream status (no upstream, up-to-date, diverged).
 - Remote name(s) — most repos have one (`origin`); some have a fork + upstream.
-- **Marker in `CLAUDE.md`** — search for `<!-- git-flow-master:strategy:VALUE -->` where `VALUE` is one of the eight slugs. If found, use it. This is the persisted decision. Also read the decision markers if present — `<!-- git-flow-master:integration-branch:NAME -->`, `<!-- git-flow-master:promote-method:... -->`, `<!-- git-flow-master:feature-merge:... -->`, `<!-- git-flow-master:hotfix-policy:... -->`. Each marker that resolves a questionnaire answer means Strategy Setup SKIPS that question on re-run (idempotent).
+- **`git_strategy:` block in `.agents/project.yaml`** — read it. If `git_strategy.strategy` is non-null (one of the eight slugs), it + `git_strategy.branches` (production / integration / ephemeral_pattern) + `git_strategy.decisions` (promote_method / feature_merge / hotfix_policy) ARE the persisted decision — use them. Each `git_strategy.decisions.*` field whose value is NOT `n/a`/empty means Strategy Setup SKIPS that question on re-run (idempotent — idempotency is keyed off the `git_strategy.decisions.*` fields, not markers). **Inherited-template guard:** the boilerplate ships the block FILLED (`strategy: solo-main`) and a scaffolded project INHERITS it verbatim (the scaffolder only patches `project.project_name` / `project.project_key`). So a non-null `git_strategy.strategy` is only authoritative when the project is actually onboarded. Read `project.project_name` in the SAME file: if `git_strategy.strategy` is non-null BUT `project.project_name` is `null`, the block was INHERITED from the template (not chosen for THIS project) — treat the strategy as UNCONFIRMED and route to the Bootstrap trigger's inherited case (it still operates under the inherited strategy if the offer is declined). If `project.project_name` is set, the block is confirmed → use it normally, no nudge.
 - **Single-branch heuristic** — `git branch -a` shows only `main` (or `master`) and no integration branch in the remote → `solo-main`.
 - **Two-branch heuristic** — exactly `main` (or `master`) + one of `{staging, dev, develop, integration}` exists upstream → `main-integration` (record the integration branch name).
 - (truncated — read full SKILL.md for the rest)
@@ -227,6 +255,34 @@ Skills indexed: 16
 
 ---
 
+## Skill: pr-review-lead
+
+**Purpose**: Acts as a QA Lead / QA Architect reviewing a pull request's test-automation work against this repo's KATA doctrine (or the target repo's...
+
+**Compact Rules**:
+- `agentic-qa-core/references/briefing-template.md`, `./dispatch-patterns.md`, `./orchestration-doctrine.md` — when a PR is large enough to warrant subagent fan-out (see Step 2).
+- The default doctrine set for KATA/test-automation PRs, read fresh every invocation (never from memory of a prior session): `test-automation/references/kata-architecture.md`, `./typescript-patterns.md`, `./review-checklists.md`, `agentic-qa-core/references/test-design-doctrine.md`, `./defect-management-doctrine.md`.
+- `references/severity-and-scoring.md`, `references/evidence-and-doctrine-lookup.md`, `references/output-and-posting-flow.md` — this skill's own reference material, read at the step noted below.
+- **Flexible** — only flag things that are evidently wrong or could hurt test reliability/design: real bugs, hardcoded secrets, flaky-prone data dependencies, missing coverage that's genuinely unaddressed. A pattern that diverges from "textbook" KATA but works fine is not a finding.
+- **Standard (recommended default)** — same real-defect bar as Flexible, plus doctrine-pattern deviations surface as light observations, explicitly framed as a comparison ("the documented pattern does X, this PR does Y") rather than an error. Never let a pattern note drag the score the way a real defect does.
+- **Strict** — full literal compliance pass against every applicable doctrine file. A deviation is a tagged finding even when it works fine, especially anything that isn't really part of the documented flow/architecture. Still keep the Real vs. Pattern buckets separate in the output — Strict widens what counts as a finding, it does not turn pattern notes into "errors."
+- **This repo**: load `CLAUDE.md` in full, plus the doctrine files listed under Dependencies above. This is the reference standard.
+- **External repo**: check whether the target repo ships its own `CLAUDE.md` / `.claude/skills/` / `.context/` doctrine before assuming anything — many sibling projects are forked from this same boilerplate and carry (a possibly-evolved version of) the same KATA doctrine, but you cannot assume that without checking. If it has its own doctrine, that repo's doctrine is authoritative for this review, not this repo's copy. If it has none, fall back to this repo's KATA doctrine as the reference standard, and say so explicitly in the output ("this repo has no doctrine of its own, findings are graded against `agentic-qa-boilerplate`'s KATA conventions").
+- **This repo, current branch's PR**: `gh pr view`/`gh pr diff` against the working repo.
+- **External repo**: `gh pr view <N> --repo <owner>/<repo> --json ...` for metadata/commits/files, then per-file `gh api repos/<owner>/<repo>/pulls/<N>/files --paginate` for patches. Large PRs (`gh pr diff` errors past ~20k lines, a real limit you will hit) fall back to per-file patches via the same paginated `files` endpoint — never give up and skim the PR description instead of the code.
+- Distinguish real work from noise: a large diff is sometimes 95%+ an unrelated bulk sync/vendor-update commit. Check `commits[].messageHeadline` before assuming every line matters; call this out to the user rather than reviewing the noise commit line-by-line.
+- A concrete code location (file:line in the diff) showing the defect itself, and/or
+- A doctrine file:section backing the "this is wrong per our conventions" claim.
+- **Real / Reliability** — bugs, hardcoded credentials, data dependencies that can silently break, scalability foot-guns, genuinely unaddressed coverage gaps. Weighted at every strictness level.
+- **Pattern / Doctrine-deviation** — diverges from a documented convention but isn't a functional defect. Weight depends on the Step 0 level (soft observation at Flexible/Standard, tagged finding at Strict — see `references/severity-and-scoring.md`).
+- (truncated — read full SKILL.md for the rest)
+
+**Read full SKILL.md when**: the compact rules above are insufficient (e.g. novel scenario, debugging, or the briefing tells you to load the full skill).
+
+> Source: `.claude\skills\pr-review-lead\SKILL.md` · phase: `unknown` · extraction strategy: B
+
+---
+
 ## Skill: project-discovery
 
 **Purpose**: Onboard a project to this testing boilerplate and generate the context files that every QA and automation session depends on.
@@ -266,6 +322,7 @@ Skills indexed: 16
 - Previous run's Allure report (artifact URL or local download under `./analysis/previous/`) — baseline for trend computation.
 - `kata-manifest.json` — registry of tests and ATCs available; used to cross-reference failed test IDs.
 - `.agents/jira-required.yaml` — Jira refs (project key, work types, transitions) for filing regression issues.
+- `agentic-qa-core/references/defect-management-doctrine.md` — **canonical authority** for classifying (Bug/Defect/Improvement), the mandatory field matrix, QA-Assignee ownership, and the QA process epic when a confirmed regression is filed in Jira (Phase 3). Read BEFORE filing any defect.
 - **Error protocol**: On any subagent failure: STOP, report full context to user, present retry / skip / abort options. Do NOT auto-fix. See `.claude/skills/agentic-qa-core/references/orchestration-doctrine.md`.
 - Compute prospective `<scope>` = `<env>-<YYYY-MM-DD>` from invocation context (env defaults to `{{DEFAULT_ENV}}`).
 - Check `.session/regression-testing/<scope>/progress.md`.
@@ -274,7 +331,6 @@ Skills indexed: 16
 - Read `plan.md` (captured `suite`, `env`, `workflow_file`, `RUN_ID` if Phase 1 already triggered).
 - Read tail of `progress.md`.
 - If `RUN_ID` is present AND `progress.md` last entry is `Phase 1 — Trigger — status: completed` but Monitor entry is missing/failed: surface the option to **re-attach** to the existing `RUN_ID` via `gh run view <RUN_ID> --json status,conclusion` instead of re-triggering. This is the high-value resume case.
-- Otherwise surface the standard offer **resume / restart / abort**. On `restart`, archive to `.session/.archive/<YYYY-MM-DD>-regression-testing-<scope>-aborted/` first.
 - (truncated — read full SKILL.md for the rest)
 
 **Read full SKILL.md when**: the compact rules above are insufficient (e.g. novel scenario, debugging, or the briefing tells you to load the full skill).
@@ -323,6 +379,7 @@ Skills indexed: 16
 - Stories ONLY (no bugs — nothing to refine upstream). Entry status Backlog / Shift-Left QA / Estimation / Ready For Dev.
 - Output = refined ACs + gap/ambiguity questions + ATP DRAFT (outline NAMES + coverage estimate, no test code, no execution).
 - The heart of the skill (Phase 2) = edge cases not in story + ambiguities + gaps — feed them to PO/Dev as questions AND as derived outlines.
+- On taking a Story into refinement (first QA pickup), set `qa_assignee` to self — read-before-write, never overwrite an existing owner (`agentic-qa-core/references/defect-management-doctrine.md` Part 2). This skill files NO Bug/Defect/Improvement; only the QA-Assignee hook applies.
 - On completion: add label `shift-left-reviewed`; transition Backlog → Shift-Left QA → Estimation.
 
 **Read full SKILL.md when**: running the batch grooming pipeline, writing the per-Story `shift-left-refinement.md`, or handling the PO/Dev handoff.
@@ -340,12 +397,18 @@ Skills indexed: 16
 - 1:N is the default: explode every non-trivial AC into multiple cases (EP partitions + boundaries + states + contexts). Collapsing an AC to one case requires a written "trivially atomic" justification.
 - Apply techniques by trigger: EP always; BVA wherever a range / limit / length / date-window exists; State-Transition for stateful entities; Decision Table when 2+ conditions interact; Pairwise when 3+ combinable factors (log the reduction); Error-Guessing charters for experience-based risk.
 - A criterion is a business assertion; a test case is a concrete exploration of it. Run the Test-Design Checklist before finalizing the ATP.
+- CLASSIFY before filing — stop hardcoding "Bug". **Bug** = affected feature already live above Staging (end-user visible); **Defect** = feature still pre-release (Staging or below), the normal output of sprint testing; **Improvement** = not a broken AC (an enhancement, or an under-specified/absent AC surfaced by a test-beyond-AC). Classification follows the FEATURE's lifecycle stage, not where the problem was found (Part 1).
+- `qa_assignee` (`{{jira.qa_assignee}}`) = the authenticated session user (self-assign). Set it when a Story is TAKEN INTO TESTING (start_testing) and on every filed Bug / Defect / Improvement. NEVER-OVERWRITE an existing owner (read-before-write); distinct from the native dev `assignee` (Part 2).
+- `components` (native, MANDATORY) = the affected product module/Epic, must pre-exist in the Jira Components module (Part 3).
+- Three-axis model: **parent** = QA Defect Management process epic (`qa.qa_epics.defect_epic`, found-or-created — NEVER a product/dev epic, NEVER the Story); **issue link** = the source Story (traceability); **components** = product module (Part 4).
+- `priority` (native) is auto-derived from `{{jira.severity}}` (critica→Highest, mayor→High, moderada→Medium, menor→Low, trivial→Lowest); override with a 1-line justification (Part 5.1).
 - Three stages, always in order: Stage 1 Planning → Stage 2 Execution → Stage 3 Reporting. Hand off Stages 4/5/6 to `test-documentation` / `test-automation` / `regression-testing`.
 - Jira is source of truth. Read tickets via `bun run jira:sync-issues get <KEY> --include-comments`, then the synced `.md`. NEVER `acli workitem view` for custom fields (returns `null`).
 - Bugs run the veto + triage + risk-score decision tree BEFORE any ATP is written.
 - Execution = smoke pass first, then trifuerza (UI/API/DB) exploration; capture evidence under the PBI folder.
+- API testing = three-tool maneuver: OpenAPI MCP for schema (READ-ONLY) → `bun run api:login` for the token (→ `.auth/tokens.env`) → **curl** for authenticated requests. NEVER execute via the OpenAPI MCP. Canon: `agentic-qa-core/references/api-testing-doctrine.md`.
 - Consult `domain-glossary.md` (if present) before authoring the ATP, refined ACs, and TC outlines.
-- On any subagent failure: STOP, report partial state, offer retry / skip-stage / abort. No auto-fix, no auto-rollback.
+- (truncated — read full SKILL.md for the rest)
 
 **Read full SKILL.md when**: starting a sprint cold, resuming a session, or handling a bug-triage / batch-sprint flow not covered by the rules above.
 
@@ -361,6 +424,7 @@ Skills indexed: 16
 - "All ACs covered" is the FLOOR, not the success bar. The ATC set must also cover risk-beyond-AC: invalid/boundary inputs, auth/error paths, state transitions, and anomalies the AC is silent on.
 - 1:N is the default: one AC maps to multiple ATCs. EP-merge collapses same-behavior inputs INSIDE one partition into a parameterized ATC — it must NEVER collapse across distinct partitions, boundaries, or states. BVA cases are required wherever a range/limit/length/date-window exists (EP alone misses off-by-one).
 - Apply techniques by trigger: EP always; BVA on ranges/limits; State-Transition for stateful flows; Decision Table when 2+ conditions interact; Pairwise when 3+ combinable factors (log the reduction).
+- Parametrize for artifact economy: same-behavior data variants → ONE parameterized `@atc` (fixture / data-factory rows iterated by the test) per partition, NOT N ATCs; split only when action / outcome / state differs. (Canon: doctrine §"Part 2.5".)
 - An AC is the business assertion; an ATC is its concrete exploration (Precondition + Action + Assertions). Run the Test-Design Checklist before finalizing the plan.
 - Plan → Code → Review, always in order. Only automate `Candidate` verdicts from `/test-documentation`.
 - Fixture selection: API-only → `{ api }` (no browser); UI-only → `{ ui }`; hybrid → `{ test }`.
@@ -382,9 +446,10 @@ Skills indexed: 16
 - Documenting an AC→TC map is the FLOOR (≥1 TC per AC is a minimum, never a target). Coverage = AC-conformance + risk-beyond-AC; the TC set must include boundary / negative / state / anomaly cases the AC is silent on.
 - 1:N applies to DERIVATION (consider many cases by technique), not to the REGRESSION repository. Only regression-worthy scenarios (Candidate/Manual) are persisted there; most are Deferred. jira-native: Stage 4 CREATES `Test`s for those only (Deferred = report-only). jira-xray: sprint `Test`s already exist (Stage 1) — Stage 4 PROMOTES the regression-worthy into the Test Plan + enriches them. Document because it will be re-run, never to hit a count.
 - Apply techniques by trigger: EP always; BVA wherever a range/limit/length/date-window exists; State-Transition for stateful entities; Decision Table when 2+ conditions interact; Pairwise when 3+ combinable factors.
+- Parametrize for artifact economy: same-behavior data variants → ONE Test (`Scenario Outline` + `Examples` rows) per partition, NOT N separate Tests; split only when action / outcome / status / state differs. (Canon: doctrine §"Part 2.5".)
 - Cross-cutting characteristics (XSS, perf, a11y) deferred to app-level suites are an EXPLICIT handoff, not a silent drop — name the receiving suite or file the gap.
 - Documents already-validated behavior only — not an exploration tool (exploration belongs to `/sprint-testing`).
-- TC identity = Precondition + Action + verifiable outcome. Naming: `Validate <CORE> <CONDITIONAL>`. Reject `"Login test"`, `"Login - error"`, `"TC1: Test form"`.
+- TC identity = Precondition + Action + verifiable outcome. Naming (TC): `{US_ID}: TC#: should <expected outcome> [<connector> <condition>] [given <precondition>]`; `Validate <feature>` is reserved for the GROUPING layer (Test Set summary / `describe()`). Reject `"Login test"`, `"Login - error"`, `"TC1: Test form"`.
 - ROI formula → one of three verdicts per TC: Candidate (feeds test-automation), Manual, Deferred. Prioritize by risk.
 - Cardinality: US→TC is 1:N; AC→TC is N:1 or N:M. Resolve TMS modality (Xray vs Jira-native) in Phase 0 before documenting.
 - Bug-driven (GOLDEN RULE): not every bug is a regression TC, but a regression-worthy bug MUST end with a Test — REUSE the existing failed Test if it came from one, else CREATE one (both modalities). A non-qualifying bug is treated like a failed test → Deferred, no new Test.

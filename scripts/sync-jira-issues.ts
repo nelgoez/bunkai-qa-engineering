@@ -1042,6 +1042,23 @@ function processNode(node: AdfNode): string {
       return rows.join('\n');
     }
 
+    case 'taskList':
+      return (
+        node.content
+          ?.map((item) => {
+            const state = String(item.attrs?.state || 'TODO');
+            const box = state === 'DONE' ? '[x]' : '[ ]';
+            const inlineNodes = (item.content || []).filter(n => n.type !== 'taskList');
+            const nestedTaskList = (item.content || []).find(n => n.type === 'taskList');
+            const text = processInlineContent(inlineNodes);
+            const nested = nestedTaskList
+              ? `\n  ${processNode(nestedTaskList).split('\n').join('\n  ')}`
+              : '';
+            return `- ${box} ${text}${nested}`;
+          })
+          .join('\n') || ''
+      );
+
     case 'mediaSingle':
     case 'mediaGroup':
       // Skip media for now
@@ -1134,7 +1151,7 @@ function findExistingFolder(baseDir: string, key: string, type: 'epic' | 'story'
   try {
     const entries = readdirSync(searchDir, { withFileTypes: true });
     for (const entry of entries) {
-      if (entry.isDirectory() && entry.name.startsWith(prefix)) {
+      if (entry.isDirectory() && entry.name.startsWith(`${prefix}-`)) {
         return join(searchDir, entry.name);
       }
     }

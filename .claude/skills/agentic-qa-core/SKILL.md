@@ -29,8 +29,24 @@ This skill does NOT orchestrate workflows, does NOT generate files, and does NOT
 | `references/skill-resolver.md` | Skills that resolve composable skills at runtime via the registry | Skill Resolver Protocol used by sub-agent launches. Companion: `scripts/build-skill-registry.ts` → `.claude/skills/REGISTRY.md`. |
 | `references/preflight-gate.md` | `shift-left-testing`, `sprint-testing`, `test-documentation`, `test-automation`, `regression-testing`, `framework-development` | Readiness Preflight Gate doctrine — probe tools/MCPs/CLIs/credentials and surface a user checklist BEFORE a skill starts its real work. Owns the secret/token handling + OpenAPI `api-login` → RESTART flow. |
 | `references/adr-doctrine.md` | `project-discovery`, `framework-development`, `sprint-testing`, `test-automation` | When a test-architecture decision earns an ADR (two-gate test: architectural AND hard-to-reverse) + the detect → draft → record procedure. Test architecture = runner/framework choice, Page-Object vs Screenplay, fixture/data strategy, isolation & parallelization, auth-in-tests, selector contract, exploratory-vs-scripted boundary, reporting/CI sharding, flake-retry policy. |
+| `references/api-testing-doctrine.md` | `sprint-testing`, `test-automation`, `test-documentation` | **Canonical API-testing maneuver** (agentic level, not KATA code): the three-tool split — OpenAPI MCP = schema READ-ONLY (discover endpoints/schemas), `bun run api:login` = mint token only (→ `.auth/tokens.env` env var `API_TOKEN_<ROLE>_<ENV>` + `.auth/tokens.json` keyed `<ROLE>_<ENV>`), curl = authenticated execution. Covers the schema-drift caveat (dev/latest vs target env), token-freshness checks, and the "shell env vars don't persist across the agent's Bash calls → `source` per curl call" rule. |
 
 When a skill cites one of these, it includes a Dependencies block at the top so the AI knows to load `agentic-qa-core` before continuing.
+
+---
+
+## Core reference decks (visual, human-facing)
+
+`agentic-qa-core` hosts two canonical presentations under `packages/decks/agentic-qa-core/` (published on the GitHub Pages hub; see `agentic-qa-onboard` for the opening protocol):
+
+| File | Teaches | Language |
+|------|---------|----------|
+| `naming-conventions.es.html` | The Naming Codex — every test-artifact title format across the seven layers (CASE · GROUP · CONTAINER · CODE · JIRA · GIT · FILESYSTEM), plus a coverage audit of open naming gaps. | Spanish (technical terms in English) |
+| `skills-io-flow.es.html` | The E2E flow (Historia → Refinamiento → Dev → Testing) seen through each skill's **inputs & outputs** — what every phase reads (stdin), which skills it loads (deps), what it produces (stdout), and which Jira fields/transitions it touches. Mac-terminal UI with one tab per phase. | Spanish (technical terms in English) |
+
+They are the human-facing mirror of the rules that live in prose across the workflow skills' `references/*.md`. The Naming Codex answers "how is this artifact named"; the skills-io deck answers "what does this skill need and emit". Navigate with arrow keys (naming deck: `O` = overview, `F` = fullscreen; skills-io deck: tabs + `1-9`). Offer the matching deck when a user asks about naming or about how the skills chain together end-to-end.
+
+**Keep them canonical**: when a rule changes, edit the owning skill's `references/*.md`, regenerate `REGISTRY.md` (`bun run skills:registry`), then refresh the deck in `packages/decks/agentic-qa-core/` (the only copy — skill-side HTML copies were removed) so the decks never drift from the prose source.
 
 ---
 
