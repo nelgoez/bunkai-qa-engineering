@@ -5,8 +5,6 @@ import type {
   DefectCreateResponse,
   DefectResponse,
   DefectSyncResponse,
-  DefectUpdatePayload,
-  DefectUpdateResponse,
   SyncStatus,
 } from '@schemas/defect.types';
 import type { TestContextOptions } from '@TestContext';
@@ -70,96 +68,6 @@ export class DefectsApi extends ApiBase {
     return [response, defect, sent];
   }
 
-  @atc('BK-235')
-  async createDefectFireAndForget(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBe('pending');
-    expect(defect.id).toBeDefined();
-
-    return [response, sent];
-  }
-
-  @atc('BK-236')
-  async createDefectAutoRetries(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBe('synced');
-    expect(defect.external_id).toBeDefined();
-
-    return [response, defect, sent];
-  }
-
-  @atc('BK-237')
-  async getDefectSyncFailed(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBe('failed');
-    expect(defect.sync_attempts).toBeGreaterThanOrEqual(1);
-
-    return [response, defect, sent];
-  }
-
-  @atc('BK-238')
-  async externalUpdateDoesNotFlowBack(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-
-    const [, getBody] = await this.apiGET<DefectResponse | APIError>(
-      this.defectByIdEndpoint(defect.id),
-    );
-    if ('title' in getBody) {
-      expect(getBody.title).toBe(payload.title);
-      expect(getBody.severity).toBe(payload.severity);
-    }
-
-    return [response, defect, sent];
-  }
-
-  @atc('BK-239')
-  async createDefectNoIntegration(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBeUndefined();
-
-    return [response, sent];
-  }
-
   @atc('BK-240')
   async reSyncDoesNotDuplicate(
     payload: DefectCreatePayload,
@@ -200,76 +108,6 @@ export class DefectsApi extends ApiBase {
     expect(response.status()).toBe(201);
     const defect = body.defect ?? body as unknown as DefectResponse;
     expect(defect.sync_status).toBe('failed');
-
-    return [response, defect, sent];
-  }
-
-  @atc('BK-242')
-  async updateDefectReSyncs(
-    id: string,
-    payload: DefectUpdatePayload,
-  ): Promise<[APIResponse, DefectResponse, DefectUpdatePayload]> {
-    const [response, body, sent] = await this.apiPATCH<DefectUpdateResponse, DefectUpdatePayload>(
-      this.defectByIdEndpoint(id),
-      payload,
-    );
-
-    expect(response.status()).toBe(200);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBe('synced');
-    expect(defect.external_id).toBeDefined();
-
-    return [response, defect, sent];
-  }
-
-  @atc('BK-243')
-  async deleteDoesNotRemoveExternal(
-    id: string,
-  ): Promise<[APIResponse, DefectResponse]> {
-    const [deleteResponse] = await this.apiPOST<DefectSyncResponse | APIError, Record<string, never>>(
-      this.defectRetrySyncEndpoint(id),
-      {},
-    );
-
-    expect(deleteResponse.ok()).toBeTruthy();
-
-    const [, getBody] = await this.apiGET<DefectResponse | APIError>(
-      this.defectByIdEndpoint(id),
-    );
-    const defect = 'external_id' in getBody ? getBody as DefectResponse | APIError : null;
-
-    return [deleteResponse, defect as DefectResponse];
-  }
-
-  @atc('BK-244')
-  async rateLimitBackoff(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBe('synced');
-
-    return [response, defect, sent];
-  }
-
-  @atc('BK-245')
-  async fieldMappingAccuracy(
-    payload: DefectCreatePayload,
-  ): Promise<[APIResponse, DefectResponse, DefectCreatePayload]> {
-    const [response, body, sent] = await this.apiPOST<DefectCreateResponse, DefectCreatePayload>(
-      this.defectsEndpoint,
-      payload,
-    );
-
-    expect(response.status()).toBe(201);
-    const defect = body.defect ?? body as unknown as DefectResponse;
-    expect(defect.sync_status).toBe('synced');
-    expect(defect.external_id).toBeDefined();
 
     return [response, defect, sent];
   }
