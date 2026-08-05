@@ -20,7 +20,6 @@ import { ApiBase } from '@api/ApiBase';
 import { AtcsApi } from '@api/AtcsApi';
 import { AuthApi } from '@api/AuthApi';
 import { DefectsApi } from '@api/DefectsApi';
-import { ExampleApi } from '@api/ExampleApi';
 import { ProjectsApi } from '@api/ProjectsApi';
 import { TestsApi } from '@api/TestsApi';
 import { UserStoriesApi } from '@api/UserStoriesApi';
@@ -39,9 +38,6 @@ export class ApiFixture extends ApiBase {
 
   /** Defects component - defect CRUD and sync operations */
   readonly defects: DefectsApi;
-
-  /** Example component - reference only */
-  readonly example: ExampleApi;
 
   /** Projects component - Project CRUD operations */
   readonly projects: ProjectsApi;
@@ -62,7 +58,6 @@ export class ApiFixture extends ApiBase {
     this.atcs = new AtcsApi(options);
     this.auth = new AuthApi(options);
     this.defects = new DefectsApi(options);
-    this.example = new ExampleApi(options);
     this.projects = new ProjectsApi(options);
     this.tests = new TestsApi(options);
     this.workspaces = new WorkspacesApi(options);
@@ -82,7 +77,6 @@ export class ApiFixture extends ApiBase {
     this.atcs.setAuthToken(token);
     this.auth.setAuthToken(token);
     this.defects.setAuthToken(token);
-    this.example.setAuthToken(token);
     this.projects.setAuthToken(token);
     this.tests.setAuthToken(token);
     this.workspaces.setAuthToken(token);
@@ -97,7 +91,6 @@ export class ApiFixture extends ApiBase {
     this.atcs.clearAuthToken();
     this.auth.clearAuthToken();
     this.defects.clearAuthToken();
-    this.example.clearAuthToken();
     this.projects.clearAuthToken();
     this.tests.clearAuthToken();
     this.workspaces.clearAuthToken();

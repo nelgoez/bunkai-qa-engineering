@@ -81,7 +81,7 @@ export class LoginPage extends UiBase {
    *
    * @param credentials - Email and password
    */
-  @atc('PROJ-101')
+  @atc('BK-105')
   async loginSuccessfully(credentials: LoginCredentials): Promise<void> {
     await this.fillAndSubmitLoginForm(credentials);
 
@@ -98,7 +98,7 @@ export class LoginPage extends UiBase {
    *
    * @param credentials - Invalid email or password
    */
-  @atc('PROJ-102')
+  @atc('BK-106')
   async loginWithInvalidCredentials(credentials: LoginCredentials): Promise<void> {
     await this.fillAndSubmitLoginForm(credentials);
 

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-23T01:08:15.053Z",
+  "generatedAt": "2026-08-05T20:00:36.688Z",
   "components": {
     "api": [
       {
@@ -36,7 +36,7 @@
             "line": 73
           },
           {
-            "id": "PROJ-102",
+            "id": "BK-167",
             "method": "loginWithInvalidCredentials",
             "line": 119
           }
@@ -120,49 +120,27 @@
         ]
       },
       {
-        "name": "ExampleApi",
-        "file": "ExampleApi.ts",
-        "relativePath": "tests\\components\\api\\ExampleApi.ts",
-        "atcs": [
-          {
-            "id": "PROJ-101",
-            "method": "createResourceSuccessfully",
-            "line": 57
-          },
-          {
-            "id": "PROJ-102",
-            "method": "createResourceWithInvalidData",
-            "line": 88
-          },
-          {
-            "id": "PROJ-103",
-            "method": "getResourceSuccessfully",
-            "line": 113
-          }
-        ]
-      },
-      {
         "name": "ProjectsApi",
         "file": "ProjectsApi.ts",
         "relativePath": "tests\\components\\api\\ProjectsApi.ts",
         "atcs": [
           {
-            "id": "TBD",
+            "id": "BK-135",
             "method": "createProjectSuccessfully",
             "line": 19
           },
           {
-            "id": "TBD",
+            "id": "BK-136",
             "method": "createProjectNameTooShort",
             "line": 38
           },
           {
-            "id": "TBD",
+            "id": "BK-137",
             "method": "createProjectDuplicateName",
             "line": 53
           },
           {
-            "id": "TBD",
+            "id": "BK-138",
             "method": "createProjectNonMember",
             "line": 68
           }
@@ -174,32 +152,32 @@
         "relativePath": "tests\\components\\api\\TestsApi.ts",
         "atcs": [
           {
-            "id": "TBD",
+            "id": "BK-270",
             "method": "createTestSuccessfully",
             "line": 26
           },
           {
-            "id": "TBD",
+            "id": "BK-271",
             "method": "createTestEmptyChain",
             "line": 57
           },
           {
-            "id": "TBD",
+            "id": "BK-272",
             "method": "createTestWithInvalidTitle",
             "line": 72
           },
           {
-            "id": "TBD",
+            "id": "BK-273",
             "method": "createTestForeignAtc",
             "line": 87
           },
           {
-            "id": "TBD",
+            "id": "BK-274",
             "method": "createTestIdempotentRetry",
             "line": 103
           },
           {
-            "id": "TBD",
+            "id": "BK-275",
             "method": "createTestUnauthenticated",
             "line": 120
           }
@@ -211,27 +189,27 @@
         "relativePath": "tests\\components\\api\\UserStoriesApi.ts",
         "atcs": [
           {
-            "id": "TBD",
+            "id": "BK-140",
             "method": "createUserStory",
             "line": 23
           },
           {
-            "id": "TBD",
+            "id": "BK-141",
             "method": "createUserStoryInvalidTitle",
             "line": 45
           },
           {
-            "id": "TBD",
+            "id": "BK-142",
             "method": "createUserStoryEmptyBody",
             "line": 60
           },
           {
-            "id": "TBD",
+            "id": "BK-143",
             "method": "createUserStoryUnauthenticated",
             "line": 74
           },
           {
-            "id": "TBD",
+            "id": "BK-144",
             "method": "createUserStoryNonExistentModule",
             "line": 96
           }
@@ -243,27 +221,27 @@
         "relativePath": "tests\\components\\api\\WorkspacesApi.ts",
         "atcs": [
           {
-            "id": "TBD",
+            "id": "BK-130",
             "method": "createWorkspaceSuccessfully",
             "line": 17
           },
           {
-            "id": "TBD",
+            "id": "BK-131",
             "method": "createWorkspaceNameTooShort",
             "line": 36
           },
           {
-            "id": "TBD",
+            "id": "BK-132",
             "method": "createWorkspaceReservedSlug",
             "line": 51
           },
           {
-            "id": "TBD",
+            "id": "BK-133",
             "method": "createWorkspaceDuplicateSlug",
             "line": 65
           },
           {
-            "id": "TBD",
+            "id": "BK-134",
             "method": "createWorkspaceUnauthenticated",
             "line": 80
           }
@@ -272,34 +250,17 @@
     ],
     "ui": [
       {
-        "name": "ExamplePage",
-        "file": "ExamplePage.ts",
-        "relativePath": "tests\\components\\ui\\ExamplePage.ts",
-        "atcs": [
-          {
-            "id": "PROJ-101",
-            "method": "submitFormWithValidData",
-            "line": 99
-          },
-          {
-            "id": "PROJ-102",
-            "method": "submitFormWithInvalidEmail",
-            "line": 122
-          }
-        ]
-      },
-      {
         "name": "LoginPage",
         "file": "LoginPage.ts",
         "relativePath": "tests\\components\\ui\\LoginPage.ts",
         "atcs": [
           {
-            "id": "PROJ-101",
+            "id": "BK-105",
             "method": "loginSuccessfully",
             "line": 84
           },
           {
-            "id": "PROJ-102",
+            "id": "BK-106",
             "method": "loginWithInvalidCredentials",
             "line": 101
           }
@@ -309,10 +270,10 @@
   },
   "preconditions": [],
   "summary": {
-    "totalComponents": 10,
-    "totalATCs": 46,
-    "apiComponents": 8,
-    "uiComponents": 2,
+    "totalComponents": 8,
+    "totalATCs": 41,
+    "apiComponents": 7,
+    "uiComponents": 1,
     "preconditionModules": 0
   }
 }
