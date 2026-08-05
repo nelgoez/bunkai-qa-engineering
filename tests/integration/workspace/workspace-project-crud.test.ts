@@ -1,3 +1,5 @@
+import type { WorkspaceResponse } from '@schemas/workspace.types';
+
 import { config, expect, test } from '@TestFixture';
 
 const uid = () => Date.now().toString(36);
@@ -125,5 +127,21 @@ test.describe('BK-4/BK-8: Workspace & Project CRUD API', { tag: ['@api', '@criti
     );
 
     expect(response.status()).toBe(403);
+  });
+
+  test('BK-4: DB persistence — created workspace appears in GET /workspaces list', async ({ api }) => {
+    api.setAuthToken(pat);
+
+    const [, workspace] = await api.workspaces.createWorkspaceSuccessfully({
+      name: `DB-Persist ${uid()}`,
+      slug: `ws-db-${uid()}`,
+    });
+
+    const [listResponse, body] = await api.apiGET<{ workspaces: WorkspaceResponse[] }>('/workspaces');
+
+    expect(listResponse.status()).toBe(200);
+    expect(body.workspaces).toBeDefined();
+    expect(body.workspaces.some((ws: WorkspaceResponse) => ws.id === workspace.id)).toBe(true);
+    expect(body.workspaces.some((ws: WorkspaceResponse) => ws.slug === workspace.slug)).toBe(true);
   });
 });
