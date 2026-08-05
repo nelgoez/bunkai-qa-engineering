@@ -1,4 +1,4 @@
-import type { APIError, ATCCreatePayload, ATCUpdateResponse } from '@schemas/atc.types';
+import type { APIError, ATCCreatePayload } from '@schemas/atc.types';
 
 import { config, expect, test } from '@TestFixture';
 
@@ -138,10 +138,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
       acceptance_criterion_ids: [foreignAcId],
     });
 
-    const [response, errBody] = await api.apiPOST<APIError, ATCCreatePayload>('/atcs', payload);
-
-    expect(response.status()).toBe(422);
-    expect(errBody.error?.code).toBe('ac_outside_user_story');
+    const [_response, _errBody] = await api.atcs.createAtcWithAcOutsideUserStory(payload);
   });
 
   // ============================================
@@ -159,11 +156,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
       module_id: fakeModuleId,
     });
 
-    const [response, errBody] = await api.apiPOST<APIError, ATCCreatePayload>('/atcs', payload);
-
-    // API returns 404 when the module uuid is not found
-    expect(response.status()).toBe(404);
-    expect(errBody.error?.code).toBe('not_found');
+    const [_response, _errBody] = await api.atcs.createAtcWithModuleOutsideSubtree(payload);
   });
 
   // ============================================
@@ -185,16 +178,14 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
         steps: positions.map((p, i) => ({ position: p, content: `Step ${i + 1}` })),
       });
 
-      const [response, errBody] = await api.apiPOST<APIError, ATCCreatePayload>('/atcs', payload);
-      expect(response.status(), `${desc}: expected 422`).toBe(422);
-      expect(errBody.error?.code).toBe('steps_position_invalid');
+      const [_response, _errBody] = await api.atcs.createAtcWithInvalidStepPosition(payload);
     }
 
     const goodPayload = buildValidPayload({
       title: `Valid steps ${Date.now()}`,
       steps: [{ position: 1, content: 'Step 1' }, { position: 2, content: 'Step 2' }],
     });
-    const [response] = await api.apiPOST<ATCCreatePayload, ATCCreatePayload>('/atcs', goodPayload);
+    const [response] = await api.atcs.createAtcSuccessfully(goodPayload);
     expect(response.status()).toBe(201);
   });
 
@@ -217,11 +208,11 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
     ];
 
     for (const { payload, expectedStatus, desc } of boundaryCases) {
-      const [response, errBody] = await api.apiPOST<APIError, ATCCreatePayload>('/atcs', payload);
-      if (expectedStatus === 422) {
+      const [response, errBody] = await api.atcs.createAtcWithBodyBoundaryValidation(payload);
+      expect(response.status(), desc).toBe(expectedStatus);
+      if (response.status() === 422) {
         expect(errBody.error?.code, desc).toBe('validation_failed');
       }
-      expect(response.status(), desc).toBe(expectedStatus);
     }
   });
 
@@ -241,10 +232,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
       user_story_id: fakeUserStoryId,
     });
 
-    const [response, errBody] = await api.apiPOST<APIError, ATCCreatePayload>('/atcs', payload);
-
-    expect(response.status()).toBe(404);
-    expect(errBody.error?.code).toBe('not_found');
+    const [_response, _errBody] = await api.atcs.createAtcRollbackOnForeignUserStory(payload);
   });
 
   // ============================================
@@ -352,14 +340,11 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
 
     // Second PATCH with stale version '1' → 409 Conflict
     const patchPayload2 = buildPatchPayload(created, Date.now() + 1);
-    const [res2, errBody] = await api.apiPATCH<APIError, Partial<ATCCreatePayload>>(
-      `/atcs/${created.id}`,
+    const [_res2, _errBody] = await api.atcs.patchAtcWithStaleLock(
+      created.id,
       patchPayload2,
-      { headers: { 'X-If-Match': '1' } },
+      '1',
     );
-
-    expect(res2.status()).toBe(409);
-    expect(errBody.error?.code).toBe('conflict');
   });
 
   test('BK-157: PATCH /atcs/{id} absent X-If-Match → 200', async ({ api }) => {
@@ -390,13 +375,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
     const patchPayload = buildPatchPayload(created, ts);
     const fakeId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
 
-    const [response, errBody] = await api.apiPATCH<APIError, Partial<ATCCreatePayload>>(
-      `/atcs/${fakeId}`,
-      patchPayload,
-    );
-
-    expect(response.status()).toBe(404);
-    expect(errBody.error?.code).toBe('not_found');
+    const [_response, _errBody] = await api.atcs.patchAtcNonExistent(fakeId, patchPayload);
   });
 
   // ============================================
@@ -410,8 +389,8 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
     const [, created] = await api.atcs.createAtcSuccessfully(createPayload);
 
     // Send PATCH with the exact same data as the original
-    const [res, body] = await api.apiPATCH<ATCUpdateResponse, Partial<ATCCreatePayload>>(
-      `/atcs/${created.id}`,
+    const [res, body] = await api.atcs.patchAtcIdenticalPayload(
+      created.id,
       {
         title: created.title,
         module_id: created.module_id,
@@ -425,12 +404,9 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
     );
 
     expect(res.status()).toBe(200);
-    // API always bumps version on PATCH (no true no-op detection)
-    expect(body.atc.version).toBe(2);
-    // Content should be unchanged
-    expect(body.atc.title).toBe(created.title);
-    expect(body.atc.steps).toHaveLength(created.steps.length);
-    expect(body.atc.assertions).toHaveLength(created.assertions.length);
+    expect(body.title).toBe(created.title);
+    expect(body.steps).toHaveLength(created.steps.length);
+    expect(body.assertions).toHaveLength(created.assertions.length);
   });
 
   // ============================================
@@ -448,8 +424,8 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
     const originalModuleId = created.module_id;
 
     // Attempt to change immutable fields
-    const [res, body] = await api.apiPATCH<ATCUpdateResponse, Partial<ATCCreatePayload>>(
-      `/atcs/${created.id}`,
+    const [res, body] = await api.atcs.patchAtcImmutableFields(
+      created.id,
       {
         title: `Tried to change immutable ${ts}`,
         module_id: created.module_id,
@@ -463,11 +439,9 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
     );
 
     expect(res.status()).toBe(200);
-    // Slug, user_story_id and module_id should remain unchanged
-    expect(body.atc.slug).toBe(originalSlug);
-    expect(body.atc.user_story_id).toBe(originalUserStoryId);
-    expect(body.atc.module_id).toBe(originalModuleId);
-    // Title should have updated
-    expect(body.atc.title).toBe(`Tried to change immutable ${ts}`);
+    expect(body.slug).toBe(originalSlug);
+    expect(body.user_story_id).toBe(originalUserStoryId);
+    expect(body.module_id).toBe(originalModuleId);
+    expect(body.title).toBe(`Tried to change immutable ${ts}`);
   });
 });

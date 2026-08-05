@@ -20,6 +20,9 @@ env:
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
+  # TMS Sync — push test results to Jira/Xray on CI runs
+  AUTO_SYNC: 'true'
+  TMS_PROVIDER: 'jira'
 
 jobs:
   TestBuild:

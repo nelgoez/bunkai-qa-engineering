@@ -14,7 +14,7 @@ export class WorkspacesApi extends ApiBase {
 
   private workspacesEndpoint = '/workspaces';
 
-  @atc('BK-130')
+  @atc('BK-291')
   async createWorkspaceSuccessfully(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, WorkspaceResponse, WorkspaceCreatePayload]> {
@@ -33,7 +33,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body.workspace, sent];
   }
 
-  @atc('BK-131')
+  @atc('BK-292')
   async createWorkspaceNameTooShort(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError, WorkspaceCreatePayload]> {
@@ -48,7 +48,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-132')
+  @atc('BK-293')
   async createWorkspaceReservedSlug(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError, WorkspaceCreatePayload]> {
@@ -62,7 +62,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-133')
+  @atc('BK-294')
   async createWorkspaceDuplicateSlug(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError, WorkspaceCreatePayload]> {
@@ -77,7 +77,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-134')
+  @atc('BK-295')
   async createWorkspaceUnauthenticated(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError]> {

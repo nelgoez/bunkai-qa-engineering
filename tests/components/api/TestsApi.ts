@@ -23,7 +23,7 @@ export class TestsApi extends ApiBase {
     return this.apiGET<TestResponse | APIError>(`${this.testsEndpoint}/${id}`);
   }
 
-  @atc('BK-270')
+  @atc('BK-305')
   async createTestSuccessfully(
     payload: TestCreatePayload,
   ): Promise<[APIResponse, TestResponse, TestCreatePayload]> {
@@ -54,7 +54,7 @@ export class TestsApi extends ApiBase {
     return [response, testEntity, sent];
   }
 
-  @atc('BK-271')
+  @atc('BK-306')
   async createTestEmptyChain(
     payload: TestCreatePayload,
   ): Promise<[APIResponse, APIError, TestCreatePayload]> {
@@ -69,7 +69,7 @@ export class TestsApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-272')
+  @atc('BK-307')
   async createTestWithInvalidTitle(
     payload: TestCreatePayload,
   ): Promise<[APIResponse, APIError, TestCreatePayload]> {
@@ -84,7 +84,7 @@ export class TestsApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-273')
+  @atc('BK-308')
   async createTestForeignAtc(
     payload: TestCreatePayload,
   ): Promise<[APIResponse, APIError, TestCreatePayload]> {
@@ -100,7 +100,7 @@ export class TestsApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-274')
+  @atc('BK-309')
   async createTestIdempotentRetry(
     payload: TestCreatePayload,
     idempotencyKey: string,
@@ -117,7 +117,7 @@ export class TestsApi extends ApiBase {
     return [response, body.test, sent];
   }
 
-  @atc('BK-275')
+  @atc('BK-310')
   async createTestUnauthenticated(
     payload: TestCreatePayload,
   ): Promise<[APIResponse, APIError]> {

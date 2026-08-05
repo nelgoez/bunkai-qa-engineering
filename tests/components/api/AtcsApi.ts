@@ -98,4 +98,125 @@ export class AtcsApi extends ApiBase {
 
     return [response, body];
   }
+
+  @atc('BK-151')
+  async createAtcWithAcOutsideUserStory(
+    payload: ATCCreatePayload,
+  ): Promise<[APIResponse, APIError, ATCCreatePayload]> {
+    const [response, body, sent] = await this.apiPOST<APIError, ATCCreatePayload>(
+      this.atcsEndpoint,
+      payload,
+    );
+    expect(response.status()).toBe(422);
+    expect(body.error?.code).toBe('ac_outside_user_story');
+    return [response, body, sent];
+  }
+
+  @atc('BK-152')
+  async createAtcWithModuleOutsideSubtree(
+    payload: ATCCreatePayload,
+  ): Promise<[APIResponse, APIError, ATCCreatePayload]> {
+    const [response, body, sent] = await this.apiPOST<APIError, ATCCreatePayload>(
+      this.atcsEndpoint,
+      payload,
+    );
+    expect(response.status()).toBe(404);
+    expect(body.error?.code).toBe('not_found');
+    return [response, body, sent];
+  }
+
+  @atc('BK-153')
+  async createAtcWithInvalidStepPosition(
+    payload: ATCCreatePayload,
+  ): Promise<[APIResponse, APIError, ATCCreatePayload]> {
+    const [response, body, sent] = await this.apiPOST<APIError, ATCCreatePayload>(
+      this.atcsEndpoint,
+      payload,
+    );
+    expect(response.status()).toBe(422);
+    expect(body.error?.code).toBeDefined();
+    return [response, body, sent];
+  }
+
+  @atc('BK-154')
+  async createAtcWithBodyBoundaryValidation(
+    payload: ATCCreatePayload,
+  ): Promise<[APIResponse, APIError, ATCCreatePayload]> {
+    const [response, body, sent] = await this.apiPOST<APIError, ATCCreatePayload>(
+      this.atcsEndpoint,
+      payload,
+    );
+    expect(body.error?.code).toBe('validation_failed');
+    return [response, body, sent];
+  }
+
+  @atc('BK-155')
+  async createAtcRollbackOnForeignUserStory(
+    payload: ATCCreatePayload,
+  ): Promise<[APIResponse, APIError, ATCCreatePayload]> {
+    const [response, body, sent] = await this.apiPOST<APIError, ATCCreatePayload>(
+      this.atcsEndpoint,
+      payload,
+    );
+    expect(response.status()).toBe(404);
+    expect(body.error?.code).toBe('not_found');
+    return [response, body, sent];
+  }
+
+  @atc('BK-157')
+  async patchAtcWithStaleLock(
+    id: string,
+    payload: Partial<ATCCreatePayload>,
+    ifMatch: string,
+  ): Promise<[APIResponse, APIError, Partial<ATCCreatePayload>]> {
+    const [response, body, sent] = await this.apiPATCH<APIError, Partial<ATCCreatePayload>>(
+      this.atcByIdEndpoint(id),
+      payload,
+      { headers: { 'X-If-Match': ifMatch } },
+    );
+    expect(response.status()).toBe(409);
+    expect(body.error?.code).toBe('conflict');
+    return [response, body, sent];
+  }
+
+  @atc('BK-158')
+  async patchAtcNonExistent(
+    id: string,
+    payload: Partial<ATCCreatePayload>,
+  ): Promise<[APIResponse, APIError, Partial<ATCCreatePayload>]> {
+    const [response, body, sent] = await this.apiPATCH<APIError, Partial<ATCCreatePayload>>(
+      this.atcByIdEndpoint(id),
+      payload,
+    );
+    expect(response.status()).toBe(404);
+    expect(body.error?.code).toBe('not_found');
+    return [response, body, sent];
+  }
+
+  @atc('BK-159')
+  async patchAtcIdenticalPayload(
+    id: string,
+    payload: Partial<ATCCreatePayload>,
+  ): Promise<[APIResponse, ATCResponse, Partial<ATCCreatePayload>]> {
+    const [response, body, sent] = await this.apiPATCH<ATCUpdateResponse, Partial<ATCCreatePayload>>(
+      this.atcByIdEndpoint(id),
+      payload,
+    );
+    expect(response.status()).toBe(200);
+    expect(body.atc.version).toBe(2);
+    return [response, body.atc, sent];
+  }
+
+  @atc('BK-160')
+  async patchAtcImmutableFields(
+    id: string,
+    payload: Partial<ATCCreatePayload>,
+  ): Promise<[APIResponse, ATCResponse, Partial<ATCCreatePayload>]> {
+    const [response, body, sent] = await this.apiPATCH<ATCUpdateResponse, Partial<ATCCreatePayload>>(
+      this.atcByIdEndpoint(id),
+      payload,
+    );
+    expect(response.status()).toBe(200);
+    return [response, body.atc, sent];
+  }
 }

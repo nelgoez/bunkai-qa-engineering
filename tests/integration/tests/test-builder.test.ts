@@ -41,7 +41,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC01 — Happy path: Create test with ATC chain
   // ============================================
-  test('BK-xxx: POST /tests creates a test chaining 3 ATCs', async ({ api }) => {
+  test('BK-305: POST /tests creates a test chaining 3 ATCs', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const ts = Date.now();
@@ -80,7 +80,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC02 — Duplicate ATC in chain
   // ============================================
-  test('BK-xxx: POST /tests allows duplicate ATC IDs in chain', async ({ api }) => {
+  test('BK-305: POST /tests allows duplicate ATC IDs in chain', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const ts = Date.now();
@@ -106,7 +106,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC03 — Empty ATC chain → 422
   // ============================================
-  test('BK-xxx: POST /tests rejects empty atc_ids with 422', async ({ api }) => {
+  test('BK-306: POST /tests rejects empty atc_ids with 422', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const [response, errBody] = await api.tests.createTestEmptyChain(
@@ -120,7 +120,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC04 — Invalid title → 422
   // ============================================
-  test('BK-xxx: POST /tests rejects whitespace-only title with 422', async ({ api }) => {
+  test('BK-307: POST /tests rejects whitespace-only title with 422', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const [response, errBody] = await api.tests.createTestWithInvalidTitle(
@@ -131,7 +131,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
     expect(errBody.error?.code).toBeDefined();
   });
 
-  test('BK-xxx: POST /tests rejects 201-character title with 422', async ({ api }) => {
+  test('BK-307: POST /tests rejects 201-character title with 422', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const [response, errBody] = await api.tests.createTestWithInvalidTitle(
@@ -145,7 +145,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC05 — Foreign/non-existent ATC → 404
   // ============================================
-  test('BK-xxx: POST /tests returns 404 for non-existent ATC IDs', async ({ api }) => {
+  test('BK-308: POST /tests returns 404 for non-existent ATC IDs', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const fakeAtcId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
@@ -161,7 +161,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC06 — Idempotency: same key → one test
   // ============================================
-  test('BK-xxx: POST /tests with Idempotency-Key returns same test on retry', async ({ api }) => {
+  test('BK-309: POST /tests with Idempotency-Key returns same test on retry', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const ts = Date.now();
@@ -186,7 +186,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC07 — Unauthenticated → 401
   // ============================================
-  test('BK-xxx: POST /tests rejects unauthenticated request with 401', async ({ api }) => {
+  test('BK-310: POST /tests rejects unauthenticated request with 401', async ({ api }) => {
     const [response] = await api.tests.createTestUnauthenticated(
       buildTestPayload(),
     );
@@ -197,7 +197,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // ============================================
   // TC08 — Missing title → 422
   // ============================================
-  test('BK-xxx: POST /tests rejects empty title with 422', async ({ api }) => {
+  test('BK-307: POST /tests rejects empty title with 422', async ({ api }) => {
     api.setAuthToken(TEST_DATA.pat);
 
     const [response, errBody] = await api.apiPOST<APIError, TestCreatePayload>('/tests', buildTestPayload({ title: '' }));

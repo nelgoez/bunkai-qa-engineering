@@ -20,7 +20,7 @@ export class UserStoriesApi extends ApiBase {
     return `/modules/${moduleId}/user-stories`;
   }
 
-  @atc('BK-140')
+  @atc('BK-300')
   async createUserStory(
     moduleId: string,
     payload: UserStoryCreatePayload,
@@ -42,7 +42,7 @@ export class UserStoriesApi extends ApiBase {
     return [response, userStory, sent];
   }
 
-  @atc('BK-141')
+  @atc('BK-301')
   async createUserStoryInvalidTitle(
     moduleId: string,
     payload: UserStoryCreatePayload,
@@ -57,7 +57,7 @@ export class UserStoriesApi extends ApiBase {
     return [response, body];
   }
 
-  @atc('BK-142')
+  @atc('BK-302')
   async createUserStoryEmptyBody(
     moduleId: string,
   ): Promise<[APIResponse, APIError]> {
@@ -71,7 +71,7 @@ export class UserStoriesApi extends ApiBase {
     return [response, body];
   }
 
-  @atc('BK-143')
+  @atc('BK-303')
   async createUserStoryUnauthenticated(
     moduleId: string,
     payload: UserStoryCreatePayload,
@@ -93,7 +93,7 @@ export class UserStoriesApi extends ApiBase {
     return [response, body];
   }
 
-  @atc('BK-144')
+  @atc('BK-304')
   async createUserStoryNonExistentModule(
     moduleId: string,
     payload: UserStoryCreatePayload,
