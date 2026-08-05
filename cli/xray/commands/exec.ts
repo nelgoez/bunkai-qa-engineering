@@ -8,8 +8,21 @@ import type { Flags, TestExecutionResult, TestRunResult } from '../types/index.j
 import { loadConfig } from '../lib/config.js';
 import { graphql, MUTATIONS, QUERIES } from '../lib/graphql.js';
 import { getLinkedTests, resolveIssueId, resolveIssueIds } from '../lib/jira.js';
-import { log } from '../lib/logger.js';
-import { getBoolFlag, getFlag, requireFlag } from '../lib/parser.js';
+import { log, warnCountedButUnresolved, warnIfTruncated } from '../lib/logger.js';
+import { getBoolFlag, getFlag, getFlagArray, requireFlag } from '../lib/parser.js';
+
+/**
+ * Collect Test Environments from `--environment` (repeatable) and/or a single
+ * comma-separated value. Returns `undefined` when none were passed so the
+ * GraphQL variable is omitted rather than sent as an empty list.
+ */
+function collectEnvironments(flags: Flags): string[] | undefined {
+  const envs = getFlagArray(flags, 'environment')
+    .flatMap(v => v.split(','))
+    .map(v => v.trim())
+    .filter(Boolean);
+  return envs.length > 0 ? envs : undefined;
+}
 
 // ============================================================================
 // CREATE
@@ -27,6 +40,7 @@ export async function create(flags: Flags): Promise<void> {
   const testIssueIds = testsStr
     ? await resolveIssueIds(testsStr.split(',').map(t => t.trim()))
     : [];
+  const testEnvironments = collectEnvironments(flags);
 
   log.dim(`Creating Test Execution in project ${projectKey}...`);
 
@@ -35,12 +49,41 @@ export async function create(flags: Flags): Promise<void> {
     summary,
     description,
     testIssueIds,
+    testEnvironments,
   });
 
   const exec = result.createTestExecution.testExecution;
   log.success(`Test Execution created: ${exec.jira.key}`);
   console.log(`  Summary: ${exec.jira.summary}`);
   console.log(`  Issue ID: ${exec.issueId}`);
+  if (testEnvironments) {
+    console.log(`  Environments: ${testEnvironments.join(', ')}`);
+  }
+}
+
+// ============================================================================
+// SET ENVIRONMENT (associate Test Environments with an existing execution)
+// ============================================================================
+
+export async function setEnvironment(flags: Flags): Promise<void> {
+  const issueId = await resolveIssueId(requireFlag(flags, 'execution'));
+  const testEnvironments = collectEnvironments(flags);
+  if (!testEnvironments) {
+    throw new Error('Missing required flag: --environment (repeatable or comma-separated)');
+  }
+
+  log.dim(`Setting ${testEnvironments.length} environment(s) on execution ${issueId}...`);
+
+  const result = await graphql<{ addTestEnvironmentsToTestExecution: { associatedTestEnvironments: string[], warning?: string } }>(
+    MUTATIONS.addTestEnvironmentsToTestExecution,
+    { issueId, testEnvironments },
+  );
+
+  const assoc = result.addTestEnvironmentsToTestExecution.associatedTestEnvironments ?? [];
+  log.success(`Associated environments: ${assoc.join(', ') || '(none returned)'}`);
+  if (result.addTestEnvironmentsToTestExecution.warning) {
+    log.warn(result.addTestEnvironmentsToTestExecution.warning);
+  }
 }
 
 // ============================================================================
@@ -82,12 +125,18 @@ export async function list(flags: Flags): Promise<void> {
 
   const result = await graphql<{ getTestExecutions: { total: number, results: TestExecutionResult[] } }>(QUERIES.getTestExecutions, { jql, limit });
 
-  log.title(`Test Executions (${result.getTestExecutions.total} total)`);
+  log.title(`Test Executions (${result.getTestExecutions.total} total, showing ${result.getTestExecutions.results.length})`);
 
   if (result.getTestExecutions.results.length === 0) {
+    if (result.getTestExecutions.total > 0 && limit > 0) {
+      warnCountedButUnresolved('test executions', result.getTestExecutions.total);
+      return;
+    }
     log.warn('No test executions found');
     return;
   }
+
+  warnIfTruncated(result.getTestExecutions.total, result.getTestExecutions.results.length, limit);
 
   result.getTestExecutions.results.forEach((e: TestExecutionResult) => {
     const eStatus = typeof e.jira.status === 'object' && e.jira.status !== null ? e.jira.status.name : (e.jira.status || 'Unknown');

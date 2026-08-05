@@ -138,24 +138,6 @@ export const VAR_MANIFEST: VarSpec[] = [
     obtainHint: 'test-user creds for your project-under-test; set when adapting the framework to your project.',
     note: 'Staging test user password. Required when TEST_ENV=staging. Project-dependent — set later.',
   },
-  {
-    name: 'STAGING_USER_PAT',
-    destinations: ['local', 'github'],
-    secret: true,
-    required: { ifEnv: 'TEST_ENV=staging' },
-    critical: false,
-    obtainHint: 'Generate from Bunkai UI: Settings → API Tokens.',
-    note: 'Personal Access Token for staging API auth. Bypasses /auth/login which is broken (BK-177). CI secret in all workflows.',
-  },
-  {
-    name: 'STAGING_USER_READONLY_PAT',
-    destinations: ['local', 'github'],
-    secret: true,
-    required: { ifEnv: 'TEST_ENV=staging' },
-    critical: false,
-    obtainHint: 'Generate from Bunkai UI: Settings → API Tokens, or POST /api/v1/tokens { scopes: ["atc:read"] } via browser session.',
-    note: 'Restricted-scope PAT (only atc:read) for 403 scope rejection tests. CI secret in all workflows.',
-  },
 
   // --- Xray (TMS, optional) ---
   {
@@ -277,8 +259,8 @@ export const VAR_MANIFEST: VarSpec[] = [
     secret: true,
     required: false,
     critical: false,
-    obtainHint: 'auto-populated by `bun run api:login` against your project; no manual entry needed.',
-    note: 'Bearer token for API exploration (auto-populated by api:login). Local only.',
+    obtainHint: 'legacy/optional — `bun run api:login` now writes the curl token to .auth/tokens.env, not here.',
+    note: 'Legacy. The OpenAPI MCP is schema-read-only and no longer reads this; api:login mints the token into .auth/tokens.env for curl-based API testing. Local only.',
   },
   {
     name: 'RESEND_API_KEY',
