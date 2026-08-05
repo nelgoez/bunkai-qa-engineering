@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-08-05T20:03:40.082Z",
+  "generatedAt": "2026-08-05T23:45:08.752Z",
   "components": {
     "api": [
       {
@@ -19,9 +19,54 @@
             "line": 76
           },
           {
+            "id": "BK-151",
+            "method": "createAtcWithAcOutsideUserStory",
+            "line": 102
+          },
+          {
+            "id": "BK-152",
+            "method": "createAtcWithModuleOutsideSubtree",
+            "line": 115
+          },
+          {
+            "id": "BK-153",
+            "method": "createAtcWithInvalidStepPosition",
+            "line": 128
+          },
+          {
+            "id": "BK-154",
+            "method": "createAtcWithBodyBoundaryValidation",
+            "line": 141
+          },
+          {
+            "id": "BK-155",
+            "method": "createAtcRollbackOnForeignUserStory",
+            "line": 153
+          },
+          {
             "id": "BK-156",
             "method": "patchAtcSuccessfully",
             "line": 53
+          },
+          {
+            "id": "BK-157",
+            "method": "patchAtcWithStaleLock",
+            "line": 166
+          },
+          {
+            "id": "BK-158",
+            "method": "patchAtcNonExistent",
+            "line": 182
+          },
+          {
+            "id": "BK-159",
+            "method": "patchAtcIdenticalPayload",
+            "line": 196
+          },
+          {
+            "id": "BK-160",
+            "method": "patchAtcImmutableFields",
+            "line": 210
           }
         ]
       },
@@ -31,12 +76,12 @@
         "relativePath": "tests\\components\\api\\AuthApi.ts",
         "atcs": [
           {
-            "id": "BK-166",
+            "id": "BK-311",
             "method": "authenticateSuccessfully",
             "line": 73
           },
           {
-            "id": "BK-167",
+            "id": "BK-312",
             "method": "loginWithInvalidCredentials",
             "line": 119
           }
@@ -80,22 +125,22 @@
         "relativePath": "tests\\components\\api\\ProjectsApi.ts",
         "atcs": [
           {
-            "id": "BK-135",
+            "id": "BK-296",
             "method": "createProjectSuccessfully",
             "line": 19
           },
           {
-            "id": "BK-136",
+            "id": "BK-297",
             "method": "createProjectNameTooShort",
             "line": 38
           },
           {
-            "id": "BK-137",
+            "id": "BK-298",
             "method": "createProjectDuplicateName",
             "line": 53
           },
           {
-            "id": "BK-138",
+            "id": "BK-299",
             "method": "createProjectNonMember",
             "line": 68
           }
@@ -107,32 +152,32 @@
         "relativePath": "tests\\components\\api\\TestsApi.ts",
         "atcs": [
           {
-            "id": "BK-270",
+            "id": "BK-305",
             "method": "createTestSuccessfully",
             "line": 26
           },
           {
-            "id": "BK-271",
+            "id": "BK-306",
             "method": "createTestEmptyChain",
             "line": 57
           },
           {
-            "id": "BK-272",
+            "id": "BK-307",
             "method": "createTestWithInvalidTitle",
             "line": 72
           },
           {
-            "id": "BK-273",
+            "id": "BK-308",
             "method": "createTestForeignAtc",
             "line": 87
           },
           {
-            "id": "BK-274",
+            "id": "BK-309",
             "method": "createTestIdempotentRetry",
             "line": 103
           },
           {
-            "id": "BK-275",
+            "id": "BK-310",
             "method": "createTestUnauthenticated",
             "line": 120
           }
@@ -144,27 +189,27 @@
         "relativePath": "tests\\components\\api\\UserStoriesApi.ts",
         "atcs": [
           {
-            "id": "BK-140",
+            "id": "BK-300",
             "method": "createUserStory",
             "line": 23
           },
           {
-            "id": "BK-141",
+            "id": "BK-301",
             "method": "createUserStoryInvalidTitle",
             "line": 45
           },
           {
-            "id": "BK-142",
+            "id": "BK-302",
             "method": "createUserStoryEmptyBody",
             "line": 60
           },
           {
-            "id": "BK-143",
+            "id": "BK-303",
             "method": "createUserStoryUnauthenticated",
             "line": 74
           },
           {
-            "id": "BK-144",
+            "id": "BK-304",
             "method": "createUserStoryNonExistentModule",
             "line": 96
           }
@@ -176,27 +221,27 @@
         "relativePath": "tests\\components\\api\\WorkspacesApi.ts",
         "atcs": [
           {
-            "id": "BK-130",
+            "id": "BK-291",
             "method": "createWorkspaceSuccessfully",
             "line": 17
           },
           {
-            "id": "BK-131",
+            "id": "BK-292",
             "method": "createWorkspaceNameTooShort",
             "line": 36
           },
           {
-            "id": "BK-132",
+            "id": "BK-293",
             "method": "createWorkspaceReservedSlug",
             "line": 51
           },
           {
-            "id": "BK-133",
+            "id": "BK-294",
             "method": "createWorkspaceDuplicateSlug",
             "line": 65
           },
           {
-            "id": "BK-134",
+            "id": "BK-295",
             "method": "createWorkspaceUnauthenticated",
             "line": 80
           }
@@ -210,12 +255,12 @@
         "relativePath": "tests\\components\\ui\\LoginPage.ts",
         "atcs": [
           {
-            "id": "BK-105",
+            "id": "BK-313",
             "method": "loginSuccessfully",
             "line": 84
           },
           {
-            "id": "BK-106",
+            "id": "BK-314",
             "method": "loginWithInvalidCredentials",
             "line": 101
           }
@@ -226,7 +271,7 @@
   "preconditions": [],
   "summary": {
     "totalComponents": 8,
-    "totalATCs": 32,
+    "totalATCs": 41,
     "apiComponents": 7,
     "uiComponents": 1,
     "preconditionModules": 0
