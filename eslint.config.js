@@ -19,6 +19,7 @@ export default antfu({
     'allure-report',
     'reports',
     'cli/legacy/**',
+    'cli/slack-clip.js',
     '*.min.js',
     // Documentation files (contain code examples that shouldn't be linted)
     '**/*.md',
