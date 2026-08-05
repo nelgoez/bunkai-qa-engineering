@@ -7,7 +7,7 @@
  * ATCs follow flow-based design: each ATC is an ACTION + VERIFICATION,
  * not a simple GET. Read-only operations are helpers (no @atc).
  *
- * TODO: Replace 'PROJ' in @atc IDs with your Jira project key (e.g., @atc('UPEX-101'))
+ * @atc IDs map to Jira Test issues BK-311, BK-312
  *
  * Endpoints:
  * - POST /api/auth/login - Authenticate and get JWT token
