@@ -9,26 +9,26 @@
 
 | Item | Value |
 |------|-------|
-| Atlassian URL | `https://upexgalaxy69.atlassian.net` |
+| Atlassian URL | `https://upexgalaxy71.atlassian.net` |
 | Project Key | `BK` (Bunkai TMS) |
 | My display name | Nahuel Gomez |
 | My account ID | `609005c5f0db130069a64294` |
 | ATLASSIAN_API_TOKEN | `.env` → `ATLASSIAN_API_TOKEN` |
-| Sprint board | Board 7 — `https://upexgalaxy69.atlassian.net/jira/software/c/projects/BK/boards/7` |
+| Sprint board | Board 7 — `https://upexgalaxy71.atlassian.net/jira/software/c/projects/BK/boards/7` |
 
 ### Jira Custom Fields (jira-native TMS)
 
 | Slug | Field ID | Name | Used for |
 |------|----------|------|----------|
-| `acceptance_test_plan` | `customfield_10120` | ATP | Sprint-testing Stage 1 planning |
-| `acceptance_test_results` | `customfield_10147` | ATR | Sprint-testing Stage 3 reporting |
-| `acceptance_criteria` | `customfield_10063` | AC (Gherkin) | Story ACs |
-| `actual_result` | `customfield_10056` | Actual Result | Bug report |
-| `expected_result` | `customfield_10055` | Expected Result | Bug report |
-| `severity` | `customfield_10047` | Severity | Bug classification |
-| `root_cause` | `customfield_10062` | Root Cause | Bug post-mortem |
+| `acceptance_test_plan` | `customfield_10067` | ATP | Sprint-testing Stage 1 planning |
+| `acceptance_test_results` | `customfield_10124` | ATR | Sprint-testing Stage 3 reporting |
+| `acceptance_criteria` | `customfield_10097` | AC (Gherkin) | Story ACs |
+| `actual_result` | `customfield_10094` | Actual Result | Bug report |
+| `expected_result` | `customfield_10127` | Expected Result | Bug report |
+| `severity` | `customfield_10121` | Severity | Bug classification |
+| `root_cause` | `customfield_10049` | Root Cause | Bug post-mortem |
 | `evidence` | `customfield_10064` | Evidence | Bug evidence |
-| `test_environment` | `customfield_10115` | Test Env | Bug env |
+| `test_environment` | `customfield_10095` | Test Env | Bug env |
 
 ### Story Transitions (most used)
 
@@ -135,7 +135,7 @@ Playwright screenshots save to `./bk98-*.png` by default. Use absolute paths for
 
 **Direct REST** (Atlassian MCP `jira_update_issue` doesn't reliably set assignee):
 ```bash
-PUT https://upexgalaxy69.atlassian.net/rest/api/3/issue/{KEY}/assignee
+PUT https://upexgalaxy71.atlassian.net/rest/api/3/issue/{KEY}/assignee
 Body: {"accountId": "609005c5f0db130069a64294"}
 ```
 Unassign: `{"accountId": null}`

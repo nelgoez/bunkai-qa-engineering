@@ -25,7 +25,7 @@ database:
 issue_tracker:
   issue_tracker: Jira
   issue_tracker_cli: acli
-  atlassian_url: https://upexgalaxy69.atlassian.net
+  atlassian_url: https://upexgalaxy71.atlassian.net
 
 testing:
   default_env: staging
