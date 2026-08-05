@@ -33,11 +33,56 @@ testing:
 
 qa:
   formal_blocked_gate: true # When true and the substrate exposes a `blocked` story status, FAILED stories dispatch `defect_reported` (in_test -> blocked). When false (or no `blocked` slug), the skill leaves the story in `in_test` with the linked bug — non-strict fallback. See sprint-testing/references/sprint-orchestration.md Briefing 4 Step 5.
+  # QA process epics — buckets that hold QA artifacts so they never pollute product epics/roadmap.
+  # Skills resolve the epic by NAME and find-or-create it, caching the discovered key here.
+  # Doctrine: .claude/skills/agentic-qa-core/references/defect-management-doctrine.md (Part 4).
+  qa_epics:
+    master_test_plan_epic:
+      name: QA Master Test Plan
+      key: null
+    test_repository_epic:
+      name: QA Test Repository
+      key: null
+    test_artifacts_epic:
+      name: QA Test Artifacts
+      key: null
+    defect_epic:
+      name: QA Defect Management
+      key: null
 
 team:
   # Jira assignee accountIds for key team members (resolved 2026-06-10)
   ely: { display_name: Ely, role: PO/EM, account_id: 61179bdd01072b0069c94a26 }
   nahuel: { display_name: Nahuel Gomez, role: QA, account_id: 609005c5f0db130069a64294 }
+
+# Git workflow — source of truth read by git-flow-master skill before any git/gh operation.
+# Filled by git-flow-master on first git intent (never auto-picked). Leaves are read directly
+# (not {{VAR}} tokens). Tracked + frozen by the boilerplate updater.
+git_strategy:
+  strategy: solo-main
+  description: >
+    Single maintainer (Nahuel Gomez — QA). Work committed and pushed directly to main.
+    Solo-main: no PR ceremony, no integration branch, no hotfix path. Every push is a release.
+  branches:
+    production: main
+    integration: null
+    ephemeral_pattern: null
+  protected: [main]
+  decisions:
+    promote_method: n/a
+    feature_merge: n/a
+    hotfix_policy: n/a
+  policy:
+    direct_push_to_protected: allowed
+    admin_bypass: true
+    require_pr_reviews: 0
+  branch_prefixes:
+    precedence: [feat, fix, refactor, test, docs, chore]
+    naming_with_key: '{prefix}/{ISSUE-KEY}-{kebab-slug}'
+    naming_without_key: '{prefix}/{kebab-slug}'
+  meta:
+    setup_version: 1
+    created: 2026-06-20
 
 # Per-environment config. Add/remove environments freely (production, dev, qa, uat, etc.).
 # Each environment must define ALL four keys: web_url, api_url, db_mcp, api_mcp.
