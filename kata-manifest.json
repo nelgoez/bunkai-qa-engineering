@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-07-23T00:00:52.549Z",
+  "generatedAt": "2026-07-23T01:08:15.053Z",
   "components": {
     "api": [
       {
@@ -140,6 +140,134 @@
             "line": 113
           }
         ]
+      },
+      {
+        "name": "ProjectsApi",
+        "file": "ProjectsApi.ts",
+        "relativePath": "tests\\components\\api\\ProjectsApi.ts",
+        "atcs": [
+          {
+            "id": "TBD",
+            "method": "createProjectSuccessfully",
+            "line": 19
+          },
+          {
+            "id": "TBD",
+            "method": "createProjectNameTooShort",
+            "line": 38
+          },
+          {
+            "id": "TBD",
+            "method": "createProjectDuplicateName",
+            "line": 53
+          },
+          {
+            "id": "TBD",
+            "method": "createProjectNonMember",
+            "line": 68
+          }
+        ]
+      },
+      {
+        "name": "TestsApi",
+        "file": "TestsApi.ts",
+        "relativePath": "tests\\components\\api\\TestsApi.ts",
+        "atcs": [
+          {
+            "id": "TBD",
+            "method": "createTestSuccessfully",
+            "line": 26
+          },
+          {
+            "id": "TBD",
+            "method": "createTestEmptyChain",
+            "line": 57
+          },
+          {
+            "id": "TBD",
+            "method": "createTestWithInvalidTitle",
+            "line": 72
+          },
+          {
+            "id": "TBD",
+            "method": "createTestForeignAtc",
+            "line": 87
+          },
+          {
+            "id": "TBD",
+            "method": "createTestIdempotentRetry",
+            "line": 103
+          },
+          {
+            "id": "TBD",
+            "method": "createTestUnauthenticated",
+            "line": 120
+          }
+        ]
+      },
+      {
+        "name": "UserStoriesApi",
+        "file": "UserStoriesApi.ts",
+        "relativePath": "tests\\components\\api\\UserStoriesApi.ts",
+        "atcs": [
+          {
+            "id": "TBD",
+            "method": "createUserStory",
+            "line": 23
+          },
+          {
+            "id": "TBD",
+            "method": "createUserStoryInvalidTitle",
+            "line": 45
+          },
+          {
+            "id": "TBD",
+            "method": "createUserStoryEmptyBody",
+            "line": 60
+          },
+          {
+            "id": "TBD",
+            "method": "createUserStoryUnauthenticated",
+            "line": 74
+          },
+          {
+            "id": "TBD",
+            "method": "createUserStoryNonExistentModule",
+            "line": 96
+          }
+        ]
+      },
+      {
+        "name": "WorkspacesApi",
+        "file": "WorkspacesApi.ts",
+        "relativePath": "tests\\components\\api\\WorkspacesApi.ts",
+        "atcs": [
+          {
+            "id": "TBD",
+            "method": "createWorkspaceSuccessfully",
+            "line": 17
+          },
+          {
+            "id": "TBD",
+            "method": "createWorkspaceNameTooShort",
+            "line": 36
+          },
+          {
+            "id": "TBD",
+            "method": "createWorkspaceReservedSlug",
+            "line": 51
+          },
+          {
+            "id": "TBD",
+            "method": "createWorkspaceDuplicateSlug",
+            "line": 65
+          },
+          {
+            "id": "TBD",
+            "method": "createWorkspaceUnauthenticated",
+            "line": 80
+          }
+        ]
       }
     ],
     "ui": [
@@ -181,9 +309,9 @@
   },
   "preconditions": [],
   "summary": {
-    "totalComponents": 6,
-    "totalATCs": 26,
-    "apiComponents": 4,
+    "totalComponents": 10,
+    "totalATCs": 46,
+    "apiComponents": 8,
     "uiComponents": 2,
     "preconditionModules": 0
   }

@@ -158,5 +158,50 @@ Ready for release — feature meets all 6 ACs, soft-delete behavior is by-design
 
 ---
 
+### Nahuel Gomez - 6/7/2026, 20:50:38
+
+## Automated Test Evidence (2026-06-30)
+
+Allure report from QA automation session covering 5 API tests for BK-14:
+
+https://nelgoez.github.io/bunkai-qa-engineering/staging/sanity/
+
+All 5 tests PASSED. Tests validated: create story, title validation, Jira key link, duplicate key rejection, soft-delete.
+
+
+---
+
+### Nahuel Gomez - 10/7/2026, 21:01:21
+
+## BK-14 — QA Close-out
+
+***Verdict******:*** QA Approved ✅
+***ATP******:*** 23 test outlines. See local PBI folder for full detail.
+***QA Framework******:*** Playwright JavaScript (field blocked by QA Approved screen — set when editable)
+
+***Handing off to Ely for release triage.***
+
+---
+
+### Nahuel Gomez - 22/7/2026, 22:09:06
+
+## QA Automation — Sandbox Promoted to KATA Component
+
+***UserStoriesApi*** component created — 5 ATCs refactored from raw `api.apiPOST()` calls to proper KATA component methods.
+
+### Tests (5/5 ✅)
+
+- Create user story → 201
+- Title < 3 chars → 422
+- Empty body → 422
+- Unauthenticated → 401
+- Non-existent module → 404
+
+### ATC Count
+
+32 → 37 (+5 UserStoriesApi methods)
+
+---
+
 
 _Synced from Jira by sync-jira-issues_

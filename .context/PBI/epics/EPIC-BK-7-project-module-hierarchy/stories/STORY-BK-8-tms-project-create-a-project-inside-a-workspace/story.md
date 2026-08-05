@@ -75,16 +75,16 @@ As a Workspace member, I want to create a Project inside a Workspace so that I c
 ### Storys (2)
 
 - [BK-4](https://jira.upexgalaxy.com/browse/BK-4): TMS-Workspace | Create a workspace _(Ready For Release)_
-- [BK-9](https://jira.upexgalaxy.com/browse/BK-9): TMS-Module | Create modules with nested sub-modules _(QA Approved)_
+- [BK-9](https://jira.upexgalaxy.com/browse/BK-9): TMS-Module | Create modules with nested sub-modules _(Ready For Release)_
 
 ---
 
 ## Metadata
 
 - **Created:** 19/5/2026
-- **Updated:** 26/6/2026
+- **Updated:** 22/7/2026
 - **Reporter:** Ely
-- **Assignee:** Nahuel Gomez
+- **Assignee:** Ely
 - **Labels:** hierarchy, mvp, shift-left-2026-05-28, shift-left-reviewed, wave-1
 
 ---

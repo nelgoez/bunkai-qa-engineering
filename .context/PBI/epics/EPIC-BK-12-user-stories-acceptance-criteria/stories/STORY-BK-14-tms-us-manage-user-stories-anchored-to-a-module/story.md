@@ -54,9 +54,9 @@
 ## Metadata
 
 - **Created:** 19/5/2026
-- **Updated:** 6/7/2026
+- **Updated:** 22/7/2026
 - **Reporter:** Ely
-- **Assignee:** Nahuel Gomez
+- **Assignee:** Ely
 - **Labels:** mvp, user-stories, wave-2
 
 ---

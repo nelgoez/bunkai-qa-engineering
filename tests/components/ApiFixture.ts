@@ -21,6 +21,10 @@ import { AtcsApi } from '@api/AtcsApi';
 import { AuthApi } from '@api/AuthApi';
 import { DefectsApi } from '@api/DefectsApi';
 import { ExampleApi } from '@api/ExampleApi';
+import { ProjectsApi } from '@api/ProjectsApi';
+import { TestsApi } from '@api/TestsApi';
+import { UserStoriesApi } from '@api/UserStoriesApi';
+import { WorkspacesApi } from '@api/WorkspacesApi';
 
 // ============================================
 // API Fixture Class
@@ -39,6 +43,18 @@ export class ApiFixture extends ApiBase {
   /** Example component - reference only */
   readonly example: ExampleApi;
 
+  /** Projects component - Project CRUD operations */
+  readonly projects: ProjectsApi;
+
+  /** Tests component - Test Builder CRUD operations */
+  readonly tests: TestsApi;
+
+  /** Workspaces component - Workspace CRUD operations */
+  readonly workspaces: WorkspacesApi;
+
+  /** User Stories component - User Stories CRUD operations */
+  readonly userStories: UserStoriesApi;
+
   constructor(options: TestContextOptions) {
     super(options);
 
@@ -47,6 +63,10 @@ export class ApiFixture extends ApiBase {
     this.auth = new AuthApi(options);
     this.defects = new DefectsApi(options);
     this.example = new ExampleApi(options);
+    this.projects = new ProjectsApi(options);
+    this.tests = new TestsApi(options);
+    this.workspaces = new WorkspacesApi(options);
+    this.userStories = new UserStoriesApi(options);
   }
 
   // ============================================
@@ -63,6 +83,10 @@ export class ApiFixture extends ApiBase {
     this.auth.setAuthToken(token);
     this.defects.setAuthToken(token);
     this.example.setAuthToken(token);
+    this.projects.setAuthToken(token);
+    this.tests.setAuthToken(token);
+    this.workspaces.setAuthToken(token);
+    this.userStories.setAuthToken(token);
   }
 
   /**
@@ -74,5 +98,9 @@ export class ApiFixture extends ApiBase {
     this.auth.clearAuthToken();
     this.defects.clearAuthToken();
     this.example.clearAuthToken();
+    this.projects.clearAuthToken();
+    this.tests.clearAuthToken();
+    this.workspaces.clearAuthToken();
+    this.userStories.clearAuthToken();
   }
 }
