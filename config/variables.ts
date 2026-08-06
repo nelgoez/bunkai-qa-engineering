@@ -146,6 +146,29 @@ export const config = {
   // Test User (configure in .env)
   testUser: envData.user,
 
+  // Pre-existing staging entity IDs — configuration, not test data.
+  // These are read-only references to entities that must exist on the active env.
+  // Run `bun run db:verify-seed` to validate. Source: Supabase staging DB.
+  seed: {
+    workspace: {
+      id: 'dfdd3fb7-0724-4eb5-b970-1498e949beb9',
+      name: 'QASmoke-20250605',
+    },
+    project: {
+      id: '1a6fdae6-8b0c-47bb-b444-0e2563deab4b',
+      name: 'Scoping Test Project',
+    },
+    module: {
+      id: '37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4',
+    },
+    userStory: {
+      id: '0f4a6636-d845-4459-9262-ebae2657ca62',
+    },
+    acceptanceCriterion: {
+      id: '96587255-b61d-4f8b-9cf7-a09f945c4bb1',
+    },
+  },
+
   // TMS
   tms: {
     provider: TMS_PROVIDER as 'xray' | 'jira' | 'none',

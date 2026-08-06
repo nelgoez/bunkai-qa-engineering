@@ -5,14 +5,14 @@ export interface TestCreatePayload {
 }
 
 export interface TestAtcRef {
-  id: string
+  atc_id: string
   position: number
 }
 
 export interface TestResponse {
   id: string
   title: string
-  atc_ids: TestAtcRef[]
+  steps: TestAtcRef[]
   workspace_id: string
   created_by: string
   created_at: string

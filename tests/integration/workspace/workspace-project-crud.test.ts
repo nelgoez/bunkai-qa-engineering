@@ -1,5 +1,6 @@
 import type { WorkspaceResponse } from '@schemas/workspace.types';
 
+import { DataFactory } from '@DataFactory';
 import { config, expect, test } from '@TestFixture';
 
 const uid = () => Date.now().toString(36);
@@ -122,7 +123,7 @@ test.describe('BK-4/BK-8: Workspace & Project CRUD API', { tag: ['@api', '@criti
     api.setAuthToken(pat);
 
     const [response] = await api.projects.createProjectNonMember(
-      '00000000-0000-0000-0000-000000000000',
+      DataFactory.SENTINEL.nonExistent,
       { name: `NoAccess ${uid()}` },
     );
 

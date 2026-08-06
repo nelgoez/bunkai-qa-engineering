@@ -1,23 +1,16 @@
 import type { APIError, ATCCreatePayload } from '@schemas/atc.types';
 
+import { DataFactory } from '@DataFactory';
 import { config, expect, test } from '@TestFixture';
 
-const TEST_DATA = {
-  projectId: '1a6fdae6-8b0c-47bb-b444-0e2563deab4b',
-  userStoryId: '0f4a6636-d845-4459-9262-ebae2657ca62',
-  moduleId: '37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4',
-  acId: '96587255-b61d-4f8b-9cf7-a09f945c4bb1',
-  get pat(): string {
-    return config.testUser.pat ?? '';
-  },
-};
+const getPat = () => config.testUser.pat ?? '';
 
 function buildValidPayload(overrides?: Partial<ATCCreatePayload>): ATCCreatePayload {
   return {
     title: 'Login with valid email',
-    module_id: TEST_DATA.moduleId,
-    user_story_id: TEST_DATA.userStoryId,
-    acceptance_criterion_ids: [TEST_DATA.acId],
+    module_id: config.seed.module.id,
+    user_story_id: config.seed.userStory.id,
+    acceptance_criterion_ids: [config.seed.acceptanceCriterion.id],
     layer: 'UI',
     steps: [
       { position: 1, content: 'Navigate to login page' },
@@ -53,7 +46,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC01 — BK-149: POST /atcs creates ATC
   // ============================================
   test('BK-149: POST /atcs creates an ATC with steps, assertions, slug and version 1', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const payload = buildValidPayload();
     const [response, body] = await api.atcs.createAtcSuccessfully(payload);
@@ -73,7 +66,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   });
 
   test('BK-149: POST /atcs works for all layer values (UI, API, Unit)', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     for (const layer of ['UI', 'API', 'Unit'] as const) {
       const payload = buildValidPayload({ layer, title: `ATC layer ${layer} ${Date.now()}` });
@@ -107,7 +100,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
 
     expect(response.status()).toBe(401);
 
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
   });
 
   test('BK-150: POST /atcs rejects token lacking atc:write scope with 403', async ({ api }) => {
@@ -129,10 +122,10 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC03 — BK-151: AC outside user_story → 422
   // ============================================
   test('BK-151: POST /atcs rejects AC that belongs to a different user story with 422', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     // This AC belongs to a DIFFERENT user story than the one in the payload
-    const foreignAcId = 'e7e3b1c4-5a6b-7c8d-9e0f-1a2b3c4d5e6f';
+    const foreignAcId = DataFactory.SENTINEL.foreignAtc;
     const payload = buildValidPayload({
       title: `Foreign AC test ${Date.now()}`,
       acceptance_criterion_ids: [foreignAcId],
@@ -145,12 +138,12 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC04 — BK-152: Module outside subtree → 422
   // ============================================
   test('BK-152: POST /atcs rejects module outside user story subtree with 422', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     // Non-existent module_id returns 404 (not found), not 422.
     // For a real 422 we'd need a module that exists but is outside the
     // user_story's project subtree — that requires dynamic discovery.
-    const fakeModuleId = '00000000-0000-0000-0000-000000000000';
+    const fakeModuleId = DataFactory.SENTINEL.nonExistent;
     const payload = buildValidPayload({
       title: `Fake module test ${Date.now()}`,
       module_id: fakeModuleId,
@@ -163,7 +156,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC05 — BK-153: Step position validation (422)
   // ============================================
   test('BK-153: POST /atcs rejects steps with non-increasing positions', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const invalidPositionSets = [
       { positions: [1, 3, 2], desc: 'not increasing' },
@@ -193,7 +186,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC06 — BK-154: Body boundary validation (422)
   // ============================================
   test('BK-154: POST /atcs validates request body boundaries', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const boundaryCases = [
       // Title boundaries
@@ -220,13 +213,13 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC07 — BK-155: Transactional rollback (422)
   // ============================================
   test('BK-155: POST /atcs returns error when user_story_id does not exist (no partial write)', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     // Non-existent user_story_id returns 404. API does not expose a separate
     // cross-entity check that returns 422 with an FK constraint error.
     // The rollback guarantee is verified implicitly: no ATC was created
     // despite the request being processed.
-    const fakeUserStoryId = '00000000-0000-0000-0000-000000000000';
+    const fakeUserStoryId = DataFactory.SENTINEL.nonExistent;
     const payload = buildValidPayload({
       title: `Rollback test ${Date.now()}`,
       user_story_id: fakeUserStoryId,
@@ -239,7 +232,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC08 — BK-156: PATCH /atcs/{id} version bump
   // ============================================
   test('BK-156: PATCH /atcs/{id} happy path with X-If-Match', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const createPayload = buildValidPayload({ title: `ATC to patch ${ts}` });
@@ -261,7 +254,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   });
 
   test('BK-156: PATCH /atcs/{id} cascade-replaces children (BK-96 regression)', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     // Create an ATC with 3 steps and 2 assertions
     const ts = Date.now();
@@ -314,7 +307,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC09 — BK-157: Optimistic locking (200/409/200)
   // ============================================
   test('BK-157: PATCH /atcs/{id} honors matching X-If-Match → 200', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const createPayload = buildValidPayload({ title: `Locking test ${ts}` });
@@ -327,7 +320,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   });
 
   test('BK-157: PATCH /atcs/{id} rejects stale X-If-Match → 409', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const createPayload = buildValidPayload({ title: `Stale lock test ${ts}` });
@@ -348,7 +341,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   });
 
   test('BK-157: PATCH /atcs/{id} absent X-If-Match → 200', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const createPayload = buildValidPayload({ title: `No lock test ${ts}` });
@@ -364,7 +357,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC10 — BK-158: 404 on non-existent ATC
   // ============================================
   test('BK-158: PATCH /atcs/{id} returns 404 for non-existent id', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     // Create a real ATC first to use its valid shape for the PATCH body
     const ts = Date.now();
@@ -373,7 +366,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
 
     // Now PATCH with a valid body but non-existent UUID
     const patchPayload = buildPatchPayload(created, ts);
-    const fakeId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+    const fakeId = DataFactory.SENTINEL.fake;
 
     const [_response, _errBody] = await api.atcs.patchAtcNonExistent(fakeId, patchPayload);
   });
@@ -382,7 +375,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC11 — BK-159: Empty body PATCH no-op
   // ============================================
   test('BK-159: PATCH /atcs/{id} with identical payload returns 200 but still bumps version', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const createPayload = buildValidPayload({ title: `Idempotent patch test ${ts}` });
@@ -413,7 +406,7 @@ test.describe('BK-18: ATC Create/Edit REST API', { tag: ['@api', '@atc', '@criti
   // TC12 — BK-160: Immutable fields on PATCH
   // ============================================
   test('BK-160: PATCH /atcs/{id} keeps slug, user_story_id and module_id immutable', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const createPayload = buildValidPayload({ title: `Immutable test ${ts}` });

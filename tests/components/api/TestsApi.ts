@@ -39,11 +39,11 @@ export class TestsApi extends ApiBase {
     const testEntity = body.test;
     expect(testEntity.id).toBeDefined();
     expect(testEntity.title).toBe(payload.title);
-    expect(testEntity.atc_ids).toBeDefined();
-    expect(testEntity.atc_ids).toHaveLength(payload.atc_ids.length);
+    expect(testEntity.steps).toBeDefined();
+    expect(testEntity.steps).toHaveLength(payload.atc_ids.length);
 
-    for (const [index, ref] of testEntity.atc_ids.entries()) {
-      expect(ref.id).toBe(payload.atc_ids[index]);
+    for (const [index, ref] of testEntity.steps.entries()) {
+      expect(ref.atc_id).toBe(payload.atc_ids[index]);
       expect(ref.position).toBe(index + 1);
     }
 
@@ -61,6 +61,7 @@ export class TestsApi extends ApiBase {
     const [response, body, sent] = await this.apiPOST<APIError, TestCreatePayload>(
       this.testsEndpoint,
       payload,
+      { headers: this.idempotencyHeaders() },
     );
 
     expect(response.status()).toBe(422);
@@ -76,6 +77,7 @@ export class TestsApi extends ApiBase {
     const [response, body, sent] = await this.apiPOST<APIError, TestCreatePayload>(
       this.testsEndpoint,
       payload,
+      { headers: this.idempotencyHeaders() },
     );
 
     expect(response.status()).toBe(422);

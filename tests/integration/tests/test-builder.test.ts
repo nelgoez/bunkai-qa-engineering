@@ -1,25 +1,17 @@
 import type { APIError, ATCCreatePayload } from '@schemas/atc.types';
 import type { TestCreatePayload } from '@schemas/tests.types';
 
+import { DataFactory } from '@DataFactory';
 import { config, expect, test } from '@TestFixture';
 
-const TEST_DATA = {
-  projectId: '1a6fdae6-8b0c-47bb-b444-0e2563deab4b',
-  userStoryId: '0f4a6636-d845-4459-9262-ebae2657ca62',
-  moduleId: '37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4',
-  acId: '96587255-b61d-4f8b-9cf7-a09f945c4bb1',
-  workspaceId: '1a6fdae6-8b0c-47bb-b444-0e2563deab4b',
-  get pat(): string {
-    return config.testUser.pat ?? '';
-  },
-};
+const getPat = () => config.testUser.pat ?? '';
 
 function buildAtcPayload(overrides?: Partial<ATCCreatePayload>): ATCCreatePayload {
   return {
     title: `ATC for test builder ${Date.now()}`,
-    module_id: TEST_DATA.moduleId,
-    user_story_id: TEST_DATA.userStoryId,
-    acceptance_criterion_ids: [TEST_DATA.acId],
+    module_id: config.seed.module.id,
+    user_story_id: config.seed.userStory.id,
+    acceptance_criterion_ids: [config.seed.acceptanceCriterion.id],
     layer: 'API',
     steps: [{ position: 1, content: 'Step 1' }, { position: 2, content: 'Step 2' }],
     assertions: [],
@@ -31,8 +23,8 @@ function buildAtcPayload(overrides?: Partial<ATCCreatePayload>): ATCCreatePayloa
 function buildTestPayload(overrides?: Partial<TestCreatePayload>): TestCreatePayload {
   return {
     title: `Test from ATC chain ${Date.now()}`,
-    atc_ids: ['a1b2c3d4-e5f6-7890-abcd-ef1234567890'],
-    workspace_id: TEST_DATA.workspaceId,
+    atc_ids: [DataFactory.SENTINEL.defaultAtc],
+    workspace_id: config.seed.workspace.id,
     ...overrides,
   };
 }
@@ -42,7 +34,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // TC01 — Happy path: Create test with ATC chain
   // ============================================
   test('BK-305: POST /tests creates a test chaining 3 ATCs', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const [, atc1] = await api.atcs.createAtcSuccessfully(
@@ -65,14 +57,14 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
     expect(response.status()).toBe(201);
     expect(testEntity.id).toBeDefined();
     expect(testEntity.title).toBe(`Test from chain ${ts}`);
-    expect(testEntity.atc_ids).toHaveLength(3);
-    expect(testEntity.atc_ids[0].id).toBe(atc1.id);
-    expect(testEntity.atc_ids[0].position).toBe(1);
-    expect(testEntity.atc_ids[1].id).toBe(atc2.id);
-    expect(testEntity.atc_ids[1].position).toBe(2);
-    expect(testEntity.atc_ids[2].id).toBe(atc3.id);
-    expect(testEntity.atc_ids[2].position).toBe(3);
-    expect(testEntity.workspace_id).toBe(TEST_DATA.workspaceId);
+    expect(testEntity.steps).toHaveLength(3);
+    expect(testEntity.steps[0].atc_id).toBe(atc1.id);
+    expect(testEntity.steps[0].position).toBe(1);
+    expect(testEntity.steps[1].atc_id).toBe(atc2.id);
+    expect(testEntity.steps[1].position).toBe(2);
+    expect(testEntity.steps[2].atc_id).toBe(atc3.id);
+    expect(testEntity.steps[2].position).toBe(3);
+    expect(testEntity.workspace_id).toBe(config.seed.workspace.id);
     expect(testEntity.created_by).toBeDefined();
     expect(testEntity.created_at).toBeDefined();
   });
@@ -81,7 +73,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // TC02 — Duplicate ATC in chain
   // ============================================
   test('BK-305: POST /tests allows duplicate ATC IDs in chain', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const [, atc] = await api.atcs.createAtcSuccessfully(
@@ -96,18 +88,18 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
     );
 
     expect(response.status()).toBe(201);
-    expect(testEntity.atc_ids).toHaveLength(2);
-    expect(testEntity.atc_ids[0].id).toBe(atc.id);
-    expect(testEntity.atc_ids[0].position).toBe(1);
-    expect(testEntity.atc_ids[1].id).toBe(atc.id);
-    expect(testEntity.atc_ids[1].position).toBe(2);
+    expect(testEntity.steps).toHaveLength(2);
+    expect(testEntity.steps[0].atc_id).toBe(atc.id);
+    expect(testEntity.steps[0].position).toBe(1);
+    expect(testEntity.steps[1].atc_id).toBe(atc.id);
+    expect(testEntity.steps[1].position).toBe(2);
   });
 
   // ============================================
   // TC03 — Empty ATC chain → 422
   // ============================================
   test('BK-306: POST /tests rejects empty atc_ids with 422', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const [response, errBody] = await api.tests.createTestEmptyChain(
       buildTestPayload({ atc_ids: [] }),
@@ -121,7 +113,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // TC04 — Invalid title → 422
   // ============================================
   test('BK-307: POST /tests rejects whitespace-only title with 422', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const [response, errBody] = await api.tests.createTestWithInvalidTitle(
       buildTestPayload({ title: '   ' }),
@@ -132,7 +124,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   });
 
   test('BK-307: POST /tests rejects 201-character title with 422', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const [response, errBody] = await api.tests.createTestWithInvalidTitle(
       buildTestPayload({ title: 'A'.repeat(201) }),
@@ -146,9 +138,9 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // TC05 — Foreign/non-existent ATC → 404
   // ============================================
   test('BK-308: POST /tests returns 404 for non-existent ATC IDs', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
-    const fakeAtcId = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+    const fakeAtcId = DataFactory.SENTINEL.fake;
 
     const [response, errBody] = await api.tests.createTestForeignAtc(
       buildTestPayload({ atc_ids: [fakeAtcId] }),
@@ -162,7 +154,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // TC06 — Idempotency: same key → one test
   // ============================================
   test('BK-309: POST /tests with Idempotency-Key returns same test on retry', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const ts = Date.now();
     const [, atc] = await api.atcs.createAtcSuccessfully(
@@ -198,7 +190,7 @@ test.describe('BK-27: Test Builder API', { tag: ['@api', '@tests', '@critical'] 
   // TC08 — Missing title → 422
   // ============================================
   test('BK-307: POST /tests rejects empty title with 422', async ({ api }) => {
-    api.setAuthToken(TEST_DATA.pat);
+    api.setAuthToken(getPat());
 
     const [response, errBody] = await api.apiPOST<APIError, TestCreatePayload>('/tests', buildTestPayload({ title: '' }));
 
