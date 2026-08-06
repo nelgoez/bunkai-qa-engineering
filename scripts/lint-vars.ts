@@ -620,7 +620,7 @@ const JIRA_RESERVED_SLUGS = new Set(['work_type', 'status', 'transition', 'link_
 
 function isAllowlisted(varName: string, filePath: string): boolean {
   return DOC_META_ALLOWLIST.some(
-    ([allowedName, fileSub]) => allowedName === varName && filePath.includes(fileSub),
+    ([allowedName, fileSub]) => allowedName === varName && filePath.replace(/\\/g, '/').includes(fileSub),
   );
 }
 
