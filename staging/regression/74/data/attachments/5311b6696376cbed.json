@@ -1,0 +1,41 @@
+{
+  "atc": {
+    "id": "30210442-69f7-49f1-b5ee-075a3f2a3539",
+    "slug": "api-gen-module/atc-f0485b91",
+    "tags": [
+      "patched"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "4b42a0fe-7222-484d-9a1e-2d91cd5734c4",
+        "content": "Updated step 1",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "bbc625b6-d0d9-4ae4-8bf6-1047d3434832",
+        "content": "Updated step 2",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      }
+    ],
+    "title": "Patched ATC 1785981758294",
+    "status": "unrun",
+    "version": 2,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [],
+    "created_at": "2026-08-06T02:02:38.469548+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-06T02:02:38.711914+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  },
+  "version": 2,
+  "affected_test_count": 0
+}

@@ -1,0 +1,53 @@
+{
+  "atc": {
+    "id": "30210442-69f7-49f1-b5ee-075a3f2a3539",
+    "slug": "api-gen-module/atc-f0485b91",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "f70b9913-7974-491e-8f5c-15cfd24036da",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "168bd6b6-f094-40d3-aee6-fb775cacf58a",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "bc4a8893-6904-44c7-8db6-25dc135c7909",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "Stale lock test 1785981758294",
+    "status": "unrun",
+    "version": 1,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [
+      {
+        "id": "b7cd36e1-9937-4e98-9a0e-fb09c3b779dc",
+        "content": "Response time < 2s",
+        "position": 1
+      }
+    ],
+    "created_at": "2026-08-06T02:02:38.469548+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-06T02:02:38.469548+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}

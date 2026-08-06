@@ -1,0 +1,53 @@
+{
+  "atc": {
+    "id": "98d462f8-9dc9-494a-bdc2-caebd6a1627f",
+    "slug": "api-gen-module/atc-1733e622",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "bbc25210-334e-4352-a3d5-ed770e119af9",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "13f305ed-43b0-40e0-b82d-46f2f8e618d1",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "d9a75890-0c43-4488-9cb4-ddd444d4f25f",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "404 test base 1785981753670",
+    "status": "unrun",
+    "version": 1,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [
+      {
+        "id": "ec48c411-1a07-44aa-a0e6-917d24a200a2",
+        "content": "Response time < 2s",
+        "position": 1
+      }
+    ],
+    "created_at": "2026-08-06T02:02:33.86607+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-06T02:02:33.86607+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}

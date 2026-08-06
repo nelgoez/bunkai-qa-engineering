@@ -1,0 +1,55 @@
+{
+  "atc": {
+    "id": "7241a049-7bf9-494f-87a4-5c20b634f8f0",
+    "slug": "api-gen-module/atc-ecb352a3",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "44b3c90a-14d9-445e-a13b-813ee95da8c6",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "444c62b8-1c80-44af-8795-498f2a6271a1",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "5b599b4d-4c7c-4d2d-8b1c-05b1d77758c4",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "Idempotent patch test 1785981748007",
+    "status": "unrun",
+    "version": 2,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [
+      {
+        "id": "bc64a25e-441c-4a19-83ba-30bea1f4e354",
+        "content": "Response time < 2s",
+        "position": 1
+      }
+    ],
+    "created_at": "2026-08-06T02:02:28.154813+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-06T02:02:28.375462+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  },
+  "version": 2,
+  "affected_test_count": 0
+}

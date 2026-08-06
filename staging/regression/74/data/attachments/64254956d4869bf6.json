@@ -1,0 +1,16 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Request body failed validation.",
+    "details": [
+      {
+        "code": "custom",
+        "path": [
+          "slug"
+        ],
+        "message": "Slug is reserved."
+      }
+    ],
+    "request_id": "6b0a7ee9-8dd0-4b30-9307-053b88e015cc"
+  }
+}

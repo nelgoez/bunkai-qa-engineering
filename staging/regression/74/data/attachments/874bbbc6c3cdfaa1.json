@@ -1,0 +1,53 @@
+{
+  "atc": {
+    "id": "e6663354-60fa-4e2f-b97b-56f9a4afeac1",
+    "slug": "api-gen-module/atc-0097e9eb",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "API",
+    "steps": [
+      {
+        "id": "5eca8927-53c1-406c-ad1c-74e20e97a150",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "bff8c438-0386-44cb-b4e1-9b990be16bc1",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "c780e653-d4fa-41e9-92ef-6b204187c913",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "ATC layer API 1785981758552",
+    "status": "unrun",
+    "version": 1,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [
+      {
+        "id": "819ea302-9071-4bd0-bdae-b61423202f54",
+        "content": "Response time < 2s",
+        "position": 1
+      }
+    ],
+    "created_at": "2026-08-06T02:02:38.879866+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-06T02:02:38.879866+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}

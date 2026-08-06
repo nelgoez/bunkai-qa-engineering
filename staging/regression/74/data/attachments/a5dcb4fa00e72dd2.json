@@ -1,0 +1,17 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Request body failed validation.",
+    "details": [
+      {
+        "expected": "string",
+        "code": "invalid_type",
+        "path": [
+          "title"
+        ],
+        "message": "Invalid input"
+      }
+    ],
+    "request_id": "cc1ef514-e800-43af-80f1-02c24266974b"
+  }
+}

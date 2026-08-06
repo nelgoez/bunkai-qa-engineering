@@ -1,0 +1,11 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "The ATC was modified by another request.",
+    "details": {
+      "reason": "version_conflict",
+      "current_version": 2
+    },
+    "request_id": "93b4f30d-c8f4-4d44-a33c-bc3b5b4ba649"
+  }
+}

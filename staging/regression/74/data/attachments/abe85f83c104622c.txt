@@ -1,0 +1,10 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-153] createAtcWithInvalidStepPosition - PASS (187ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-153] createAtcWithInvalidStepPosition - PASS (185ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-153] createAtcWithInvalidStepPosition - PASS (208ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-153] createAtcWithInvalidStepPosition - PASS (131ms)
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-149] createAtcSuccessfully - PASS (177ms)

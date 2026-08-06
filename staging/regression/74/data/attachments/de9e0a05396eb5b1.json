@@ -1,0 +1,17 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Request body failed validation.",
+    "details": [
+      {
+        "expected": "string",
+        "code": "invalid_type",
+        "path": [
+          "jql"
+        ],
+        "message": "Invalid input"
+      }
+    ],
+    "request_id": "83983ac1-88c6-4e7b-a146-1e4eeec274b1"
+  }
+}

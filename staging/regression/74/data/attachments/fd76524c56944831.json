@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "forbidden",
+    "message": "You must be a member of this workspace to create a project.",
+    "details": {
+      "reason": "not_a_member"
+    },
+    "request_id": "fef97753-81ec-4684-b809-1d7954cbb2e5"
+  }
+}

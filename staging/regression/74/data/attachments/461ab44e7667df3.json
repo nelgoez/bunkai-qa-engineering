@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "A project with this slug already exists in the workspace.",
+    "details": {
+      "reason": "slug_duplicate_in_workspace"
+    },
+    "request_id": "8a6dceac-b550-4bd3-8aa0-659240d22a1d"
+  }
+}

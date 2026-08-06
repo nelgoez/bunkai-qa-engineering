@@ -1,0 +1,2 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/aa242c7e-c364-429a-9100-847d700085a1/projects
+✅ [BK-297] createProjectNameTooShort - PASS (256ms)

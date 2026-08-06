@@ -1,0 +1,2 @@
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/ecb0f1c5-b2c5-402f-8359-e25a4b28b4a8/projects
+---- API NOK: 409 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/ecb0f1c5-b2c5-402f-8359-e25a4b28b4a8/projects

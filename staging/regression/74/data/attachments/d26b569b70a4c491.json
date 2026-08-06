@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "ac_outside_user_story",
+    "message": "Every acceptance criterion must belong to the given user story.",
+    "details": {
+      "reason": "ac_outside_user_story"
+    },
+    "request_id": "13d66bf0-0619-458e-b276-699fc5fe42a7"
+  }
+}
