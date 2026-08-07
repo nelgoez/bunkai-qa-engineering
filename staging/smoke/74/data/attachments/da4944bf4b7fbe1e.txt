@@ -1,0 +1,11 @@
+[ERROR] TMS sync failed: ReferenceError: Bun is not defined
+    at syncResults (file:///home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/tests/utils/jiraSync.ts:44:22)
+    at file:///home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/tests/teardown/global.teardown.ts:85:28
+    at /home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:3045:15
+    at /home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:2537:17
+    at TimeoutManager.withRunnable (/home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:1817:9)
+    at TestInfoImpl._runWithTimeout (/home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:2535:34)
+    at /home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:3043:22
+    at WorkerMain._runTest (/home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:3016:5)
+    at WorkerMain.runTestGroup (/home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/worker/workerProcessEntry.js:2911:9)
+    at process.<anonymous> (/home/runner/work/bunkai-qa-engineering/bunkai-qa-engineering/node_modules/playwright/lib/common/index.js:1955:25)
