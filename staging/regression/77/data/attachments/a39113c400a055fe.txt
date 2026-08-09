@@ -1,0 +1,4 @@
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-149] createAtcSuccessfully - PASS (115ms)
+---- API OK: 200 - https://staging-upexbunkai.vercel.app/api/v1/atcs/c0b3a1c6-2200-42f4-bbef-859dff670993
+✅ [BK-156] patchAtcSuccessfully - PASS (153ms)
