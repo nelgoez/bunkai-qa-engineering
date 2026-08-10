@@ -1,0 +1,5 @@
+---- API NOK: 404 - https://staging-upexbunkai.vercel.app/api/v1/defects
+❌ [BK-247] createDefectCarriesExternalLink - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 404
