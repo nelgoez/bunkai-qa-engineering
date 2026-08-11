@@ -1,0 +1,1 @@
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/9e689714-958e-4105-a8d2-5d7674e3f832/projects
