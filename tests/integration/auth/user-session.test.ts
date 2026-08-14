@@ -43,4 +43,16 @@ test.describe('BK-166: User Session API', { tag: ['@api', '@critical'] }, () => 
     expect(response.status()).toBe(200);
     expect(tokenData.access_token).toBeDefined();
   });
+
+  test('BK-166: Reject login with invalid credentials', async ({ api }) => {
+    const credentials = {
+      email: config.testUser.email,
+      password: 'definitely-wrong-password',
+    };
+
+    const [response, errorBody] = await api.auth.loginWithInvalidCredentials(credentials);
+
+    expect(response.status()).toBe(401);
+    expect(errorBody.error.code).toBe('unauthorized');
+  });
 });
