@@ -80,6 +80,33 @@ export interface AuthErrorResponse {
 }
 
 /**
+ * Response from POST /api/v1/auth/signin (Bunkai TMS).
+ *
+ * Returns the Supabase session (session JWT) alongside a long-lived
+ * Personal Access Token (PAT) that authenticates /api/v1/* requests.
+ */
+export interface SigninResponse {
+  user: {
+    id: string
+    email: string
+  }
+  session: {
+    access_token: string
+    refresh_token: string
+    expires_at: number
+    token_type: string
+  }
+  pat: {
+    token: string
+    id: string
+    name: string
+    scopes: string[]
+    expires_at: number | null
+  }
+  warning?: string
+}
+
+/**
  * User info response from /api/v1/me.
  * TODO: Replace with OpenAPI endpoint type after sync.
  */

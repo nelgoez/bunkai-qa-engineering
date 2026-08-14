@@ -15,7 +15,7 @@
  */
 
 import type { APIResponse } from '@playwright/test';
-import type { AuthErrorResponse, LoginPayload, TokenResponse, UserInfoResponse } from '@schemas/auth.types';
+import type { AuthErrorResponse, LoginPayload, SigninResponse, TokenResponse, UserInfoResponse } from '@schemas/auth.types';
 import type { TestContextOptions } from '@TestContext';
 
 import { ApiBase } from '@api/ApiBase';
@@ -75,10 +75,10 @@ export class AuthApi extends ApiBase {
     credentials: LoginPayload,
   ): Promise<[APIResponse, TokenResponse, LoginPayload]> {
     // ACTION: POST login credentials to the sign-in endpoint
-    const [response, body, sentPayload] = await this.apiPOST<
-      { session: { access_token: string, refresh_token?: string, expires_at: number, token_type: string }, pat: { token: string, scopes: string[] } },
-      LoginPayload
-    >(this.config.auth.loginEndpoint, credentials);
+    const [response, body, sentPayload] = await this.apiPOST<SigninResponse, LoginPayload>(
+      this.config.auth.loginEndpoint,
+      credentials,
+    );
 
     // Fixed assertions - validates successful authentication
     expect(response.status()).toBe(200);

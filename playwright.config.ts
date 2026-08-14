@@ -130,7 +130,18 @@ export default defineConfig({
         storageState: config.auth.storageStatePath,
       },
       testMatch: '**/e2e/**/*.test.ts',
+      testIgnore: '**/e2e/auth/**',
       dependencies: ['ui-setup'],
+    },
+
+    // ============================================
+    // E2E Auth Tests - Login flow (fresh context, no pre-auth)
+    // ============================================
+    {
+      name: 'e2e-auth',
+      testMatch: '**/e2e/auth/**/*.test.ts',
+      dependencies: ['global-setup'],
+      use: {},
     },
 
     // ============================================
@@ -151,6 +162,7 @@ export default defineConfig({
       name: 'smoke',
       grep: /@critical/,
       testMatch: '**/{e2e,integration}/**/*.test.ts',
+      testIgnore: '**/e2e/auth/**',
       dependencies: ['ui-setup', 'api-setup'],
       use: {
         ...devices['Desktop Chrome'],

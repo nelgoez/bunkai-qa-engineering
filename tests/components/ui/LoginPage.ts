@@ -1,17 +1,23 @@
 /**
  * KATA Architecture - Layer 3: Login Page Component
  *
- * UI component for authentication via the login page.
- * Handles login flows for E2E tests.
+ * UI component for authentication via the Bunkai TMS login page.
  *
  * @atc IDs map to Jira Test issues BK-313, BK-314
  *
- * Page: /login (UPEX Dojo)
+ * Page: /login (Bunkai TMS — staging)
+ * Two-step password sign-in:
+ *   1. Enter email → "Continue" (login-continue)
+ *   2. Enter password → "Sign in" (login-signin)
+ *
  * Locators (data-testid):
- * - Email: [data-testid="login-email-input"]
- * - Password: [data-testid="login-password-input"]
- * - Submit: [data-testid="login-submit-button"]
- * - Error: [data-testid="login-error"]
+ *   - login-email              (email input)
+ *   - login-continue           (advance to password step)
+ *   - login-password           (password input)
+ *   - login-signin             (submit sign-in)
+ *   - login-error              (inline error alert)
+ *   - login-magic-link-toggle  (switch to magic-link mode)
+ *   - oauth-github / oauth-google (OAuth provider buttons)
  */
 
 import type { TestContextOptions } from '@TestContext';
@@ -25,8 +31,7 @@ import { atc, step } from '@utils/decorators';
 // ============================================
 
 /**
- * Login credentials for UI authentication
- * Note: UPEX Dojo uses 'email' field instead of 'username'
+ * Login credentials for UI authentication (email + password).
  */
 export interface LoginCredentials {
   email: string
@@ -47,13 +52,14 @@ export class LoginPage extends UiBase {
   // ============================================
 
   /**
-   * Fill login form and submit
-   * Helper that combines fill + submit actions
+   * Fill the two-step sign-in form and submit.
+   * Helper that combines email → continue → password → sign-in actions.
    */
   private async fillAndSubmitLoginForm(credentials: LoginCredentials): Promise<void> {
-    await this.page.locator('[data-testid="login-email-input"]').fill(credentials.email);
-    await this.page.locator('[data-testid="login-password-input"]').fill(credentials.password);
-    await this.page.locator('[data-testid="login-submit-button"]').click();
+    await this.page.locator('[data-testid="login-email"]').fill(credentials.email);
+    await this.page.locator('[data-testid="login-continue"]').click();
+    await this.page.locator('[data-testid="login-password"]').fill(credentials.password);
+    await this.page.locator('[data-testid="login-signin"]').click();
   }
 
   // ============================================
@@ -61,8 +67,8 @@ export class LoginPage extends UiBase {
   // ============================================
 
   /**
-   * Navigate to the login page
-   * Call this BEFORE using login ATCs
+   * Navigate to the login page.
+   * Call this BEFORE using login ATCs.
    */
   @step
   async goto(): Promise<void> {
@@ -77,7 +83,7 @@ export class LoginPage extends UiBase {
    * ATC: Login with valid credentials - expects success
    *
    * IMPORTANT: Call goto() before this ATC.
-   * Fills credentials, submits, and verifies redirect away from login page.
+   * Fills email + password, submits, and verifies redirect away from /login.
    *
    * @param credentials - Email and password
    */
@@ -94,15 +100,16 @@ export class LoginPage extends UiBase {
    * ATC: Login with invalid credentials - expects error
    *
    * IMPORTANT: Call goto() before this ATC.
-   * Fills invalid credentials, submits, and verifies error message.
+   * Fills a registered email + wrong password, submits, and verifies the
+   * inline error is visible and the user stays on /login.
    *
-   * @param credentials - Invalid email or password
+   * @param credentials - Registered email with an invalid password
    */
   @atc('BK-314')
   async loginWithInvalidCredentials(credentials: LoginCredentials): Promise<void> {
     await this.fillAndSubmitLoginForm(credentials);
 
-    // Fixed assertion - error should be visible (UPEX Dojo uses data-testid="login-error")
+    // Fixed assertion - error should be visible
     const errorIndicator = this.page.locator('[data-testid="login-error"]');
     await expect(errorIndicator).toBeVisible({ timeout: 5000 });
     await expect(this.page).toHaveURL(/.*\/login.*/);

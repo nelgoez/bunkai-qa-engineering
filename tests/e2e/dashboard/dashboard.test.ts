@@ -2,8 +2,8 @@
  * KATA Architecture — Dashboard E2E Tests
  *
  * Validates authenticated session, API access, and workspace listing
- * against the Bunkai staging app. Auth is handled by global.setup.ts
- * (storage state), not by LoginPage ATCs (LoginPage targets UPEX Dojo).
+ * against the Bunkai staging app. Auth is handled by the ui-auth setup
+ * (storage state), not by LoginPage ATCs (exercised in tests/e2e/auth/).
  */
 
 import { expect, test } from '@TestFixture';
