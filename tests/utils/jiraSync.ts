@@ -245,10 +245,45 @@ function resolveEnvironmentSlug(environment: string): string | null {
   switch (environment) {
     case 'staging':
       return 'staging';
+    case 'production':
+      return 'production';
     case 'local':
       return 'dev';
     default:
       return null;
+  }
+}
+
+/**
+ * Fetch the set of Test issue keys assigned to the authenticated user.
+ *
+ * The sync must only reflect results onto Test tickets we own. Running the full
+ * integration suite also executes ATCs that belong to other people's stories
+ * (e.g. BK-149→160 under Ely's BK-18, BK-234→247 under the aborted BK-43), and
+ * writing onto those tickets is an ownership violation. Filtering by
+ * `assignee = currentUser()` keeps the sync self-maintaining without a
+ * hardcoded allowlist.
+ *
+ * Returns null when the query fails so the caller can fail-safe.
+ */
+async function fetchOwnedTestKeys(
+  url: string,
+  headers: Record<string, string>,
+): Promise<Set<string> | null> {
+  try {
+    const jql = encodeURIComponent('assignee = currentUser() AND issuetype = Test');
+    const response = await fetch(
+      `${url}/rest/api/3/search?jql=${jql}&fields=key&maxResults=100`,
+      { headers },
+    );
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json() as { issues?: Array<{ key: string }> };
+    return new Set((data.issues ?? []).map(issue => issue.key));
+  }
+  catch {
+    return null;
   }
 }
 
@@ -272,10 +307,23 @@ async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<S
     'Content-Type': 'application/json',
   };
 
+  const ownedTestKeys = await fetchOwnedTestKeys(url, headers);
+  if (ownedTestKeys === null) {
+    console.warn('[WARN] Could not resolve owned Test issues — aborting sync to avoid touching others\' tickets.');
+    return { provider: 'jira', success: false, message: 'Could not resolve owned Test issues' };
+  }
+
   let successCount = 0;
   let failCount = 0;
+  let skippedCount = 0;
 
   for (const [testId, executions] of Object.entries(results)) {
+    if (!ownedTestKeys.has(testId)) {
+      console.log(`[SKIP] ${testId} not assigned to current user — skipping`);
+      skippedCount++;
+      continue;
+    }
+
     const finalStatus = executions.every(e => e.status === 'PASS') ? 'PASS' : 'FAIL';
     const lastExecution = executions[executions.length - 1];
 
@@ -388,12 +436,12 @@ async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<S
     }
   }
 
-  console.log(`\n[SUMMARY] Sync: ${successCount} success, ${failCount} failed`);
+  console.log(`\n[SUMMARY] Sync: ${successCount} success, ${failCount} failed, ${skippedCount} skipped (not owned)`);
 
   return {
     provider: 'jira',
     success: failCount === 0,
-    message: `Updated ${successCount}/${successCount + failCount} issues`,
+    message: `Updated ${successCount}/${successCount + failCount} issues (${skippedCount} skipped)`,
   };
 }
 
