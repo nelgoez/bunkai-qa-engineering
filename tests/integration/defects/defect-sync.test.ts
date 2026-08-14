@@ -13,7 +13,12 @@ function buildDefectPayload(overrides?: Partial<DefectCreatePayload>): DefectCre
   };
 }
 
-test.describe('BK-43: TMS-Defect Sync', { tag: ['@defect-sync', '@critical'] }, () => {
+// BK-43 (TMS-Defect Sync) was aborted and re-scoped into BK-372 ("Send a newly
+// filed defect to Jira") and BK-373 ("Recover a failed sync"), both still in
+// Backlog. The /defects API is not deployed yet, so these ATCs 404. Skipped
+// until BK-372/BK-373 ship; TC keys BK-234/240/241/246/247 are now re-parented
+// to BK-372/BK-373 in Jira.
+test.describe.skip('Defect Sync (BK-372/BK-373) — /defects not deployed', { tag: ['@defect-sync', '@critical'] }, () => {
   test('BK-234: Auto-sync — new defect syncs and carries external ID', async ({ api }) => {
     const payload = buildDefectPayload({ severity: 'critical' });
     const [response, defect] = await api.defects.createDefectSyncs(payload);
