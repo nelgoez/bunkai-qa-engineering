@@ -23,7 +23,7 @@ catch {
 // Environment Type Definitions
 // ============================================
 
-export type Environment = 'local' | 'staging'; // Add more when needed (e.g., 'production')
+export type Environment = 'local' | 'staging' | 'production';
 
 // ============================================
 // Destructure Environment Variables (Single Access)
@@ -31,7 +31,7 @@ export type Environment = 'local' | 'staging'; // Add more when needed (e.g., 'p
 
 const {
   // === Environment Detection ===
-  TEST_ENV = 'local', // Used: env.current, selects URLs and credentials
+  TEST_ENV = 'staging', // Used: env.current, selects URLs and credentials (default: staging)
   CI, // Used: env.isCI (global.setup, KataReporter)
   BUILD_ID, // Used: env.buildId (jiraSync)
 
@@ -42,6 +42,10 @@ const {
   STAGING_USER_PASSWORD, // Required if TEST_ENV=staging
   STAGING_USER_PAT, // PAT for API auth (bypasses /auth/login which is broken (BK-177))
   STAGING_USER_READONLY_PAT, // Restricted-scope PAT (only atc:read, no atc:write)
+  PRODUCTION_USER_EMAIL, // Required if TEST_ENV=production
+  PRODUCTION_USER_PASSWORD, // Required if TEST_ENV=production
+  PRODUCTION_USER_PAT, // PAT for API auth (production)
+  PRODUCTION_USER_READONLY_PAT, // Restricted-scope PAT (production)
 
   // === TMS Configuration ===
   TMS_PROVIDER = 'xray', // Used: config.tms.provider (jiraSync) - 'xray' | 'jira'
@@ -78,8 +82,9 @@ const {
 
 export const env = {
   current: TEST_ENV as Environment,
-  isLocal: TEST_ENV === 'local' || TEST_ENV === undefined,
+  isLocal: TEST_ENV === 'local',
   isStaging: TEST_ENV === 'staging',
+  isProduction: TEST_ENV === 'production',
   isCI: CI === 'true',
   buildId: BUILD_ID ?? 'local',
 } as const;
@@ -99,6 +104,12 @@ const userCredentialsMap: Record<Environment, { email: string, password: string,
     password: STAGING_USER_PASSWORD ?? '',
     pat: STAGING_USER_PAT ?? undefined,
     readonlyPat: STAGING_USER_READONLY_PAT ?? undefined,
+  },
+  production: {
+    email: PRODUCTION_USER_EMAIL ?? '',
+    password: PRODUCTION_USER_PASSWORD ?? '',
+    pat: PRODUCTION_USER_PAT ?? undefined,
+    readonlyPat: PRODUCTION_USER_READONLY_PAT ?? undefined,
   },
 };
 
@@ -120,6 +131,11 @@ const envDataMap: Record<
     api: 'https://staging-upexbunkai.vercel.app/api/v1',
     user: userCredentialsMap.staging,
   },
+  production: {
+    base: 'https://upexbunkai.vercel.app',
+    api: 'https://upexbunkai.vercel.app/api/v1',
+    user: userCredentialsMap.production,
+  },
 };
 const envData = envDataMap[env.current];
 
@@ -132,7 +148,7 @@ export const config = {
   baseUrl: envData.base,
   apiUrl: envData.api,
 
-  // Authentication config (UPEX Dojo endpoints - relative to apiUrl)
+  // Authentication config (Bunkai TMS endpoints - relative to apiUrl)
   auth: {
     loginEndpoint: '/auth/signin',
     tokenEndpoint: '/auth/signin', // Endpoint to intercept for token (used by page.waitForResponse)

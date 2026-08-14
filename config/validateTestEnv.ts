@@ -20,6 +20,9 @@ export interface EnvVarsToValidate {
   STAGING_USER_EMAIL?: string
   STAGING_USER_PASSWORD?: string
   STAGING_USER_PAT?: string
+  PRODUCTION_USER_EMAIL?: string
+  PRODUCTION_USER_PASSWORD?: string
+  PRODUCTION_USER_PAT?: string
   XRAY_CLIENT_ID?: string
   XRAY_CLIENT_SECRET?: string
   ATLASSIAN_URL?: string
@@ -53,8 +56,15 @@ export function validateTestEnvironment(vars: EnvVarsToValidate): void {
       errors.push('STAGING_USER_PAT or (STAGING_USER_EMAIL + STAGING_USER_PASSWORD) required for TEST_ENV=staging');
     }
   }
+  else if (vars.TEST_ENV === 'production') {
+    const hasPatauth = !!vars.PRODUCTION_USER_PAT;
+    const hasLoginCreds = !!vars.PRODUCTION_USER_EMAIL && !!vars.PRODUCTION_USER_PASSWORD;
+    if (!hasPatauth && !hasLoginCreds) {
+      errors.push('PRODUCTION_USER_PAT or (PRODUCTION_USER_EMAIL + PRODUCTION_USER_PASSWORD) required for TEST_ENV=production');
+    }
+  }
   else {
-    errors.push(`Unknown TEST_ENV: ${vars.TEST_ENV}. Valid values: local, staging`);
+    errors.push(`Unknown TEST_ENV: ${vars.TEST_ENV}. Valid values: local, staging, production`);
   }
 
   // Validate TMS config only if AUTO_SYNC=true
@@ -94,7 +104,7 @@ export function validateTestEnvironment(vars: EnvVarsToValidate): void {
 if (import.meta.main) {
   // Only standalone mode reads process.env directly
   const vars: EnvVarsToValidate = {
-    TEST_ENV: process.env.TEST_ENV || 'local',
+    TEST_ENV: process.env.TEST_ENV || 'staging',
     AUTO_SYNC: process.env.AUTO_SYNC || 'false',
     TMS_PROVIDER: process.env.TMS_PROVIDER || 'xray',
     LOCAL_USER_EMAIL: process.env.LOCAL_USER_EMAIL,
@@ -102,6 +112,9 @@ if (import.meta.main) {
     STAGING_USER_EMAIL: process.env.STAGING_USER_EMAIL,
     STAGING_USER_PASSWORD: process.env.STAGING_USER_PASSWORD,
     STAGING_USER_PAT: process.env.STAGING_USER_PAT,
+    PRODUCTION_USER_EMAIL: process.env.PRODUCTION_USER_EMAIL,
+    PRODUCTION_USER_PASSWORD: process.env.PRODUCTION_USER_PASSWORD,
+    PRODUCTION_USER_PAT: process.env.PRODUCTION_USER_PAT,
     XRAY_CLIENT_ID: process.env.XRAY_CLIENT_ID,
     XRAY_CLIENT_SECRET: process.env.XRAY_CLIENT_SECRET,
     ATLASSIAN_URL: process.env.ATLASSIAN_URL,
