@@ -271,11 +271,16 @@ async function fetchOwnedTestKeys(
   headers: Record<string, string>,
 ): Promise<Set<string> | null> {
   try {
-    const jql = encodeURIComponent('assignee = currentUser() AND issuetype = Test');
-    const response = await fetch(
-      `${url}/rest/api/3/search?jql=${jql}&fields=key&maxResults=100`,
-      { headers },
-    );
+    // POST /search/jql — the GET /search?jql endpoint was removed (CHANGE-2046).
+    const response = await fetch(`${url}/rest/api/3/search/jql`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        jql: 'assignee = currentUser() AND issuetype = Test',
+        fields: ['key'],
+        maxResults: 100,
+      }),
+    });
     if (!response.ok) {
       return null;
     }
