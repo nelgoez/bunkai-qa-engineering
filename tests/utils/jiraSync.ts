@@ -10,6 +10,11 @@
  */
 
 import type { AtcResult } from '@utils/decorators';
+
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+import { ATC_PARTIAL_PATH } from '@utils/decorators';
 import { config, env } from '@variables';
 
 // ============================================
@@ -33,23 +38,53 @@ interface SyncResult {
 // Main Sync Function
 // ============================================
 
+/**
+ * Read ATC execution results from disk.
+ *
+ * Order matters: the global teardown runs BEFORE KataReporter.onEnd(), so the
+ * aggregated `reports/atc_results.json` does not exist yet at sync time — only
+ * the NDJSON partial stream does. Read the NDJSON first (available in both
+ * teardown and standalone runs before onEnd), and fall back to the aggregated
+ * report for `bun run test:sync` invoked after a completed run.
+ */
+function readAtcResults(reportPath: string): Record<string, AtcResult[]> {
+  if (existsSync(ATC_PARTIAL_PATH)) {
+    const results: Record<string, AtcResult[]> = {};
+    const lines = readFileSync(ATC_PARTIAL_PATH, 'utf-8').split('\n').filter(Boolean);
+
+    for (const line of lines) {
+      try {
+        const entry = JSON.parse(line) as AtcResult;
+        (results[entry.testId] ??= []).push(entry);
+      }
+      catch {
+        // Skip malformed NDJSON lines (partial write from a killed worker).
+      }
+    }
+
+    if (Object.keys(results).length > 0) {
+      return results;
+    }
+  }
+
+  // Playwright workers run under Node (not Bun), so Bun.file() is unavailable here.
+  if (existsSync(reportPath)) {
+    const reportData = JSON.parse(
+      readFileSync(reportPath, 'utf-8'),
+    ) as { results?: Record<string, AtcResult[]> };
+    return reportData.results ?? {};
+  }
+
+  return {};
+}
+
 export async function syncResults(reportPath = 'reports/atc_results.json'): Promise<SyncResult> {
   if (!config.tms.autoSync) {
     console.log('[SKIP] TMS sync disabled. Set AUTO_SYNC=true to enable.');
     return { provider: 'none', success: true, message: 'Sync disabled' };
   }
 
-  let results: Record<string, AtcResult[]>;
-
-  const reportFile = Bun.file(reportPath);
-  if (await reportFile.exists()) {
-    const reportData = (await reportFile.json()) as { results?: Record<string, AtcResult[]> };
-    results = reportData.results ?? {};
-  }
-  else {
-    console.warn('[WARN] ATC report file not found:', reportPath);
-    results = {};
-  }
+  const results = readAtcResults(reportPath);
 
   if (Object.keys(results).length === 0) {
     console.log('[WARN] No ATC results to sync');
@@ -175,13 +210,61 @@ async function syncToXray(results: Record<string, AtcResult[]>): Promise<SyncRes
 // Jira Direct Sync
 // ============================================
 
+interface JiraFieldDefinition {
+  id: string
+  type: string
+  name: string
+  options?: Record<string, string>
+}
+
+interface JiraFieldsFile {
+  [slug: string]: JiraFieldDefinition
+}
+
+/**
+ * Load the custom-field catalog from .agents/jira-fields.json (regenerated via
+ * `bun run jira:sync-fields`). Single-select fields resolve their option ID
+ * here — their REST payload requires `{ id: <optionId> }`, not a value string.
+ * Returns {} when the file is absent so callers degrade to the comment fallback.
+ */
+function loadJiraFields(): JiraFieldsFile {
+  try {
+    const fieldsPath = resolve(process.cwd(), '.agents', 'jira-fields.json');
+    if (!existsSync(fieldsPath)) {
+      return {};
+    }
+    return JSON.parse(readFileSync(fieldsPath, 'utf-8')) as JiraFieldsFile;
+  }
+  catch {
+    return {};
+  }
+}
+
+/** Map the active test environment to a Test Environment📦️ option slug. */
+function resolveEnvironmentSlug(environment: string): string | null {
+  switch (environment) {
+    case 'staging':
+      return 'staging';
+    case 'local':
+      return 'dev';
+    default:
+      return null;
+  }
+}
+
 async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<SyncResult> {
-  const { url, user, apiToken, testStatusField } = config.tms.jira;
+  const { url, user, apiToken } = config.tms.jira;
 
   if (!url || !user || !apiToken) {
     console.error('[ERROR] Missing Atlassian credentials. Check ATLASSIAN_URL, ATLASSIAN_EMAIL, ATLASSIAN_API_TOKEN.');
     return { provider: 'jira', success: false, message: 'Missing credentials' };
   }
+
+  const fields = loadJiraFields();
+  const testStatusField = fields.test_status;
+  const toBeAutomatedField = fields.to_be_automated;
+  const qaFrameworkField = fields.qa_framework;
+  const testEnvironmentField = fields.test_environment;
 
   const auth = btoa(`${user}:${apiToken}`);
   const headers = {
@@ -196,75 +279,107 @@ async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<S
     const finalStatus = executions.every(e => e.status === 'PASS') ? 'PASS' : 'FAIL';
     const lastExecution = executions[executions.length - 1];
 
+    // Build the custom-field payload. Single-select fields take { id: optionId }.
+    const fieldsToSet: Record<string, unknown> = {};
+
+    const statusOptionId = testStatusField?.options?.[finalStatus === 'PASS' ? 'passed' : 'failed'];
+    if (testStatusField && statusOptionId) {
+      fieldsToSet[testStatusField.id] = { id: statusOptionId };
+    }
+
+    const toBeAutomatedYes = toBeAutomatedField?.options?.yes;
+    if (toBeAutomatedField && toBeAutomatedYes) {
+      fieldsToSet[toBeAutomatedField.id] = { id: toBeAutomatedYes };
+    }
+
+    const playwrightFrameworkId = qaFrameworkField?.options?.playwright_javascript;
+    if (qaFrameworkField && playwrightFrameworkId) {
+      fieldsToSet[qaFrameworkField.id] = { id: playwrightFrameworkId };
+    }
+
+    const environmentSlug = resolveEnvironmentSlug(env.current);
+    const environmentOptionId = environmentSlug ? testEnvironmentField?.options?.[environmentSlug] : undefined;
+    if (testEnvironmentField && environmentOptionId) {
+      fieldsToSet[testEnvironmentField.id] = { id: environmentOptionId };
+    }
+
     try {
-      console.log(`[UPDATE] Updating ${testId}...`);
+      let fieldWriteSucceeded = false;
 
-      const updateResponse = await fetch(`${url}/rest/api/3/issue/${testId}`, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          fields: {
-            [testStatusField]: { value: finalStatus },
-          },
-        }),
-      });
+      if (Object.keys(fieldsToSet).length > 0) {
+        console.log(`[UPDATE] Updating ${testId}...`);
 
-      if (!updateResponse.ok && updateResponse.status !== 204) {
-        console.warn(`[WARN] Failed to update field for ${testId}: ${updateResponse.status}`);
+        const updateResponse = await fetch(`${url}/rest/api/3/issue/${testId}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({ fields: fieldsToSet }),
+        });
+
+        fieldWriteSucceeded = updateResponse.ok || updateResponse.status === 204;
+        if (!fieldWriteSucceeded) {
+          console.warn(`[WARN] Field update failed for ${testId}: ${updateResponse.status}`);
+        }
       }
 
-      const commentBody = {
-        body: {
-          type: 'doc',
-          version: 1,
-          content: [
-            {
-              type: 'paragraph',
-              content: [
-                {
-                  type: 'text',
-                  text: `KATA Execution - ${finalStatus}`,
-                  marks: [{ type: 'strong' }],
-                },
-              ],
-            },
-            {
-              type: 'paragraph',
-              content: [
-                { type: 'text', text: `ATC: ${lastExecution.methodName}\n` },
-                { type: 'text', text: `Executions: ${executions.length}\n` },
-                { type: 'text', text: `Duration: ${lastExecution.duration}ms\n` },
-                { type: 'text', text: `Environment: ${env.current}\n` },
-                { type: 'text', text: `Build: ${env.buildId}\n` },
-                { type: 'text', text: `Timestamp: ${lastExecution.executedAt}` },
-              ],
-            },
-            ...(lastExecution.error !== null
-              ? [
-                  {
-                    type: 'codeBlock',
-                    attrs: { language: 'text' },
-                    content: [{ type: 'text', text: `Error:\n${lastExecution.error}` }],
-                  },
-                ]
-              : []),
-          ],
-        },
-      };
-
-      const commentResponse = await fetch(`${url}/rest/api/3/issue/${testId}/comment`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(commentBody),
-      });
-
-      if (commentResponse.ok || commentResponse.status === 201) {
-        console.log(`[SUCCESS] Updated ${testId} -> ${finalStatus}`);
+      if (fieldWriteSucceeded) {
+        console.log(`[SUCCESS] Updated ${testId} -> ${finalStatus} (custom fields)`);
         successCount++;
       }
       else {
-        console.warn(`[WARN] Updated ${testId} but failed to add comment`);
-        successCount++;
+        // Fallback: the Test Status field could not be written — post a comment.
+        const commentBody = {
+          body: {
+            type: 'doc',
+            version: 1,
+            content: [
+              {
+                type: 'paragraph',
+                content: [
+                  {
+                    type: 'text',
+                    text: `KATA Execution - ${finalStatus}`,
+                    marks: [{ type: 'strong' }],
+                  },
+                ],
+              },
+              {
+                type: 'paragraph',
+                content: [
+                  { type: 'text', text: `ATC: ${lastExecution.methodName}\n` },
+                  { type: 'text', text: `Executions: ${executions.length}\n` },
+                  { type: 'text', text: `Duration: ${lastExecution.duration}ms\n` },
+                  { type: 'text', text: `Environment: ${env.current}\n` },
+                  { type: 'text', text: `Build: ${env.buildId}\n` },
+                  { type: 'text', text: `Timestamp: ${lastExecution.executedAt}` },
+                ],
+              },
+              ...(lastExecution.error !== null
+                ? [
+                    {
+                      type: 'codeBlock',
+                      attrs: { language: 'text' },
+                      content: [{ type: 'text', text: `Error:\n${lastExecution.error}` }],
+                    },
+                  ]
+                : []),
+            ],
+          },
+        };
+
+        const commentResponse = await fetch(`${url}/rest/api/3/issue/${testId}/comment`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(commentBody),
+        });
+
+        if (commentResponse.ok || commentResponse.status === 201) {
+          console.log(`[SUCCESS] Commented ${testId} -> ${finalStatus} (field fallback)`);
+          successCount++;
+        }
+        else {
+          console.warn(`[WARN] Failed to update or comment on ${testId}`);
+          failCount++;
+        }
       }
     }
     catch (error) {
