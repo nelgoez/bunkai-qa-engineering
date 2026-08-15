@@ -1,0 +1,10 @@
+{
+  "workspace": {
+    "id": "3a048602-14fd-415c-a476-28e74495956f",
+    "slug": "ws-noauth-mstseddh",
+    "name": "No Auth",
+    "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "plan": "community",
+    "created_at": "2026-08-15T02:58:54.643367+00:00"
+  }
+}
