@@ -14,7 +14,7 @@ export class WorkspacesApi extends ApiBase {
 
   private workspacesEndpoint = '/workspaces';
 
-  @atc('BK-291')
+  @atc('BK-291', { vcr: { value: 5, cost: 2, risk: 3 } })
   async createWorkspaceSuccessfully(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, WorkspaceResponse, WorkspaceCreatePayload]> {
@@ -33,7 +33,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body.workspace, sent];
   }
 
-  @atc('BK-292')
+  @atc('BK-292', { vcr: { value: 3, cost: 1, risk: 2 } })
   async createWorkspaceNameTooShort(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError, WorkspaceCreatePayload]> {
@@ -48,7 +48,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-293')
+  @atc('BK-293', { vcr: { value: 3, cost: 1, risk: 2 } })
   async createWorkspaceReservedSlug(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError, WorkspaceCreatePayload]> {
@@ -62,7 +62,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-294')
+  @atc('BK-294', { vcr: { value: 4, cost: 2, risk: 2 } })
   async createWorkspaceDuplicateSlug(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError, WorkspaceCreatePayload]> {
@@ -77,7 +77,7 @@ export class WorkspacesApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-295')
+  @atc('BK-295', { vcr: { value: 4, cost: 1, risk: 3 } })
   async createWorkspaceUnauthenticated(
     payload: WorkspaceCreatePayload,
   ): Promise<[APIResponse, APIError]> {

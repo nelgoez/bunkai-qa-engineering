@@ -87,7 +87,7 @@ export class LoginPage extends UiBase {
    *
    * @param credentials - Email and password
    */
-  @atc('BK-313')
+  @atc('BK-313', { vcr: { value: 5, cost: 3, risk: 4 } })
   async loginSuccessfully(credentials: LoginCredentials): Promise<void> {
     await this.fillAndSubmitLoginForm(credentials);
 
@@ -105,7 +105,7 @@ export class LoginPage extends UiBase {
    *
    * @param credentials - Registered email with an invalid password
    */
-  @atc('BK-314')
+  @atc('BK-314', { vcr: { value: 4, cost: 3, risk: 4 } })
   async loginWithInvalidCredentials(credentials: LoginCredentials): Promise<void> {
     await this.fillAndSubmitLoginForm(credentials);
 

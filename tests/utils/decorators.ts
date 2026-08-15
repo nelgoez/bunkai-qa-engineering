@@ -20,6 +20,20 @@ import { ContentType } from 'allure-js-commons';
 // Types
 // ============================================
 
+/**
+ * VCR (Value, Cost, Risk) score — UPEX FLUJOS DE TRABAJO step 3 automation
+ * candidate selection. Each dimension is 1-5.
+ *
+ * - `value` — business risk this test covers (1=cosmetic, 5=critical path).
+ * - `cost` — cost to automate/maintain (1=trivial, 5=prohibitive).
+ * - `risk` — likelihood the scenario breaks (1=never changes, 5=highly volatile).
+ */
+export interface VcrScore {
+  value: 1 | 2 | 3 | 4 | 5
+  cost: 1 | 2 | 3 | 4 | 5
+  risk: 1 | 2 | 3 | 4 | 5
+}
+
 export interface AtcResult {
   testId: string
   methodName: string
@@ -29,12 +43,18 @@ export interface AtcResult {
   executedAt: string
   duration: number
   softFail: boolean
+  vcr?: VcrScore
+  story?: string
+  feature?: string
 }
 
 export interface AtcOptions {
   softFail?: boolean
   description?: string
   severity?: 'blocker' | 'critical' | 'normal' | 'minor' | 'trivial'
+  vcr?: VcrScore
+  story?: string
+  feature?: string
 }
 
 // ============================================
@@ -118,6 +138,9 @@ export function atc(testId: string, options: AtcOptions = {}) {
         executedAt: new Date().toISOString(),
         duration: 0,
         softFail: options.softFail || false,
+        vcr: options.vcr,
+        story: options.story,
+        feature: options.feature,
       };
 
       // Add Allure metadata
