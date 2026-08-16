@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Title must be at least 3 characters.",
+    "details": {
+      "reason": "title_too_short"
+    },
+    "request_id": "9f5c81dc-4d4f-4d5f-ba0b-bc0f2b4b035d"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "atc": {
+    "id": "387c40b1-4b12-46cb-9215-e9c0e1237683",
+    "slug": "api-gen-module/atc-90abcefe",
+    "tags": [],
+    "layer": "API",
+    "steps": [
+      {
+        "id": "b92f8b75-45f1-48a0-b3e8-b574a866ee05",
+        "content": "Step 1",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "23fa3c19-2b52-4db5-ba5c-678f9051c59a",
+        "content": "Step 2",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      }
+    ],
+    "title": "ATC idempotency 1786841899309",
+    "status": "unrun",
+    "version": 1,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [],
+    "created_at": "2026-08-16T00:58:19.566303+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-16T00:58:19.566303+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}
