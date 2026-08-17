@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "Slug \"ws-dup-mswivwn7\" is already taken.",
+    "request_id": "8a8d81fb-b779-45ce-ab99-60e82020b228"
+  }
+}

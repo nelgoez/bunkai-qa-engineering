@@ -1,0 +1,24 @@
+
+============================================================
+KATA Architecture - Global Teardown
+============================================================
+
+ATC Coverage:
+   1 unique ATC tracked (1 total executions)
+   ✅ Passed: 1 | ❌ Failed: 0 | ⏭️ Skipped: 0
+
+[SYNC] Syncing results to TMS...
+
+[SYNC] Syncing 1 test results to jira...
+[UPDATE] Updating BK-313...
+[SUCCESS] Updated BK-313 -> PASS (custom fields)
+
+[SUMMARY] Sync: 1 success, 0 failed, 0 skipped (not owned)
+   Provider: jira
+   Status: Success
+   Message: Updated 1/1 issues (0 skipped)
+
+============================================================
+[OK] Global teardown complete
+============================================================
+
