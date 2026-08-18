@@ -1,0 +1,22 @@
+{
+  "import_job": {
+    "id": "b24d79e4-ad1e-458f-af68-f254a710ba4f",
+    "workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "jql": "project = DEMO AND description ~ 1787014480792",
+    "status": "failed",
+    "imported_count": 0,
+    "created_count": 0,
+    "updated_count": 0,
+    "skipped_count": 0,
+    "errors": [
+      {
+        "code": "jira_unauthorized",
+        "message": "Jira authentication failed: 403"
+      }
+    ],
+    "started_at": "2026-08-18T00:54:41.035+00:00",
+    "completed_at": "2026-08-18T00:54:41.218+00:00",
+    "created_at": "2026-08-18T00:54:41.029017+00:00"
+  }
+}
