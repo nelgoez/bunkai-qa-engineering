@@ -1,0 +1,6 @@
+[WARN] VCR field skipped for BK-311: 400 (field not on Test screen?)
+[WARN] VCR field skipped for BK-300: 400 (field not on Test screen?)
+[WARN] VCR field skipped for BK-301: 400 (field not on Test screen?)
+[WARN] VCR field skipped for BK-302: 400 (field not on Test screen?)
+[WARN] VCR field skipped for BK-303: 400 (field not on Test screen?)
+[WARN] VCR field skipped for BK-304: 400 (field not on Test screen?)
