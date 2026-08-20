@@ -1,0 +1,2 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-151] createAtcWithAcOutsideUserStory - PASS (366ms)

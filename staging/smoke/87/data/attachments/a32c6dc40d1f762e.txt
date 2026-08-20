@@ -1,0 +1,10 @@
+[UI Setup] Starting UI authentication...
+[UI Setup] Target: /login
+✅ [BK-313] loginSuccessfully - PASS (2306ms)
+[UI Setup] UI login successful
+[UI Setup] Intercepting sign-in response...
+[UI Setup] PAT token intercepted successfully
+[UI Setup] Storage state saved to .auth/user.json
+[UI Setup] PAT token saved to .auth/api-state.json
+[UI Setup] Authentication successful
+[UI Setup] Current URL: https://staging-upexbunkai.vercel.app/projects

@@ -1,0 +1,5 @@
+---- API NOK: 400 - https://staging-upexbunkai.vercel.app/api/v1/tests
+❌ [BK-310] createTestUnauthenticated - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 401
+Received: 400

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "Slug \"ws-dup-mt0xsmab\" is already taken.",
+    "request_id": "770808cd-4fac-4ee3-b293-733fece6b0ea"
+  }
+}
