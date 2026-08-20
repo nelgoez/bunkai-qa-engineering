@@ -1,0 +1,48 @@
+{
+  "atc": {
+    "id": "54e01c17-4323-4f0a-9710-502dd8ca1d5b",
+    "slug": "api-gen-module/atc-16f19583",
+    "tags": [
+      "immutable-test"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "77ea1ba8-421b-48d0-85d4-8deed12c0b1d",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "13663e76-12b1-4eab-8050-2cd74c5b2628",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "b300c91d-4fe6-4865-a4dd-f0730c37d1c7",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "Tried to change immutable 1787187291326",
+    "status": "unrun",
+    "version": 2,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "assertions": [],
+    "created_at": "2026-08-20T00:54:51.58755+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-08-20T00:54:51.90001+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  },
+  "version": 2,
+  "affected_test_count": 0
+}

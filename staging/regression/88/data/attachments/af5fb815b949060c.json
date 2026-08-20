@@ -1,0 +1,21 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Request body failed validation.",
+    "details": [
+      {
+        "code": "invalid_value",
+        "values": [
+          "UI",
+          "API",
+          "Unit"
+        ],
+        "path": [
+          "layer"
+        ],
+        "message": "Invalid input"
+      }
+    ],
+    "request_id": "d4311197-8628-4237-85c9-04ffaaf38b8e"
+  }
+}

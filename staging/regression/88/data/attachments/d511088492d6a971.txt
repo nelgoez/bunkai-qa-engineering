@@ -1,0 +1,2 @@
+---- API NOK: 401 - https://staging-upexbunkai.vercel.app/api/v1/tests
+✅ [BK-310] createTestUnauthenticated - PASS (176ms)
