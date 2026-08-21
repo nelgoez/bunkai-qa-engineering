@@ -1,0 +1,69 @@
+
+============================================================
+KATA Architecture - Global Teardown
+============================================================
+
+ATC Coverage:
+   29 unique ATC tracked (65 total executions)
+   ✅ Passed: 27 | ❌ Failed: 2 | ⏭️ Skipped: 0
+
+[SYNC] Syncing results to TMS...
+
+[SYNC] Syncing 29 test results to jira...
+[UPDATE] Updating BK-311...
+[SUCCESS] Updated BK-311 -> PASS (custom fields)
+[UPDATE] Updating BK-313...
+[SUCCESS] Updated BK-313 -> PASS (custom fields)
+[SKIP] BK-149 not assigned to current user — skipping
+[SKIP] BK-151 not assigned to current user — skipping
+[SKIP] BK-152 not assigned to current user — skipping
+[SKIP] BK-153 not assigned to current user — skipping
+[SKIP] BK-154 not assigned to current user — skipping
+[SKIP] BK-155 not assigned to current user — skipping
+[SKIP] BK-156 not assigned to current user — skipping
+[SKIP] BK-157 not assigned to current user — skipping
+[SKIP] BK-158 not assigned to current user — skipping
+[SKIP] BK-159 not assigned to current user — skipping
+[SKIP] BK-160 not assigned to current user — skipping
+[UPDATE] Updating BK-312...
+[SUCCESS] Updated BK-312 -> FAIL (custom fields)
+[UPDATE] Updating BK-305...
+[SUCCESS] Updated BK-305 -> PASS (custom fields)
+[UPDATE] Updating BK-306...
+[SUCCESS] Updated BK-306 -> PASS (custom fields)
+[UPDATE] Updating BK-307...
+[SUCCESS] Updated BK-307 -> PASS (custom fields)
+[UPDATE] Updating BK-308...
+[SUCCESS] Updated BK-308 -> PASS (custom fields)
+[UPDATE] Updating BK-309...
+[SUCCESS] Updated BK-309 -> PASS (custom fields)
+[UPDATE] Updating BK-310...
+[SUCCESS] Updated BK-310 -> FAIL (custom fields)
+[UPDATE] Updating BK-291...
+[SUCCESS] Updated BK-291 -> PASS (custom fields)
+[UPDATE] Updating BK-292...
+[SUCCESS] Updated BK-292 -> PASS (custom fields)
+[UPDATE] Updating BK-293...
+[SUCCESS] Updated BK-293 -> PASS (custom fields)
+[UPDATE] Updating BK-294...
+[SUCCESS] Updated BK-294 -> PASS (custom fields)
+[UPDATE] Updating BK-295...
+[SUCCESS] Updated BK-295 -> PASS (custom fields)
+[UPDATE] Updating BK-296...
+[SUCCESS] Updated BK-296 -> PASS (custom fields)
+[UPDATE] Updating BK-297...
+[SUCCESS] Updated BK-297 -> PASS (custom fields)
+[UPDATE] Updating BK-298...
+[SUCCESS] Updated BK-298 -> PASS (custom fields)
+[UPDATE] Updating BK-299...
+[SUCCESS] Updated BK-299 -> PASS (custom fields)
+
+[SUMMARY] Sync: 18 success, 0 failed, 11 skipped (not owned)
+   Provider: jira
+   Status: Success
+   Message: Updated 18/18 issues (11 skipped)
+
+============================================================
+[OK] Global teardown complete
+============================================================
+

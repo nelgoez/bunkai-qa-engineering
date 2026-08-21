@@ -1,0 +1,23 @@
+{
+  "test": {
+    "id": "30ba0436-1f46-4146-8fca-ae9182ded141",
+    "steps": [
+      {
+        "atc_id": "f74123d9-f406-41a6-b244-d77578dfdd2c",
+        "position": 1
+      },
+      {
+        "atc_id": "cd0b289c-8e57-436d-afdd-f467f59172b9",
+        "position": 2
+      },
+      {
+        "atc_id": "2f45ecba-f580-4084-922d-921dea4fee88",
+        "position": 3
+      }
+    ],
+    "title": "Test from chain 1787281836271",
+    "created_at": "2026-08-21T03:10:37.071982+00:00",
+    "created_by": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9"
+  }
+}
