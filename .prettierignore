@@ -86,3 +86,7 @@ graphify-out/
 
 # ----- 2026-08-05 (sync) -----
 packages/decks/
+
+# ----- 2026-08-21 (sync) -----
+.scratch/
+.session/

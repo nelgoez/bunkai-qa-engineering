@@ -1,19 +1,18 @@
-# KATA: Component Action Test Architecture
+# KATA: Komponent Action Test Architecture
 
-**Component Action Test Architecture**
+**Komponent Action Test Architecture**
 
 > _"Like a kata in martial arts, where each movement is practiced repeatedly until perfection, KATA Architecture converts system actions into reusable and precise blocks."_
 
 ---
 
-> **Note**: This is the **conceptual fundamentals document** for KATA (Component Action Test Architecture).
+> **Note**: This is the **conceptual fundamentals document** for KATA (Komponent Action Test Architecture).
 > This document is for **reference only** - it provides philosophical and conceptual context.
 > **AI agents should NOT load this automatically** - use TAE guidelines instead.
 >
 > For implementation-specific guides (mandatory for AI), load the `/test-automation` skill. Its `references/` directory includes:
 >
-> - **AI Entry Point**: `references/kata-ai-index.md`
-> - **Architecture**: `references/kata-architecture.md`
+> - **AI Entry Point / Architecture**: `references/kata-architecture.md`
 > - **Standards**: `references/automation-standards.md`
 >
 > All code examples use **TypeScript + Playwright + Bun**.
@@ -1113,7 +1112,7 @@ XRAY_PROJECT_KEY=DEMO
 # TESTRAIL_RUN_ID=  # Optional, creates new if empty
 
 # ===== JIRA DIRECT (DISABLED) =====
-# ATLASSIAN_URL=https://company.atlassian.net
+# (site host: .agents/project.yaml -> issue_tracker.atlassian_url, not .env)
 # ATLASSIAN_EMAIL=user@company.com
 # ATLASSIAN_API_TOKEN=your_api_token_here
 #

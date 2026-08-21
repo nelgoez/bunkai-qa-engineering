@@ -165,3 +165,19 @@ nul
 /.agents/prompts/
 .template/claude-md.upstream.sha
 .template/upstream-sha/
+
+# ----- 2026-08-21 (sync) -----
+.context/reports/*
+!.context/reports/README.md
+.claude/worktrees/
+.context/PBI/*
+!.context/PBI/README.md
+!.context/PBI/templates/
+!.context/PBI/epics/
+.context/PBI/epics/*
+!.context/PBI/epics/*/
+.context/PBI/epics/*/*
+!.context/PBI/epics/*/test-specs/
+.claude/skills/playwright-cli/
+.claude/skills/playwright-best-practices/
+.claude/skills/resend-cli/
