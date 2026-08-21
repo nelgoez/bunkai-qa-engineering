@@ -4,12 +4,30 @@
  * SINGLE SOURCE OF TRUTH for all environment variables.
  * This is the ONLY file that should read process.env.
  *
+ * ONE VALUE IS NOT AN ENV VAR: the Atlassian site host. It is resolved from
+ * `.agents/project.yaml` -> `issue_tracker.atlassian_url` via the canonical
+ * resolver, with `ATLASSIAN_URL` kept only as a fallback. While the host lived
+ * in `.env`, a stale copy inherited from the parent process shadowed the file in
+ * silence (bun's autoload and dotenv-cli both skip an already-set var, and a
+ * restart re-inherits it) and pointed Jira writes at a dead site. The host is
+ * project identity, so it is anchored to a versioned file that shows up in a
+ * diff. That matters here specifically: `config.tms.jira.url` drives the
+ * Jira-Direct TMS provider, which WRITES test results back to issues.
+ *
+ * This file therefore stays the single place config is resolved from — it just
+ * resolves from two sources now, not one.
+ *
  * Bun automatically loads .env files - no dotenv dependency needed.
  * But the Playwright VSCode extension requires reading process.env as Node.js, so we use loadEnvFile()
  *
  * Usage:
  *   import { config, env } from '@variables';
  */
+
+// Safe above loadEnvFile(): this module reads nothing at import time — both
+// helpers touch the filesystem only when called. (ESM hoists imports anyway, so
+// placing it lower would imply an ordering that does not exist.)
+import { normalizeAtlassianUrl, readAtlassianUrlFromYaml } from '../cli/lib/atlassian-instance';
 
 // Load .env file into process.env (Playwright VSCode extension needs it)
 // In CI, env vars come from GitHub Secrets, so .env doesn't exist - hence try/catch
@@ -60,11 +78,17 @@ const {
   // Used by MCP, acli, xray-cli, scripts/sync-jira-*.ts, cli/doctor.ts and
   // the Jira-Direct TMS provider. Required only if TMS_PROVIDER=jira AND
   // AUTO_SYNC=true (or when using MCP / acli / scripts locally).
-  ATLASSIAN_URL = '',
+  //
+  // The site HOST is NOT read here — see `atlassianUrl` below. Only the two
+  // real secrets come from the environment.
   ATLASSIAN_EMAIL = '',
   ATLASSIAN_API_TOKEN = '',
   // === Jira-specific operational params (NOT credentials) ===
-  JIRA_TEST_STATUS_FIELD = '', // Auto-resolves from .agents/jira-fields.json → test_status
+  // Optional override. Left empty on purpose: custom-field ids are per-instance
+  // data and must not be hardcoded here (see the `acli` skill, anti-pattern T2).
+  // When empty, it resolves at runtime from `.agents/jira-fields.json` -> the
+  // `test_status` slug. Regenerate that catalog with `bun run jira:sync-fields --force`.
+  JIRA_TEST_STATUS_FIELD = '', // Used: config.tms.jira.testStatusField
 
   // === Browser Configuration ===
   HEADLESS = 'true', // Used: config.browser.headless (playwright.config)
@@ -76,13 +100,33 @@ const {
   VIDEO_ON_FAILURE = 'true', // Used: config.reporting.videoOnFailure (playwright.config, CI only)
 } = process.env;
 
+/**
+ * The Atlassian site host, from `.agents/project.yaml` ->
+ * `issue_tracker.atlassian_url`, falling back to `ATLASSIAN_URL`.
+ *
+ * The fallback is NOT the happy path — it exists so a project that has not yet
+ * run `bun run agents:setup`, and any CI job still injecting the old secret,
+ * keeps working instead of failing at test time. When both are set and disagree
+ * the yaml wins, because the env value is the one that survives a site migration
+ * inside an inherited process environment.
+ *
+ * `''` when neither is set. Callers already treat an empty host as "Jira not
+ * configured" and surface a guiding error, so this never silently guesses.
+ *
+ * Read it from a shell with `bun run --silent jira:url`.
+ */
+const atlassianUrl: string
+  = readAtlassianUrlFromYaml()
+    ?? normalizeAtlassianUrl(process.env.ATLASSIAN_URL)
+    ?? '';
+
 // ============================================
 // Environment Detection
 // ============================================
 
 export const env = {
   current: TEST_ENV as Environment,
-  isLocal: TEST_ENV === 'local',
+  isLocal: TEST_ENV === 'local' || TEST_ENV === undefined,
   isStaging: TEST_ENV === 'staging',
   isProduction: TEST_ENV === 'production',
   isCI: CI === 'true',
@@ -195,7 +239,7 @@ export const config = {
       projectKey: XRAY_PROJECT_KEY,
     },
     jira: {
-      url: ATLASSIAN_URL,
+      url: atlassianUrl,
       user: ATLASSIAN_EMAIL,
       apiToken: ATLASSIAN_API_TOKEN,
       testStatusField: JIRA_TEST_STATUS_FIELD,

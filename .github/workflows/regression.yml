@@ -37,7 +37,6 @@ env:
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
   TMS_PROVIDER: ${{ secrets.TMS_PROVIDER || 'jira' }}
-  ATLASSIAN_URL: ${{ secrets.ATLASSIAN_URL }}
   ATLASSIAN_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
   ATLASSIAN_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
   AUTO_SYNC: ${{ secrets.AUTO_SYNC || 'true' }}
@@ -201,6 +200,11 @@ jobs:
     if: ${{ always() && github.event.inputs.generate_allure != 'false' }}
 
     steps:
+      # Full repo checkout: the report is generated with the repo's own
+      # allurerc.mjs + allure devDependency (identical to local runs).
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Get Allure History
         uses: actions/checkout@v4
         with:
@@ -217,39 +221,73 @@ jobs:
           merge-multiple: true
         continue-on-error: true
 
+      - name: Merge Allure Results
+        id: merge_results
+        shell: bash
+        run: |
+          mkdir -p merged-allure-results
+
+          if [ -d "regression-artifacts" ] && [ -n "$(ls -A regression-artifacts 2>/dev/null)" ]; then
+            echo "Merging test results..."
+            cp -r regression-artifacts/. merged-allure-results/
+          else
+            echo "No test results to merge."
+          fi
+
       - name: Check Allure Results
         id: check_allure
         shell: bash
         run: |
-          if [ -d "regression-artifacts" ] && [ -n "$(ls -A regression-artifacts 2>/dev/null)" ]; then
+          if [ -d "merged-allure-results" ] && [ -n "$(ls -A merged-allure-results 2>/dev/null)" ]; then
+            echo "Allure results found in merged-allure-results."
             echo "has_results=true" >> $GITHUB_OUTPUT
           else
+            echo "No Allure results found. Skipping report generation."
             echo "has_results=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build Allure Report
+      - name: Upload Merged Allure Results
         if: steps.check_allure.outputs.has_results == 'true'
-        uses: simple-elf/allure-report-action@master
+        uses: actions/upload-artifact@v4
         with:
-          gh_pages: gh-pages
-          subfolder: ${{ env.TEST_ENV }}/regression
-          allure_results: regression-artifacts
-          allure_report: allure-report
-          allure_history: allure-history
-          keep_reports: 3
+          name: merged-allure-results-${{ env.TEST_ENV }}
+          path: merged-allure-results/
+          retention-days: 10
 
-      - name: Deploy to GitHub Pages
+      - name: Setup Bun
         if: steps.check_allure.outputs.has_results == 'true'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: oven-sh/setup-bun@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history/${{ env.TEST_ENV }}/regression
-          destination_dir: ${{ env.TEST_ENV }}/regression
-          keep_files: true
+          bun-version: latest
 
-      - name: Post Report URL
+      - name: Install Dependencies
         if: steps.check_allure.outputs.has_results == 'true'
+        run: bun install
+
+      # Allure 3 generate + publish: same allurerc.mjs as local. PRIVATE portal
+      # mode is opt-in: when PORTAL_URL is set the report goes to the auth-walled
+      # Test Report Portal (R2) INSTEAD of public GitHub Pages.
+      - name: Build & Publish Allure Report (Allure 3)
+        if: steps.check_allure.outputs.has_results == 'true'
+        env:
+          PORTAL_URL: ${{ secrets.PORTAL_URL }}
+          PORTAL_PROJECT: ${{ secrets.PORTAL_PROJECT }}
+          PORTAL_API_KEY: ${{ secrets.PORTAL_API_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
         run: |
-          echo "## Allure Report" >> $GITHUB_STEP_SUMMARY
-          echo "View the report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.TEST_ENV }}/regression/" >> $GITHUB_STEP_SUMMARY
+          if [ -n "$PORTAL_URL" ]; then
+            bun scripts/ci/publish-allure-portal.ts \
+              --env "${{ env.TEST_ENV }}" --suite regression \
+              --run "${{ github.run_number }}" \
+              --results merged-allure-results
+          else
+            bun scripts/ci/publish-allure-pages.ts \
+              --env "${{ env.TEST_ENV }}" --suite regression \
+              --run "${{ github.run_number }}" \
+              --results merged-allure-results --pages gh-pages --keep 10
+            echo "## Allure Report" >> $GITHUB_STEP_SUMMARY
+            echo "View the report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.TEST_ENV }}/regression/" >> $GITHUB_STEP_SUMMARY
+          fi
