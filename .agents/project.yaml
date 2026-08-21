@@ -25,6 +25,13 @@ database:
 issue_tracker:
   issue_tracker: Jira
   issue_tracker_cli: acli
+  # SOURCE OF TRUTH for the Atlassian instance. Every jira:sync-* script resolves the
+  # host from HERE first and uses .env's ATLASSIAN_URL only as a fallback (see
+  # cli/lib/atlassian-instance.ts). Inverse of project_key, on purpose: the host is
+  # project identity, not a per-developer override, and it is the value that goes stale
+  # after a site migration — a stale host silently overwrites .context/PBI/ and the
+  # .agents/*.json catalogs with another site's content. Keep it identical to .env's
+  # ATLASSIAN_URL; when they disagree the yaml wins and the scripts print a warning.
   atlassian_url: https://upexgalaxy71.atlassian.net
 
 testing:
@@ -33,25 +40,38 @@ testing:
 
 qa:
   formal_blocked_gate: true # When true and the substrate exposes a `blocked` story status, FAILED stories dispatch `defect_reported` (in_test -> blocked). When false (or no `blocked` slug), the skill leaves the story in `in_test` with the linked bug — non-strict fallback. See sprint-testing/references/sprint-orchestration.md Briefing 4 Step 5.
-  # Jira LABEL marking an Epic as a QA-artifact bucket rather than a product Epic.
-  # `sync-jira-issues` indexes labelled Epics under qa-artifacts/ instead of the product tree.
+  # Jira LABEL that marks an Epic as a QA-artifact bucket rather than a product Epic.
+  # `sync-jira-issues` keeps labelled Epics out of `.context/PBI/epics/` (which is the product
+  # tree, one folder per Epic with its Stories nested) and indexes them in `qa-artifacts/`
+  # instead. Without it, `QA Test Repository` and friends land beside real product Epics as
+  # near-empty folders, because a Story query against them returns nothing.
+  # A label is used rather than the epic name because a product Epic may legitimately start
+  # with "QA ", and rather than the cached `qa_epics.*.key` below because those are `null`
+  # until a skill discovers them — the label works from the first sync.
+  # Whoever creates a QA-artifact Epic must apply it; the AI does so automatically.
   qa_artifact_label: QA-Artifact
   # QA process epics — buckets that hold QA artifacts so they never pollute product epics/roadmap.
-  # Skills resolve the epic by NAME and find-or-create it, caching the discovered key here.
+  # FOUR QA-process epics form the QA-governance cluster: Test Plans parent to `master_test_plan_epic`;
+  # Test (TC) issues parent to `test_repository_epic`; Test Executions/Preconditions/Test Sets parent to
+  # `test_artifacts_epic`; Bug/Defect/Improvement parent to `defect_epic`.
+  # Skills resolve the epic by NAME (the methodology convention shipped below) and find-or-create it,
+  # caching the discovered `*.key` here. NEVER parent a quality issue to a product/dev epic.
+  # Read directly by skills (not {{VAR}} tokens) → skipped by vars:check, like git_strategy leaves.
   # Doctrine: .claude/skills/agentic-qa-core/references/defect-management-doctrine.md (Part 4).
   qa_epics:
     master_test_plan_epic:
-      name: QA Master Test Plan
-      key: null
+      name: QA Master Test Plan # the MTP — parent of every Test Plan (FTP/STP/ATP); description mirrors
+      # .context/master-test-plan.md + points to the official QA repo; cross-linked to the 3 sibling QA epics
+      key: null # discovered/created at runtime, then cached here (e.g. BK-1)
     test_repository_epic:
-      name: QA Test Repository
-      key: null
+      name: QA Test Repository # convention name; holds every Test (TC) issue
+      key: null # discovered/created at runtime, then cached here (e.g. BK-2)
     test_artifacts_epic:
-      name: QA Test Artifacts
-      key: null
+      name: QA Test Artifacts # holds every Test Execution (FTR/STR/ATR), Precondition, Test Set
+      key: null # discovered/created at runtime, then cached here (e.g. BK-3)
     defect_epic:
-      name: QA Defect Management
-      key: null
+      name: QA Defect Management # convention name; the `QA ` prefix marks a process epic, not product
+      key: null # discovered/created at runtime, then cached here (e.g. BK-4)
 
 team:
   # Jira assignee accountIds for key team members (resolved 2026-06-10)
@@ -85,7 +105,10 @@ git_strategy:
     naming_without_key: '{prefix}/{kebab-slug}'
   meta:
     setup_version: 1
-    created: 2026-06-20
+    created: 2026-06-20 # YYYY-MM-DD stamped by Strategy Setup
+    policy_verified: 2026-08-21 # YYYY-MM-DD of the last `bun run git:policy verify`. null = never reconciled against the host
+    policy_source: verified # verified | accepted | declared. `verified` = host matches the yaml exactly (0 drift); `accepted` = every divergence listed in policy.accepted_divergences; `declared` = never reconciled.
+    strategy_source: chosen # inherited | chosen
 
 # Per-environment config. Add/remove environments freely (production, dev, qa, uat, etc.).
 # Each environment must define ALL four keys: web_url, api_url, db_mcp, api_mcp.

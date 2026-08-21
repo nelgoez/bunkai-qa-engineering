@@ -1864,5 +1864,24 @@
         "to_canonical": "active"
       }
     }
+  },
+  "subtask": {
+    "jira_issue_type": {
+      "id": "10018",
+      "name": "Task"
+    },
+    "statuses": {
+      "close": {
+        "id": "10014",
+        "name": "Close",
+        "category": "done"
+      },
+      "active": {
+        "id": "10018",
+        "name": "ACTIVE",
+        "category": "indeterminate"
+      }
+    },
+    "transitions": {}
   }
 }
