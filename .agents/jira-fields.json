@@ -596,11 +596,6 @@
     "type": "string",
     "name": "URL de Web (Weblink)"
   },
-  "vcr_estimation": {
-    "id": "customfield_10113",
-    "type": "string",
-    "name": "💊 VCR Estimation"
-  },
   "version_del_sistema": {
     "id": "customfield_10162",
     "type": "string",

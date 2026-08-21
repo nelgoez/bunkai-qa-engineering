@@ -305,7 +305,6 @@ async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<S
   const toBeAutomatedField = fields.to_be_automated;
   const qaFrameworkField = fields.qa_framework;
   const testEnvironmentField = fields.test_environment;
-  const vcrEstimationField = fields.vcr_estimation;
 
   const auth = btoa(`${user}:${apiToken}`);
   const headers = {
@@ -357,14 +356,6 @@ async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<S
       fieldsToSet[testEnvironmentField.id] = { id: environmentOptionId };
     }
 
-    // VCR is written in a SEPARATE best-effort PUT: the field may not be on the
-    // Test edit screen yet, and a failed write must not break the main sync.
-    const vcr = lastExecution.vcr;
-    const vcrFieldsToSet: Record<string, unknown> = {};
-    if (vcrEstimationField && vcr) {
-      vcrFieldsToSet[vcrEstimationField.id] = `V${vcr.value} · C${vcr.cost} · R${vcr.risk}`;
-    }
-
     try {
       let fieldWriteSucceeded = false;
 
@@ -380,22 +371,6 @@ async function syncToJiraDirect(results: Record<string, AtcResult[]>): Promise<S
         fieldWriteSucceeded = updateResponse.ok || updateResponse.status === 204;
         if (!fieldWriteSucceeded) {
           console.warn(`[WARN] Field update failed for ${testId}: ${updateResponse.status}`);
-        }
-      }
-
-      if (Object.keys(vcrFieldsToSet).length > 0) {
-        try {
-          const vcrResponse = await fetch(`${url}/rest/api/3/issue/${testId}`, {
-            method: 'PUT',
-            headers,
-            body: JSON.stringify({ fields: vcrFieldsToSet }),
-          });
-          if (!vcrResponse.ok && vcrResponse.status !== 204) {
-            console.warn(`[WARN] VCR field skipped for ${testId}: ${vcrResponse.status} (field not on Test screen?)`);
-          }
-        }
-        catch (error) {
-          console.warn(`[WARN] VCR field write failed for ${testId}:`, error);
         }
       }
 

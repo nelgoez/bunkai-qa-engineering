@@ -25,21 +25,19 @@
 | KataReporter + global teardown | `tests/KataReporter.ts` + `tests/teardown/global.teardown.ts` | OK |
 | Trifuerza (UI/API/DB) | API + UI + DB-persistence tests | OK |
 
-## 3. VCR (Value / Cost / Risk) — implemented this pass
+## 3. VCR (Value / Cost / Risk) — DROPPED (2026-08-21)
 
-Upstream reference: `agentic-diplo-track-sys/.claude/skills/sprint-development/references/vcr-framework.md` (UPEX FLUJOS DE TRABAJO step 3). Dimensions 1-5:
+Originally implemented this pass (2026-08-14) as a leftover-field sync, then **removed by PO decision**.
 
-- **value** — business risk covered (1=cosmetic, 5=critical path)
-- **cost** — cost to automate/maintain (1=trivial, 5=prohibitive)
-- **risk** — likelihood the scenario breaks (1=never changes, 5=highly volatile)
+Context: Elys (PO) confirmed `customfield_10113` (💊 VCR Estimation) is **not** part of the boilerplate or KATA — it is a leftover field from the UPEX workspace / prior workflows, with no owner.
 
-Changes landed:
+Rollback performed (2026-08-21):
+1. `tests/utils/jiraSync.ts` — removed the best-effort write of `customfield_10113`.
+2. `tests/utils/decorators.ts` — removed `VcrScore` + `vcr?` from `AtcOptions`/`AtcResult`, plus the write-only `story?`/`feature?` fields added in the same pass (no consumer).
+3. **24 ATCs** stripped of `vcr: { value, cost, risk }` (WorkspacesApi, ProjectsApi, UserStoriesApi, TestsApi, AuthApi, LoginPage).
+4. `.agents/jira-fields.json` — removed `vcr_estimation` entry.
 
-1. `tests/utils/decorators.ts` — added `VcrScore { value, cost, risk }` + `vcr?` (+ `story?`/`feature?`) to `AtcOptions`; `vcr` persisted in `AtcResult` → NDJSON → `reports/atc_results.json`.
-2. **24 ATCs annotated** with `@atc('BK-xxx', { vcr: { value, cost, risk } })` across WorkspacesApi, ProjectsApi, UserStoriesApi, TestsApi, AuthApi, LoginPage.
-3. `tests/utils/jiraSync.ts` — best-effort write of `customfield_10113` (💊 VCR Estimation) as `V5 · C2 · R3`.
-
-**Blocked (Jira config):** `customfield_10113` is **not on the Test edit screen** (editmeta confirms it absent on both Test and Story), so the field write returns 400. The sync logs a warning and skips — the main field write (test_status / to_be_automated / qa_framework / test_environment) is unaffected. VCR is captured in code + report; Jira reflection unblocks once an admin places the field on the Test screen.
+Outstanding (not QA-owned): the Jira-side custom field `customfield_10113` itself remains in the workspace. Its deletion is a Jira-admin / PO call — repo code no longer references it.
 
 ## 4. Other alignment findings
 
@@ -51,7 +49,7 @@ Changes landed:
 | Dimension | Max | Score | Notes |
 |---|---|---|---|
 | KATA Architecture Compliance | 15 | 13 | Layers + manifest + aliases + tuples OK; Steps layer empty; minor alias drift |
-| IQL Early-Game (Prevention) | 15 | 12 | Context + shift-left OK; VCR now annotated; BDD ACs partial |
+| IQL Early-Game (Prevention) | 15 | 12 | Context + shift-left OK; BDD ACs partial |
 | IQL Mid-Game (Detection) | 25 | 22 | Trifuerza + @atc + CI OK; POM coverage limited to LoginPage |
 | CI/CD & DevOps | 10 | 8 | GitHub Actions + Allure + TMS sync wired |
 | Documentation & Context | 10 | 9 | .context/ + skills + reports present |
@@ -59,7 +57,7 @@ Changes landed:
 
 ## 6. Remediation backlog
 
-1. **Jira admin:** add `customfield_10113` (💊 VCR Estimation) to the Test edit screen → unblocks VCR field sync.
+1. **Jira admin (PO call):** delete `customfield_10113` (💊 VCR Estimation) from the workspace — leftover field, no longer referenced by repo code (see §3).
 2. **Jira admin:** grant `Link Issues` to QA → unblocks `is tested by` traceability (24 TCs + 7 OAuth TCs).
 3. Populate or remove `tests/components/steps/` (Layer 3.5).
 4. (Optional) align aliases to canonical `@config/*` / `@components/*`.

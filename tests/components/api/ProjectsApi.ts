@@ -16,7 +16,7 @@ export class ProjectsApi extends ApiBase {
     return `/workspaces/${workspaceId}/projects`;
   }
 
-  @atc('BK-296', { vcr: { value: 5, cost: 2, risk: 3 } })
+  @atc('BK-296')
   async createProjectSuccessfully(
     workspaceId: string,
     payload: ProjectCreatePayload,
@@ -35,7 +35,7 @@ export class ProjectsApi extends ApiBase {
     return [response, body.project, sent];
   }
 
-  @atc('BK-297', { vcr: { value: 3, cost: 1, risk: 2 } })
+  @atc('BK-297')
   async createProjectNameTooShort(
     workspaceId: string,
     payload: ProjectCreatePayload,
@@ -50,7 +50,7 @@ export class ProjectsApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-298', { vcr: { value: 4, cost: 2, risk: 2 } })
+  @atc('BK-298')
   async createProjectDuplicateName(
     workspaceId: string,
     payload: ProjectCreatePayload,
@@ -65,7 +65,7 @@ export class ProjectsApi extends ApiBase {
     return [response, body, sent];
   }
 
-  @atc('BK-299', { vcr: { value: 4, cost: 2, risk: 3 } })
+  @atc('BK-299')
   async createProjectNonMember(
     workspaceId: string,
     payload: ProjectCreatePayload,
