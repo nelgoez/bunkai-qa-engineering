@@ -1,0 +1,1 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/02474eb4-dd2d-46f9-9f4f-8b2538cac738/projects

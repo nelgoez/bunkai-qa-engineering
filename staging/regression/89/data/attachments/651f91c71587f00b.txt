@@ -1,0 +1,3 @@
+---- API NOK: 401 - https://staging-upexbunkai.vercel.app/api/v1/auth/signin
+---- API NOK: 401 - https://staging-upexbunkai.vercel.app/api/v1/me
+✅ [BK-312] loginWithInvalidCredentials - PASS (512ms)
