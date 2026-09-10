@@ -90,3 +90,6 @@ packages/decks/
 # ----- 2026-08-21 (sync) -----
 .scratch/
 .session/
+
+# ----- 2026-09-10 (sync) -----
+.backups*/

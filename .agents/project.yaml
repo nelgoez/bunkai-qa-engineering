@@ -110,6 +110,12 @@ git_strategy:
     policy_source: verified # verified | accepted | declared. `verified` = host matches the yaml exactly (0 drift); `accepted` = every divergence listed in policy.accepted_divergences; `declared` = never reconciled.
     strategy_source: chosen # inherited | chosen
 
+# Boilerplate updater config. `protected_paths` lists project-owned files the
+# updater must NEVER overwrite during a sync — e.g. a script the project has
+# customized beyond upstream. Empty = the project keeps no such overrides.
+updater:
+  protected_paths: [] # e.g. [scripts/lint-vars.ts, .agents/skills/acli/SKILL.md]
+
 # Per-environment config. Add/remove environments freely (production, dev, qa, uat, etc.).
 # Each environment must define ALL four keys: web_url, api_url, db_mcp, api_mcp.
 # Skills referencing {{WEB_URL}} / {{API_URL}} / {{DB_MCP}} / {{API_MCP}} resolve to the
@@ -121,6 +127,11 @@ environments:
     api_url: http://localhost:3000/api/v1
     db_mcp: null # No local MCP — uses same Supabase DB as staging/production
     api_mcp: null
+  qa:
+    web_url: null # TODO: Frontend URL for qa env (e.g. https://qa.bunkai.io)
+    api_url: null # TODO: API base URL for qa env (e.g. https://api-qa.bunkai.io)
+    db_mcp: dbhub
+    api_mcp: openapi
   staging:
     web_url: https://staging-upexbunkai.vercel.app
     api_url: https://staging-upexbunkai.vercel.app/api/v1

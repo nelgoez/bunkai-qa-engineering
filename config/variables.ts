@@ -73,6 +73,14 @@ const {
   XRAY_CLIENT_ID = '', // Required if AUTO_SYNC=true (jiraSync)
   XRAY_CLIENT_SECRET = '', // Required if AUTO_SYNC=true (jiraSync)
   XRAY_PROJECT_KEY = '', // Used: config.tms.xray.projectKey (jiraSync)
+  // Key of the STR — the Test Execution linked to the sprint's STP — that this
+  // run writes results ONTO. NOT the STP's own key: an Xray Test Plan derives
+  // its status from its Executions and is never written into. The item is
+  // created by /regression-testing or /sprint-testing, already parented to the
+  // "QA Test Artifacts" epic. Empty = the sync mints its own Execution, which
+  // no API call can parent afterwards. Read only when TMS_PROVIDER=xray.
+  // See tests/utils/jiraSync.ts.
+  STP_EXECUTION_KEY = '', // Used: config.tms.stpExecutionKey (jiraSync)
 
   // === Atlassian credentials (single source of truth) ===
   // Used by MCP, acli, xray-cli, scripts/sync-jira-*.ts, cli/doctor.ts and
@@ -233,6 +241,7 @@ export const config = {
   tms: {
     provider: TMS_PROVIDER as 'xray' | 'jira' | 'none',
     autoSync: AUTO_SYNC === 'true',
+    stpExecutionKey: STP_EXECUTION_KEY,
     xray: {
       clientId: XRAY_CLIENT_ID,
       clientSecret: XRAY_CLIENT_SECRET,

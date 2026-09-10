@@ -3,22 +3,25 @@
   "templateRepo": "upex-galaxy/agentic-qa-boilerplate",
   "templateCommit": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
   "perComponentCommit": {
-    "skills": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
-    "commands": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
-    "scripts": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
-    "docs": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
+    "skills": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
+    "commands": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
+    "scripts": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
+    "docs": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
     "cli": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
     "vscode": "61a99500e18b6f70cc52f60a85b3b8950f5fa4f0",
     "husky": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
-    "agents-docs": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
+    "agents-docs": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
     "claude-config": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1",
     "tooling": "462ff09c0eace4ead0d6bbe6e716eb67ce65f885",
-    "env-template": "97c4f9bc05e0086fff6c14c466b5a4f4728ba7b1"
+    "env-template": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
+    "agent-compatibility": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
+    "codex-config": "c9b7577f38677b4b339e545aa73c0525ceef7b4c",
+    "agent-root-config": "c9b7577f38677b4b339e545aa73c0525ceef7b4c"
   },
   "syncedComponents": [],
   "ignoreFileSync": {
     ".gitignore": {
-      "lastSyncedSha": "d2b8cb964fb1554cd23a0bd2c456bbfe03f36160",
+      "lastSyncedSha": "82195b81ce755d511e8da13bbd672adae0959232",
       "appendedLines": [
         "**/evidence/",
         "/.allure/",
@@ -38,11 +41,21 @@
         "!.context/PBI/epics/*/test-specs/",
         ".claude/skills/playwright-cli/",
         ".claude/skills/playwright-best-practices/",
-        ".claude/skills/resend-cli/"
+        ".claude/skills/resend-cli/",
+        ".env*",
+        "!.env.example",
+        ".backups*/",
+        ".template/last-apply.json",
+        ".agents/skills/*-workspace/",
+        ".agents/skills/playwright-cli/",
+        ".agents/skills/playwright-best-practices/",
+        ".agents/skills/resend-cli/",
+        "!skills-lock.json",
+        "!**/skills-lock.json"
       ]
     },
     ".prettierignore": {
-      "lastSyncedSha": "e61771a092a7c3a1746513759dba547ad07ac1b6",
+      "lastSyncedSha": "2d65bedc55be87885be51510bc1b977c8aef67c2",
       "appendedLines": [
         ".claude/settings.local.json",
         ".auth/",
@@ -55,14 +68,15 @@
         ".backups/",
         "packages/decks/",
         ".scratch/",
-        ".session/"
+        ".session/",
+        ".backups*/"
       ]
     }
   },
   "packageJsonSync": {
     "package.json": {
       "scripts": {
-        "lastSyncedSha": "646665c6213b0e666ace68411112265cf92e073a",
+        "lastSyncedSha": "f043848877ffcc7e5865cedd022766333074efcc",
         "appliedKeys": [
           "vars:env:check",
           "env",
@@ -70,26 +84,29 @@
           "git:policy",
           "jira:components",
           "jira:url",
-          "tests:map"
+          "tests:map",
+          "agents:compat",
+          "agents:compat:check",
+          "codex"
         ]
       },
       "devDependencies": {
-        "lastSyncedSha": "646665c6213b0e666ace68411112265cf92e073a",
+        "lastSyncedSha": "f043848877ffcc7e5865cedd022766333074efcc",
         "appliedKeys": [
           "allure-js-commons"
         ]
       },
       "dependencies": {
-        "lastSyncedSha": "646665c6213b0e666ace68411112265cf92e073a",
+        "lastSyncedSha": "f043848877ffcc7e5865cedd022766333074efcc",
         "appliedKeys": []
       },
       "lint-staged": {
-        "lastSyncedSha": "646665c6213b0e666ace68411112265cf92e073a",
+        "lastSyncedSha": "f043848877ffcc7e5865cedd022766333074efcc",
         "appliedKeys": []
       }
     }
   },
-  "cliVersion": "7.0",
-  "lastSyncedAt": "2026-08-21T12:21:07.943Z",
+  "cliVersion": "8.4",
+  "lastSyncedAt": "2026-09-10T23:20:23.828Z",
   "variableSystemVersion": 1
 }

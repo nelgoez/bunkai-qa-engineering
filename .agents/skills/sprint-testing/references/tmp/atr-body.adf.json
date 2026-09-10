@@ -1,0 +1,371 @@
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "BK-8 TEST RESULTS\nTested"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " 2026-06-15\nEnvironment"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " Staging\nTester"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " nahuelgomez.cti"
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "gmail.com\nResult"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " PASSED (All tests passing)"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "SUMMARY\n  BK-8 Create Project — retest after fixes for 3 defects\n  All 3 bugs verified as FIXED. Full regression PASSED."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "RETEST RESULTS"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "attrs": {
+        "isNumberColumnEnabled": false,
+        "layout": "default"
+      },
+      "content": [
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableHeader",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Bug"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableHeader",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Description"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableHeader",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Verdict"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "BK-51"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Reserved project slugs not rejected"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "VERIFIED — 422 slug"
+                    },
+                    {
+                      "type": "text",
+                      "text": "_"
+                    },
+                    {
+                      "type": "text",
+                      "text": "reserved"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "BK-52"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Project detail not workspace-scoped"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "VERIFIED — workspace-scoped"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "BK-53"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Non-Latin names rejected"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "VERIFIED — 201 with fallback slug"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "REGRESSION\n  Full ATP suite"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " PASSED\n  AC-1 through AC-11"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " PASSED"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "TEST DATA\n  Workspace"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " bc75c0d4-6d92-4d3f-a92f-f41e4b1774fe\n  Reserved slugs tested"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " api, new, settings, admin, null, docs\n  Multi-workspace test"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " WS1 (qa-bk8…) / WS2 (qa-bk8b…)\n  Non-Latin names"
+        },
+        {
+          "type": "text",
+          "text": ":"
+        },
+        {
+          "type": "text",
+          "text": " 日本語プロジェクト, Проект Бункай"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "BUGS VERIFIED\n  BK-51 — Major — VERIFIED\n  BK-52 — Major — VERIFIED\n  BK-53 — Minor — VERIFIED"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "OBSERVATIONS\n  All 3 fixes confirmed in staging. No regression found.\n  PR #36 (merged) addressed all 3 defects."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "RECOMMENDATIONS\n  Close bugs. Move BK-8 to QA Approved."
+        }
+      ]
+    }
+  ]
+}
