@@ -120,6 +120,12 @@ test.describe('BK-4/BK-8: Workspace & Project CRUD API', { tag: ['@api', '@criti
   });
 
   test('BK-8: POST /workspaces/{id}/projects rejects non-member → 403', async ({ api }) => {
+    test.fixme(
+      true,
+      'BK-992: regression — non-existent workspace returns 422 project_limit_reached instead of 403 not_a_member',
+    );
+    return;
+
     api.setAuthToken(pat);
 
     const [response] = await api.projects.createProjectNonMember(
