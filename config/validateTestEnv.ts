@@ -10,6 +10,8 @@
  *   - Standalone: bun run config/validateTestEnv.ts
  */
 
+import { normalizeAtlassianUrl, readAtlassianUrlFromYaml } from '../cli/lib/atlassian-instance';
+
 /** Variables needed for validation (subset of all env vars) */
 export interface EnvVarsToValidate {
   TEST_ENV: string
@@ -117,7 +119,7 @@ if (import.meta.main) {
     PRODUCTION_USER_PAT: process.env.PRODUCTION_USER_PAT,
     XRAY_CLIENT_ID: process.env.XRAY_CLIENT_ID,
     XRAY_CLIENT_SECRET: process.env.XRAY_CLIENT_SECRET,
-    ATLASSIAN_URL: process.env.ATLASSIAN_URL,
+    ATLASSIAN_URL: readAtlassianUrlFromYaml() ?? normalizeAtlassianUrl(process.env.ATLASSIAN_URL) ?? '',
     ATLASSIAN_EMAIL: process.env.ATLASSIAN_EMAIL,
     ATLASSIAN_API_TOKEN: process.env.ATLASSIAN_API_TOKEN,
   };
