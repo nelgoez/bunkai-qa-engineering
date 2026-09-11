@@ -64,8 +64,3 @@ jobs:
 
       - name: Install Playwright (API context)
         run: bun run pw:install
-
-      - name: Run Sandbox Tests (PAT-driven API tests)
-        run: bunx playwright test --project=sandbox
-        # Fast API-only tests using PAT auth (no browser needed).
-        # These bypass the broken /auth/login endpoint (BK-177).

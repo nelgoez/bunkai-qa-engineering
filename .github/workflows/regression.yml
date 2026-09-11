@@ -99,9 +99,6 @@ jobs:
       - name: Install Playwright (API context)
         run: bun run pw:install
 
-      - name: Run Sandbox Tests
-        run: bunx playwright test --project=sandbox
-
       - name: Run ${{ matrix.module }} Integration Tests
         run: bunx playwright test --project=integration ${{ matrix.testPath }}
 

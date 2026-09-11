@@ -7,7 +7,7 @@
 | `api/schemas/atc.types.ts` | ATC payload/response type definitions |
 | `tests/components/api/AtcsApi.ts` | API component with `createAtcSuccessfully`, `patchAtcSuccessfully`, `createAtcWithInvalidAuth` |
 | `tests/components/ApiFixture.ts` | Fixture registration (`api.atcs`) |
-| `tests/integration/atc/atc-create-edit.sandbox.ts` | 7 test cases (sandbox project until auth fixed) |
+| `tests/integration/atc/atc-create-edit.test.ts` | 7 test cases (promoted to integration project) |
 
 ## Dependencies
 - `STAGING_USER_PAT` in `.env` (read via `config.testUser.pat`)

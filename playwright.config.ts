@@ -182,15 +182,6 @@ export default defineConfig({
       testDir: './tests/teardown',
     },
 
-    // ============================================
-    // Sandbox - Isolated tests without dependencies (for debugging/experiments)
-    // Usage: bun playwright test --project=sandbox
-    // ============================================
-    {
-      name: 'sandbox',
-      testMatch: /.*\.sandbox\.ts/,
-      // No dependencies - runs completely isolated
-    },
   ],
 
   // Artifacts directory (add to .gitignore)
