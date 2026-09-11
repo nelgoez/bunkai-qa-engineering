@@ -44,12 +44,6 @@
     "type": "string",
     "name": "🚩Business Rules Specification"
   },
-  "category": {
-    "id": "customfield_10106",
-    "type": "option",
-    "name": "Category",
-    "options": {}
-  },
   "checklist_completed": {
     "id": "customfield_10073",
     "type": "string",
@@ -202,12 +196,6 @@
     "type": "string",
     "name": "Mockup 🎴"
   },
-  "operational_categorization": {
-    "id": "customfield_10067",
-    "type": "option-with-child",
-    "name": "Operational categorization",
-    "options": {}
-  },
   "out_of_scope": {
     "id": "customfield_10081",
     "type": "string",
@@ -243,12 +231,6 @@
     "id": "customfield_10133",
     "type": "string",
     "name": "Probando Field"
-  },
-  "product_categorization": {
-    "id": "customfield_10059",
-    "type": "option-with-child",
-    "name": "Product categorization",
-    "options": {}
   },
   "qa_assignee": {
     "id": "customfield_10104",
