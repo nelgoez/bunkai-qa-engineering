@@ -9,12 +9,12 @@
 
 | Item | Value |
 |------|-------|
-| Atlassian URL | `https://upexgalaxy71.atlassian.net` |
+| Atlassian URL | `https://upexgalaxy72.atlassian.net` |
 | Project Key | `BK` (Bunkai TMS) |
 | My display name | Nahuel Gomez |
 | My account ID | `609005c5f0db130069a64294` |
 | ATLASSIAN_API_TOKEN | `.env` → `ATLASSIAN_API_TOKEN` |
-| Sprint board | Board 7 — `https://upexgalaxy71.atlassian.net/jira/software/c/projects/BK/boards/7` |
+| Sprint board | Board 7 — `https://upexgalaxy72.atlassian.net/jira/software/c/projects/BK/boards/7` |
 
 ### Jira Custom Fields (jira-native TMS)
 
@@ -135,7 +135,7 @@ Playwright screenshots save to `./bk98-*.png` by default. Use absolute paths for
 
 **Direct REST** (Atlassian MCP `jira_update_issue` doesn't reliably set assignee):
 ```bash
-PUT https://upexgalaxy71.atlassian.net/rest/api/3/issue/{KEY}/assignee
+PUT https://upexgalaxy72.atlassian.net/rest/api/3/issue/{KEY}/assignee
 Body: {"accountId": "609005c5f0db130069a64294"}
 ```
 Unassign: `{"accountId": null}`

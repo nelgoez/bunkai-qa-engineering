@@ -32,7 +32,7 @@ issue_tracker:
   # after a site migration — a stale host silently overwrites .context/PBI/ and the
   # .agents/*.json catalogs with another site's content. Keep it identical to .env's
   # ATLASSIAN_URL; when they disagree the yaml wins and the scripts print a warning.
-  atlassian_url: https://upexgalaxy71.atlassian.net
+  atlassian_url: https://upexgalaxy72.atlassian.net
 
 testing:
   default_env: staging
