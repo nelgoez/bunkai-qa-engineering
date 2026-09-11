@@ -143,7 +143,15 @@ export const test = base.extend<{
   },
 
   // API-only fixture (NO browser opened - Playwright fixtures are lazy)
-  api: async ({ request }, use) => {
+  // Uses its own request context WITHOUT storageState so API tests authenticate
+  // via Bearer token only: the smoke project's `use.storageState` session cookie
+  // must never leak into API requests, or `clearAuthToken()` tests (expect 401)
+  // silently pass the session cookie and get 200/201 instead (BK-310/BK-312).
+  api: async ({ playwright }, use) => {
+    const request = await playwright.request.newContext({
+      storageState: { cookies: [], origins: [] },
+    });
+
     const apiFixture = new ApiFixture({ request });
 
     // Load token from file if exists (for integration tests)
@@ -162,6 +170,7 @@ export const test = base.extend<{
     }
 
     await use(apiFixture);
+    await request.dispose();
   },
 });
 
