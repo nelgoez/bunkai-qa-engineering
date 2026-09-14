@@ -67,7 +67,7 @@ function parseArgs(argv: string[]): Args {
 }
 
 function sh(cmd: string, args: string[], opts: { cwd?: string } = {}): string {
-  const res = spawnSync(cmd, args, { cwd: opts.cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
+  const res = spawnSync(cmd, args, { cwd: opts.cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'inherit'] });
   if (res.status !== 0) {
     throw new Error(`Command failed (${res.status}): ${cmd} ${args.join(' ')}`);
   }
@@ -164,8 +164,15 @@ function main(): void {
   }
   sh('git', ['add', '-A', '.nojekyll'], { cwd: pagesDir });
 
-  const status = sh('git', ['status', '--porcelain'], { cwd: pagesDir }).trim();
-  if (status === '') {
+  // Detect "nothing to commit" by exit code, not by capturing `git status
+  // --porcelain` output. Once the gh-pages tree grows past ~30k files,
+  // --porcelain emits more than spawnSync's 1 MiB maxBuffer, git gets killed
+  // and res.status returns null (thrown as "Command failed (null)"). Because
+  // the prune never committed while this threw, the tree stayed bloated and
+  // every run re-failed. `git diff --cached --quiet` prints nothing and exits
+  // 1 only when the index has staged changes, so the buffer is never stressed.
+  const changed = spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: pagesDir }).status !== 0;
+  if (!changed) {
     console.log('Nothing changed on gh-pages — skipping commit.');
     return;
   }
