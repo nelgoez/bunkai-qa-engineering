@@ -408,7 +408,7 @@ Create `tests/e2e/{feature}/smoke.test.ts` (or `tests/integration/{feature}/` fo
 
 ### 6.5 Reconsider existing reference specs
 
-`tests/e2e/dashboard/dashboard.test.ts` (`UPEX-200`, `/api/auth/me`) and `tests/integration/auth/user-session.test.ts` (`UPEX-100`): replace the `UPEX-` keys with `{{PROJECT_KEY}}` and keep if the endpoints resolve to the real API, else delete.
+`tests/e2e/session/session-smoke.test.ts` (session smoke) and `tests/integration/auth/user-session.test.ts` (`BK-166`): replace any remaining example keys with `{{PROJECT_KEY}}` and keep if the endpoints resolve to the real API, else delete.
 
 ---
 

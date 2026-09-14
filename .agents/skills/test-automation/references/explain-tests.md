@@ -3,7 +3,7 @@
 Generate a plain-English breakdown of what automated tests do: which ATCs run, what assertions fire, and how data flows.
 
 **Input:** $ARGUMENTS
-(Scope: a file path, ATC ID, ticket ID, or module name. Examples: `tests/e2e/dashboard/dashboard.test.ts`, `AUTH-003`, `AUTH-T01`, `all auth tests`.)
+(Scope: a file path, ATC ID, ticket ID, or module name. Examples: `tests/e2e/session/session-smoke.test.ts`, `AUTH-003`, `AUTH-T01`, `all auth tests`.)
 
 ---
 
