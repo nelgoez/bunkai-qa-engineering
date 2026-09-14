@@ -1,22 +1,28 @@
 /**
- * KATA Architecture — Dashboard E2E Tests
+ * KATA Architecture — Authenticated Session Smoke Tests
  *
- * Validates authenticated session, API access, and workspace listing
- * against the Bunkai staging app. Auth is handled by the ui-auth setup
- * (storage state), not by LoginPage ATCs (exercised in tests/e2e/auth/).
+ * Verifies the logged-in session end-to-end against the Bunkai staging app:
+ * the landing page renders without a login bounce, the session token resolves
+ * the current user, and the workspace list is reachable. Auth is handled by
+ * the ui-auth setup (storage state), not by LoginPage ATCs (exercised in
+ * tests/e2e/auth/).
+ *
+ * NOTE: these are infrastructure smoke checks, not feature coverage — no
+ * @atc mapping and no Jira Test issue. Real Home Dashboard (BK-254) ACs are
+ * a separate future automation target.
  */
 
 import { expect, test } from '@TestFixture';
 
-test.describe('BK-3: Dashboard E2E', { tag: ['@e2e', '@critical'] }, () => {
-  test('BK-201: Dashboard loads with authenticated session', async ({ page }) => {
+test.describe('Session smoke: authenticated landing + API', { tag: ['@e2e', '@critical'] }, () => {
+  test('Landing page loads with an authenticated session', async ({ page }) => {
     await page.goto('/');
 
     await expect(page).not.toHaveURL(/.*\/login.*/);
     await expect(page).toHaveTitle(/.+/);
   });
 
-  test('BK-202: User info accessible via API with session token', async ({ test: fixture }) => {
+  test('Session token resolves the current user', async ({ test: fixture }) => {
     const [response, userInfo] = await fixture.api.auth.getCurrentUser();
 
     expect(response.ok()).toBe(true);
@@ -25,7 +31,7 @@ test.describe('BK-3: Dashboard E2E', { tag: ['@e2e', '@critical'] }, () => {
     expect(userInfo.user.id).toBeDefined();
   });
 
-  test('BK-202: Workspace list accessible via API', async ({ test: fixture }) => {
+  test('Session token lists workspaces', async ({ test: fixture }) => {
     const [response] = await fixture.api.apiGET<{ workspaces: unknown[] }>('/workspaces');
 
     expect(response.ok()).toBe(true);

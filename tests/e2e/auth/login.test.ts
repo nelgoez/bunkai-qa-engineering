@@ -11,7 +11,7 @@
 import { test } from '@TestFixture';
 import { config } from '@variables';
 
-test.describe('BK-3: Login E2E', { tag: ['@e2e'] }, () => {
+test.describe('BK-166: Login E2E', { tag: ['@e2e'] }, () => {
   test('BK-313: should sign in successfully with valid credentials', async ({ ui }) => {
     await ui.login.goto();
     await ui.login.loginSuccessfully({

@@ -70,6 +70,7 @@
     "test:clean": "rm -rf test-results playwright-report allure-results allure-report reports",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --project=e2e",
+    "test:e2e-auth": "playwright test --project=e2e-auth",
     "test:env:check": "bun config/validateTestEnv.ts",
     "test:headed": "playwright test --headed",
     "test:integration": "playwright test --project=integration",

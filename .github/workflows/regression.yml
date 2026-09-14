@@ -154,7 +154,7 @@ jobs:
         run: bun run pw:install
 
       - name: Run E2E Tests on ${{ env.TEST_ENV }}
-        run: bun run test:e2e
+        run: bunx playwright test --project=e2e --project=e2e-auth
 
       - name: Upload E2E Allure Results
         if: always()
