@@ -21,6 +21,7 @@ on:
         options:
           - local
           - staging
+          - production
       generate_allure:
         description: Generate Allure Report
         required: true
@@ -41,6 +42,11 @@ env:
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
+  # Production credentials — required only when TEST_ENV=production is selected.
+  # Missing secrets fail loudly via `bun run test:env:check` (validateTestEnv.ts).
+  PRODUCTION_USER_EMAIL: ${{ secrets.PRODUCTION_USER_EMAIL }}
+  PRODUCTION_USER_PASSWORD: ${{ secrets.PRODUCTION_USER_PASSWORD }}
+  PRODUCTION_USER_PAT: ${{ secrets.PRODUCTION_USER_PAT }}
   TMS_PROVIDER: ${{ secrets.TMS_PROVIDER || 'jira' }}
   ATLASSIAN_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
   ATLASSIAN_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
@@ -190,20 +196,52 @@ jobs:
           echo "View the report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.TEST_ENV }}/smoke/" >> $GITHUB_STEP_SUMMARY
 
   # ============================================
-  # TODO: Implement Slack notification job
+  # Notify Failure — a red suite is never silent.
+  # Opens one labeled issue per failing workflow,
+  # deduplicated on the open-issue title.
   # ============================================
-  # slack-notification:
-  #   name: Slack Notification
-  #   needs: [SmokeTest, allure-report]
-  #   runs-on: ubuntu-latest
-  #   if: always()
-  #   steps:
-  #     - name: Send Slack Notification
-  #       uses: slackapi/slack-github-action@v1.24.0
-  #       with:
-  #         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-  #         payload: |
-  #           {
-  #             "text": "Smoke Tests: ${{ needs.SmokeTest.result }}",
-  #             "blocks": [...]
-  #           }
+  notify-failure:
+    name: Notify Failure
+    needs: [SmokeTest, allure-report]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Open labeled failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const workflow = context.workflow;
+            const runId = context.runId;
+            const runNumber = context.runNumber;
+            const label = 'ci-failure';
+            const title = `[CI] ${workflow} failed - run #${runNumber}`;
+
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: label,
+            });
+            if (open.some(i => i.title === title)) {
+              core.notice(`Duplicate open failure issue for "${workflow}" - skipping.`);
+              return;
+            }
+
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
+            const body = [
+              `Workflow **${workflow}** failed.`,
+              '',
+              `- Run: ${runUrl}`,
+              `- Ref: \`${context.ref}\``,
+              `- Commit: \`${context.sha}\``,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              labels: [label],
+              body,
+            });
+            core.notice(`Opened failure issue "${title}".`);

@@ -1,13 +1,17 @@
 # ============================================
 # KATA Architecture - TestBuild Pipeline
 # ============================================
-# Purpose: Validate framework compiles and passes static checks before merging PRs.
-# This pipeline acts as a smoke test for the test framework itself.
+# Purpose: Validate framework compiles and passes static checks. Runs on every PR
+# to main AND nightly (self-check) so a broken framework is caught even without a
+# PR in flight.
 
 name: TestBuild Checks
 run-name: ${{ github.actor }} triggered TestBuild Checks on ${{ github.ref_name }}
 
 on:
+  schedule:
+    - cron: '0 6 * * *' # Nightly framework self-check (6:00 AM UTC)
+
   pull_request:
     branches:
       - main
