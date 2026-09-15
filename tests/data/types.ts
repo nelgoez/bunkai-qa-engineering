@@ -26,24 +26,6 @@ export interface TestCredentials {
 }
 
 // ============================================
-// Project-Specific Types (example structure)
-// ============================================
-
-export interface TestHotel {
-  name: string
-  organizationId?: number
-  invoiceCap?: number
-}
-
-export interface TestBooking {
-  confirmationNumber: string
-  hotelId: number
-  stayValue: number
-  checkInDate: string
-  emailHash?: string
-}
-
-// ============================================
 // Auth/Fixture State Types
 // ============================================
 

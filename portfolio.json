@@ -22,7 +22,6 @@
   ],
   "links": {
     "allure_staging": "https://nelgoez.github.io/bunkai-qa-engineering/staging/sanity/",
-    "allure_production": "https://nelgoez.github.io/bunkai-qa-engineering/production/sanity/",
     "docs": "https://github.com/nelgoez/bunkai-qa-engineering/tree/main/docs"
   }
 }

@@ -83,6 +83,15 @@ const EXCLUDED_FILES = [
   'index.ts',
 ];
 
+/**
+ * Normalize a path to POSIX separators so the manifest is byte-stable across
+ * Windows/macOS/Linux. `node:path.relative` returns `\` on Windows; the
+ * committed kata-manifest.json must always use `/`.
+ */
+function toPosix(p: string): string {
+  return p.replace(/\\/g, '/');
+}
+
 // ============================================================================
 // Parsing Functions
 // ============================================================================
@@ -244,7 +253,7 @@ async function generateManifest(): Promise<KataManifest> {
     const component: ComponentInfo = {
       name: await extractClassName(file),
       file: basename(file),
-      relativePath: relative(PROJECT_ROOT, file),
+      relativePath: toPosix(relative(PROJECT_ROOT, file)),
       atcs,
     };
     manifest.components.api.push(component);
@@ -258,7 +267,7 @@ async function generateManifest(): Promise<KataManifest> {
     const component: ComponentInfo = {
       name: await extractClassName(file),
       file: basename(file),
-      relativePath: relative(PROJECT_ROOT, file),
+      relativePath: toPosix(relative(PROJECT_ROOT, file)),
       atcs,
     };
     manifest.components.ui.push(component);
@@ -271,7 +280,7 @@ async function generateManifest(): Promise<KataManifest> {
     const steps: StepsInfo = {
       name: await extractClassName(file),
       file: basename(file),
-      relativePath: relative(PROJECT_ROOT, file),
+      relativePath: toPosix(relative(PROJECT_ROOT, file)),
       methods: await extractStepsMethods(file),
     };
     manifest.steps.push(steps);

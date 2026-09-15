@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-08-21T12:33:16.517Z",
+  "generatedAt": "2026-09-15T23:36:29.142Z",
   "components": {
     "api": [
       {
         "name": "AtcsApi",
         "file": "AtcsApi.ts",
-        "relativePath": "tests\\components\\api\\AtcsApi.ts",
+        "relativePath": "tests/components/api/AtcsApi.ts",
         "atcs": [
           {
             "id": "BK-149",
@@ -73,7 +73,7 @@
       {
         "name": "AuthApi",
         "file": "AuthApi.ts",
-        "relativePath": "tests\\components\\api\\AuthApi.ts",
+        "relativePath": "tests/components/api/AuthApi.ts",
         "atcs": [
           {
             "id": "BK-311",
@@ -90,7 +90,7 @@
       {
         "name": "DefectsApi",
         "file": "DefectsApi.ts",
-        "relativePath": "tests\\components\\api\\DefectsApi.ts",
+        "relativePath": "tests/components/api/DefectsApi.ts",
         "atcs": [
           {
             "id": "BK-234",
@@ -122,7 +122,7 @@
       {
         "name": "ProjectsApi",
         "file": "ProjectsApi.ts",
-        "relativePath": "tests\\components\\api\\ProjectsApi.ts",
+        "relativePath": "tests/components/api/ProjectsApi.ts",
         "atcs": [
           {
             "id": "BK-296",
@@ -149,7 +149,7 @@
       {
         "name": "TestsApi",
         "file": "TestsApi.ts",
-        "relativePath": "tests\\components\\api\\TestsApi.ts",
+        "relativePath": "tests/components/api/TestsApi.ts",
         "atcs": [
           {
             "id": "BK-305",
@@ -186,7 +186,7 @@
       {
         "name": "UserStoriesApi",
         "file": "UserStoriesApi.ts",
-        "relativePath": "tests\\components\\api\\UserStoriesApi.ts",
+        "relativePath": "tests/components/api/UserStoriesApi.ts",
         "atcs": [
           {
             "id": "BK-300",
@@ -218,7 +218,7 @@
       {
         "name": "WorkspacesApi",
         "file": "WorkspacesApi.ts",
-        "relativePath": "tests\\components\\api\\WorkspacesApi.ts",
+        "relativePath": "tests/components/api/WorkspacesApi.ts",
         "atcs": [
           {
             "id": "BK-291",
@@ -252,7 +252,7 @@
       {
         "name": "LoginPage",
         "file": "LoginPage.ts",
-        "relativePath": "tests\\components\\ui\\LoginPage.ts",
+        "relativePath": "tests/components/ui/LoginPage.ts",
         "atcs": [
           {
             "id": "BK-313",
@@ -268,23 +268,12 @@
       }
     ]
   },
-  "steps": [
-    {
-      "name": "ExampleSteps",
-      "file": "ExampleSteps.ts",
-      "relativePath": "tests\\components\\steps\\ExampleSteps.ts",
-      "methods": [
-        "authenticateUser",
-        "createTestResource",
-        "navigateAsAuthenticatedUser"
-      ]
-    }
-  ],
+  "steps": [],
   "summary": {
     "totalComponents": 8,
     "totalATCs": 41,
     "apiComponents": 7,
     "uiComponents": 1,
-    "stepsModules": 1
+    "stepsModules": 0
   }
 }
