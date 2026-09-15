@@ -99,11 +99,15 @@ function main(): void {
     throw new Error(`No Allure results at ${resultsDir} — nothing to publish.`);
   }
 
-  // gh-pages checkout may be absent on a fresh repo (checkout step is
-  // continue-on-error). Initialize an orphan branch so the first suite run
-  // bootstraps the site, mirroring what the old action did.
-  if (!fs.existsSync(path.join(pagesDir, '.git'))) {
-    console.log('gh-pages checkout not found — bootstrapping an orphan branch.');
+  // gh-pages checkout may be absent OR present-but-empty. actions/checkout
+  // runs `git init` even when the fetch of a not-yet-existing gh-pages branch
+  // fails (continue-on-error), so a freshly deleted branch leaves a .git with
+  // no commits and an unborn HEAD — the repo "exists" but `git push origin
+  // gh-pages` has no branch to push. Bootstrap an orphan branch in both cases.
+  const hasCommits = spawnSync('git', ['rev-parse', '--verify', 'HEAD'], { cwd: pagesDir, stdio: 'ignore' }).status === 0;
+  if (!fs.existsSync(path.join(pagesDir, '.git')) || !hasCommits) {
+    console.log('gh-pages checkout empty or absent — bootstrapping an orphan branch.');
+    fs.rmSync(pagesDir, { recursive: true, force: true });
     fs.mkdirSync(pagesDir, { recursive: true });
     sh('git', ['init', '-b', 'gh-pages'], { cwd: pagesDir });
     const originUrl = sh('git', ['remote', 'get-url', 'origin'], { cwd: repoRoot }).trim();
