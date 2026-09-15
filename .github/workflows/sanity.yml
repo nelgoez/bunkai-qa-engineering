@@ -208,7 +208,7 @@ jobs:
 
       - name: Build Allure Report
         if: steps.check_allure.outputs.has_results == 'true'
-        uses: simple-elf/allure-report-action@master
+        uses: simple-elf/allure-report-action@v1.15
         with:
           gh_pages: gh-pages
           subfolder: ${{ env.TEST_ENV }}/${{ github.event.inputs.custom_allure_url }}
