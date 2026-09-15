@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": "steps_position_invalid",
+    "message": "Step positions must be integers, strictly increasing from 1.",
+    "details": {
+      "reason": "steps_position_invalid",
+      "positions": [
+        1
+      ]
+    },
+    "request_id": "88252796-0e10-40f3-b060-8b4d0385d929"
+  }
+}
