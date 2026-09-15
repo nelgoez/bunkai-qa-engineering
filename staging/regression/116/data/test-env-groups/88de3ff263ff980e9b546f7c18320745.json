@@ -1,0 +1,1 @@
+{"id":"88de3ff263ff980e9b546f7c18320745","fullName":"integration/atc/atc-create-edit.test.ts:68:3","name":"BK-149: POST /atcs works for all layer values (UI, API, Unit)","status":"passed","testResultsByEnv":{"default":"92af0c4792e84b03aac109b45d56e1f5"}}

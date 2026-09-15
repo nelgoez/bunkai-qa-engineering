@@ -1,0 +1,1 @@
+{"id":"24c15e3cb70e01b8fbad62ffde450dda","fullName":"integration/tests/test-builder.test.ts:101:3","name":"BK-306: POST /tests rejects empty atc_ids with 422","status":"passed","testResultsByEnv":{"default":"9133177403d5e3739f3e93a6308bf9a0"}}
