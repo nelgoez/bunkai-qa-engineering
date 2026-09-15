@@ -212,6 +212,27 @@ The TARGET model (§3, §8) prescribes two distinct layers for an ATP/ATR↔TC r
 
 ---
 
+## 10. Traceability verification — the three-edge check
+
+Consumers that wrote `[TMS_TOOL] trace {TICKET}` were, in practice, checking ONE edge and logging "traceability verified" for all three. In Modality `jira-xray` the one-call form is **`[TMS_TOOL] trace: {STORY_KEY}`** (`/xray-cli` owns the syntax), which performs all four reads and exits non-zero unless every edge passes. Where it is unavailable, verification is explicit and consists of these calls:
+
+```
+[ISSUE_TRACKER_TOOL] Link List: {STORY_KEY}   # expect: ATS "tests" Story   (coverage edge — the only one Xray counts)
+[ISSUE_TRACKER_TOOL] Link List: {ATP_KEY}     # expect: ATP "tests" Story   (administrative edge)
+[ISSUE_TRACKER_TOOL] Link List: {ATR_KEY}     # expect: ATR "tests" Story   (administrative edge)
+[TMS_TOOL] plan get: {ATP_KEY} · exec get: {ATR_KEY}   # expect: Plan + Execution test lists == ATS membership
+```
+
+Concretely: the three link reads are the `/acli` link-list read (§4's direction check — the Story must be the INWARD party, `is tested by`); the list comparison is the `/xray-cli` plan/execution read against the ATS membership (the `/xray-cli` test-enrich read), because that membership is Xray-internal and invisible to the link reads (§9). Exact command syntax lives in those two skills, not here.
+
+**The rule.** Traceability is verified ONLY when all three edges are present AND the lists match. A missing administrative edge is a **FAIL** of this check, not a warning. **Never log "traceability verified" from the coverage edge alone** — the ATS→Story edge carries the coverage, but a Story whose ATP or ATR is unlinked has an incomplete audit trail, and the next consumer walking `issuelinks` from the Plan or the Run finds nothing.
+
+**One-call form.** `[TMS_TOOL] trace: {STORY_KEY}` performs all four reads, reports per-edge PASS/FAIL with the exact remediation command for each failure, and exits 0 only when all four hold. Prefer it over the block above; that block stays as the manual equivalent.
+
+**Modality `jira-native`.** There is no Xray layer and no one-call form: verification is that the Story's `{{jira.acceptance_test_plan}}` field is populated (or its `## Acceptance Test Plan (ATP)` fallback comment exists — §6 degradation rules), plus the `TC→ATS` and `ATS→Story` issue links per §9's carve-out. An instance with no Test Set work type verifies the last-resort direct `TC→Story` links instead.
+
+---
+
 ## Hard rules — NEVER do these
 
 - NEVER hardcode link-type names. Always resolve via `{{jira.link_types.<slug>}}` (§2).
@@ -222,6 +243,7 @@ The TARGET model (§3, §8) prescribes two distinct layers for an ATP/ATR↔TC r
 - NEVER skip the mandatory post-create direction check for an asymmetric edge (§4).
 - NEVER treat an ATP→Story or ATR→Story link as coverage — administrative only (live-verified zero coverage); coverage = ATS→Story, or last-resort TC→Story (§3).
 - NEVER skip the per-Story ATS — it is mandatory even for a single TC; the ATP/ATR derive their test lists from its membership (Set-first, §3).
+- NEVER log "traceability verified" from the coverage edge alone — run the three-edge check (one call in Modality `jira-xray`, the four explicit reads otherwise); a missing administrative edge is a FAIL (§10).
 - NEVER (Modality `jira-xray`) create Test ↔ Test Set / Test Plan membership via acli link, and NEVER use the `"is part of test set"` literal — route to `/xray-cli` (§9). In Modality `jira-native` membership IS `TC→ATS` issue links — the prohibition does not apply there (§9 carve-out).
 
 ---

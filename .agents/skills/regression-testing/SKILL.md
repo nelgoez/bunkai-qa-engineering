@@ -28,6 +28,27 @@ Three phases, always in this order: **Execute → Analyze → Report**. Do not s
 
 ---
 
+## Compact Rules
+
+- DO: run Execute → Analyze → Report in that order. Never skip analysis and jump to a report, and never classify a failure without reading its logs.
+- DO: clear the readiness preflight before triggering anything — `gh` authenticated, the suite's workflow file present, GitHub Actions secrets set, Allure resolvable, active env confirmed. A 20-60 minute run that 401s mid-way is the expensive failure.
+- DO: persist `RUN_ID` the moment the trigger returns, before anything else. Resume re-attaches to a live run instead of re-triggering CI; a trigger that landed without the id saved costs the whole run again.
+- DO NOT: mark a failure REGRESSION without checking its history first — the single most common misclassification. A first-ever failure with no history is NEW TEST, unverified, not a regression.
+- DO: classify every failure into exactly one of KNOWN-BLOCKED / KNOWN ISSUE / ENVIRONMENT / NEW TEST / FLAKY / REGRESSION, and assess severity on a separate axis — a FLAKY test on checkout is still CRITICAL.
+- DO: exclude `@blocked:{BUG-KEY}` tests from the gating pass-rate and report their count with each blocking key. They are parked behind an already-filed bug: never REGRESSION, and never a new bug.
+- DO NOT: use ENVIRONMENT as a scapegoat. Many unrelated tests failing on one host is environment; one test failing on an endpoint other tests reach fine is more likely a REGRESSION.
+- DO NOT: call a test flaky on fewer than 5 runs of history — mark "insufficient history" and re-evaluate rather than guessing.
+- DO NOT: emit GO while any REGRESSION-class failure stands. Hard vetoes regardless of score: any `@critical` test failing, any HIGH/CRITICAL-severity regression, or a pass rate below 90%.
+- DO: file only CONFIRMED product failures — the REGRESSION class, plus a NEW TEST failure once manually confirmed to be a real defect. FLAKY, ENVIRONMENT and KNOWN ISSUE get no issue at all. Triage decides WHETHER to file; the defect-management doctrine decides the type and the fields.
+- DO NOT: open a GitHub issue for a quality failure. It is filed in the issue tracker, parented to the QA Defect Management process epic and linked to the source Story — never to a product or dev epic.
+- DO: create every Test Execution with its Test Environment (from `active_env`) and `assignee` = self at create time, close the STR only AFTER the verdict is written, and leave the RTP at its ready status — a suite run never completes the plan it ran from.
+- DO NOT: invent a sprint number. Take `N` from the user or from the STP's own scope-id; a guessed `N` forks a duplicate STP/STR pair. Nothing found and nothing given → ask before creating at sprint altitude.
+- DO NOT: skip the artifact download on a red build (evidence vanishes after the retention window), and never merge smoke and regression results into one pass-rate — their SLOs differ.
+
+**Read full SKILL.md when**: driving the CI commands, applying the GO/CAUTION/NO-GO scoring table, resolving a borderline classification, wiring the TMS artifacts, or writing the report.
+
+---
+
 ## Inputs
 
 - `.github/workflows/*.yml` — workflow files for regression / smoke / sanity suites; defines triggers, inputs, and artifact uploads.
@@ -37,6 +58,7 @@ Three phases, always in this order: **Execute → Analyze → Report**. Do not s
 - `kata-manifest.json` — registry of tests and ATCs available; used to cross-reference failed test IDs.
 - `.agents/jira-required.yaml` — Jira refs (project key, work types, transitions) for filing regression issues.
 - `agentic-qa-core/references/defect-management-doctrine.md` — **canonical authority** for classifying (Bug/Defect/Improvement), the mandatory field matrix, QA-Assignee ownership, and the QA process epic when a confirmed regression is filed in Jira (Phase 3). Read BEFORE filing any defect.
+- `agentic-qa-core/references/artifact-lifecycle.md` — **canonical authority** for artifact statuses: the STR closes at `{{jira.status.test_execution.close}}` after the verdict, the RTP stays at `{{jira.status.test_plan.ready}}`, every created artifact carries `assignee` = self, and an unmapped transition slug goes through the §4 fallback instead of a silent skip. Read BEFORE firing any transition.
 
 ---
 
@@ -412,6 +434,15 @@ The sprint regression maps to two Jira **items** (items-first by excellence — 
 
 **Environment gate**: every Test Execution this skill creates — the STR included — carries the **Test Environment** taken from `active_env` in `.agents/project.yaml`, set at create time. An Execution without its environment fails the checklist: do not write results into it until the environment is set.
 
+**Ownership gate**: every artifact this skill CREATES (the STR, and the STP in the fallback case) carries `assignee` = the authenticated session user, set at create time — `agentic-qa-core/references/artifact-lifecycle.md` §2. Xray refuses membership edits on a Test Plan the caller does not own, so an unassigned Plan turns into a blocker the moment tests must be added to it. If the find returns an artifact someone ELSE owns, do not reassign it silently: ask first.
+
+**Lifecycle gate** (`agentic-qa-core/references/artifact-lifecycle.md` §1):
+
+- The **STR** is born `{{jira.status.test_execution.active}}` and MUST be transitioned to `{{jira.status.test_execution.close}}` via `{{jira.transition.test_execution.complete}}` **after the GO / CAUTION / NO-GO verdict is written** — never before the verdict, never left open.
+- The **RTP** (and any Test Plan this skill only consumed) stays at `{{jira.status.test_plan.ready}}` and is **never completed** by a regression run: the RTP is long-lived, and a suite execution does not finish the plan it ran from. Do NOT fire `{{jira.transition.test_plan.complete}}` here.
+- The **STP** is closed by whoever owns sprint close, not by this skill — unless this skill IS the sprint close (see the sprint-close DoD in `stage-gates.md`), in which case `{{jira.transition.test_plan.complete}}` moves it to `{{jira.status.test_plan.completed}}` after the STR is closed.
+- **Unmapped slug** → `artifact-lifecycle.md` §4 fallback: list the LIVE transitions, propose the closest synonym in ONE `AskUserQuestion`, fire the live id on yes, recommend `bun run jira:sync-workflows`. Never skip silently, never guess an id.
+
 **Find-or-create the STR before updating it** — never assume another producer already created it; if `/sprint-testing`'s batch close got there first, the find returns its item and this skill only completes it:
 
 ```
@@ -424,6 +455,10 @@ The sprint regression maps to two Jira **items** (items-first by excellence — 
 [TMS_TOOL] Update Test Execution:
   executionKey: {STR execution-key}
   results: {per-ATC status + failure comments from Phase 2}
+
+# After the Phase 3 verdict is written — close the run, never leave it ACTIVE:
+[ISSUE_TRACKER_TOOL] Transition: {{jira.transition.test_execution.complete}}   # active -> close
+  issue: {STR execution-key}
 ```
 
 ### Write the report
@@ -485,11 +520,22 @@ Score: {score}/9. {one-line rationale}
 | CAUTION | Review with team lead; document accepted risks; proceed deliberately |
 | NO-GO | Block release; assign regression issues; schedule fix verification; plan re-run |
 
+Whatever the verdict, close the run: transition the STR to `{{jira.status.test_execution.close}}` via `{{jira.transition.test_execution.complete}}`, leave the RTP at `{{jira.status.test_plan.ready}}`, then run the **light stage verifier** (`agentic-qa-core/references/artifact-lifecycle.md` §5). Stage-specific lines:
+
+```
+[ ] STR exists by KEY, carries its Test Environment, assignee = self
+[ ] STR at {{jira.status.test_execution.close}} — via complete, AFTER the verdict
+[ ] STR -> STP linked via the `testPlan` edge
+[ ] RTP untouched at {{jira.status.test_plan.ready}} (a regression run never completes it)
+[ ] Verdict comment posted in the TMS (the durable record — not the local report file)
+[ ] Any unmapped slug went through the §4 fallback (asked), never a silent skip
+```
+
 ### Per-phase progress + Archive
 
 After Phase 1 Monitor returns, after each Phase 2 step (Collect / Parse / Compute / Classify / Severity), and after Phase 3 Verdict, the orchestrator appends a phase entry to `.session/regression-testing/<scope>/progress.md` per `agentic-qa-core/references/session-management.md` §7. `artifacts_touched` records the downloaded CI artifacts (allure / evidence / playwright dirs) + the final `.context/reports/regression-<env>-<date>.md`.
 
-After the Verdict emits, the orchestrator runs Archive per `agentic-qa-core/references/session-management.md` §8: moves `.session/regression-testing/<scope>/` to `.session/.archive/<YYYY-MM-DD>-regression-testing-<scope>/` (two-file dir preserved) and calls `mem_session_summary` with the archive path. The canonical `.context/reports/regression-<env>-<date>.md` stays in the reports dir as the committed deliverable.
+After the Verdict emits, the orchestrator runs Archive per `agentic-qa-core/references/session-management.md` §8: moves `.session/regression-testing/<scope>/` to `.session/.archive/<YYYY-MM-DD>-regression-testing-<scope>/` (two-file dir preserved) and calls `mem_session_summary` with the archive path. `.context/reports/regression-<env>-<date>.md` stays in the reports dir as a **local generated report** — that directory is gitignored `[LOCAL]` output (`.context/reports/README.md`), so the file exists only on the machine that ran the suite and nothing downstream may depend on it. **The durable record is the STR in the TMS plus the GO / CAUTION / NO-GO comment** posted with it.
 
 On Verdict = NO-GO with regressions still being filed as issues, archive WAITS until the issue-creation step completes (so the session state still references the open issue list at archive time).
 
@@ -503,7 +549,7 @@ On Verdict = NO-GO with regressions still being filed as issues, archive WAITS u
 - **This repo ships `retries: 0` everywhere** (`playwright.config.ts`) — tests must be deterministic, and a retry would only mask the flake. A flaky test therefore surfaces as a plain intermittent failure and is caught by the >20% history rule, never by a retry-pass signal. If a downstream project has consciously enabled retries, a test that passes on retry is still flaky — see the "Conscious divergence: enabling retries" box in `references/ci-cd-integration.md` for how to read retry counts in Allure.
 - **ENVIRONMENT is not a scapegoat.** `ECONNREFUSED` to your app's own API probably means the app crashed, not "infra glitch". Check if the same run has many unrelated tests failing on the same host — that is environment. One test failing with a network error on an endpoint that other tests hit successfully is more likely a REGRESSION.
 - **Never mark NEW TEST as REGRESSION.** A first-ever failure with no history is not a regression — it is unverified. Manually confirm once before classifying.
-- **Flakiness needs 10 runs of history minimum.** If you don't have 10 runs, mark it as "insufficient history" and re-evaluate next sprint. Do not guess.
+- **Flakiness needs 5 runs of history minimum before you can call it at all** (below that, mark "insufficient history" and re-evaluate next sprint — do not guess). The failure-rate itself is computed over a wider window: the last N = min(10, available) runs (see `references/failure-classification.md`). 5 is the floor to have any signal; 10 is the window the percentage is actually computed over.
 - **Sanity + `grep` and `test_file` are mutually exclusive.** Passing both makes the workflow ignore one silently. Pick one.
 - **Video recording inflates artifact size by 5-10x.** Only enable `video_record=true` when debugging flakiness or capturing bug evidence. Never enable it for nightly regression.
 - **CI credentials come from GitHub secrets, not `.env`.** Do not copy values from local `.env` into workflow YAML — reference `${{ secrets.NAME }}` only.

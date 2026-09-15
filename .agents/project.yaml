@@ -37,6 +37,12 @@ issue_tracker:
 testing:
   default_env: staging
   tms_cli: bun xray
+  # Which stage turns a test case into a `Test` work item in the TMS. One of:
+  # auto | sprint-testing | test-documentation. `auto` (the shipped default) follows the
+  # TMS modality resolved from `tms_cli`: jira-xray -> /sprint-testing Stage 1; jira-native ->
+  # /test-documentation Stage 4. Override only when the project weighs repository cleanliness
+  # against in-sprint traceability differently. Read as {{TC_CREATION_STAGE}}.
+  tc_creation_stage: auto
 
 qa:
   formal_blocked_gate: true # When true and the substrate exposes a `blocked` story status, FAILED stories dispatch `defect_reported` (in_test -> blocked). When false (or no `blocked` slug), the skill leaves the story in `in_test` with the linked bug — non-strict fallback. See sprint-testing/references/sprint-orchestration.md Briefing 4 Step 5.
@@ -114,7 +120,10 @@ git_strategy:
 # updater must NEVER overwrite during a sync — e.g. a script the project has
 # customized beyond upstream. Empty = the project keeps no such overrides.
 updater:
-  protected_paths: [] # e.g. [scripts/lint-vars.ts, .agents/skills/acli/SKILL.md]
+  protected_paths:
+    - .agents/skills/adapt-framework/references/adaptation-workflow.md
+    - .agents/skills/test-automation/references/explain-tests.md
+    - scripts/ci/publish-allure-pages.ts
 
 # Per-environment config. Add/remove environments freely (production, dev, qa, uat, etc.).
 # Each environment must define ALL four keys: web_url, api_url, db_mcp, api_mcp.

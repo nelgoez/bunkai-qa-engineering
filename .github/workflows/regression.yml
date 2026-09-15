@@ -96,6 +96,13 @@ jobs:
       - name: Run ${{ matrix.module }} Integration Tests
         run: bunx playwright test --project=integration ${{ matrix.testPath }}
 
+      # Runs after the Playwright process exits: reports/atc_results.json is
+      # written by KataReporter.onEnd() (issue #27), so nothing inside the run
+      # can read it. `always()` so a failing suite still reports its results.
+      - name: Sync ${{ matrix.module }} Results to TMS
+        if: always() && env.AUTO_SYNC == 'true'
+        run: bun run test:sync
+
       - name: Upload ${{ matrix.prefix }} Allure Results
         if: always()
         uses: actions/upload-artifact@v7
@@ -149,6 +156,13 @@ jobs:
 
       - name: Run E2E Tests on ${{ env.TEST_ENV }}
         run: bunx playwright test --project=e2e --project=e2e-auth
+
+      # Runs after the Playwright process exits: reports/atc_results.json is
+      # written by KataReporter.onEnd() (issue #27), so nothing inside the run
+      # can read it. `always()` so a failing suite still reports its results.
+      - name: Sync Results to TMS
+        if: always() && env.AUTO_SYNC == 'true'
+        run: bun run test:sync
 
       - name: Upload E2E Allure Results
         if: always()

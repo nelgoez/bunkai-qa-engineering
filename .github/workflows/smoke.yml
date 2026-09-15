@@ -77,6 +77,13 @@ jobs:
       - name: Run Smoke Tests (@critical) on ${{ env.TEST_ENV }}
         run: bun run test:smoke
 
+      # Runs after the Playwright process exits: reports/atc_results.json is
+      # written by KataReporter.onEnd() (issue #27), so nothing inside the run
+      # can read it. `always()` so a failing suite still reports its results.
+      - name: Sync Results to TMS
+        if: always() && env.AUTO_SYNC == 'true'
+        run: bun run test:sync
+
       - name: Upload Allure Results
         if: always()
         uses: actions/upload-artifact@v7
