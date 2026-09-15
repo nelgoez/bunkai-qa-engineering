@@ -1,0 +1,1 @@
+{"id":"67c91d033f99bbf945d1cf84c1e4599c","fullName":"integration/atc/atc-create-edit.test.ts:106:3","name":"BK-150: POST /atcs rejects token lacking atc:write scope with 403","status":"passed","testResultsByEnv":{"default":"a712cda67ba9e2d14eb847ddcf680385"}}

@@ -1,0 +1,1 @@
+{"id":"ffa255eb880659b3ff26085b14f9cf3c","fullName":"integration/workspace/workspace-project-crud.test.ts:13:3","name":"BK-4: POST /workspaces creates workspace with name+slug → 201","status":"passed","testResultsByEnv":{"default":"b7adcafd836e81476445d180aa1f8168"}}
