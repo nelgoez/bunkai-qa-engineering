@@ -1,27 +1,32 @@
 {
   "featured": true,
   "thumbnail": "docs/media/demo.png",
-  "displayName": "Bunkai QA Engineering",
-  "shortDescription": "AI-driven Quality Engineering boilerplate — Playwright + KATA + Jira/Xray for the full testing lifecycle, driven by agentic skills.",
-  "category": "qa-platform",
-  "tags": ["playwright", "typescript", "bun", "kata", "allure", "agentic-qa", "jira-xray", "ci-cd"],
+  "displayName": "Agentic QA Boilerplate",
+  "shortDescription": "Open-source Agentic QA framework — Playwright + KATA + Jira/Xray. Ships a create-agentic-qa scaffolder, 20+ agent skills, a full Xray CLI, and 7 MCP integrations to drive the entire QA lifecycle from shift-left testing to release sign-off.",
+  "category": "agentic-qa",
+  "tags": ["playwright", "typescript", "bun", "kata", "allure", "agentic-qa", "jira-xray", "xray-cli", "mcp", "scaffolder", "open-source", "ci-cd"],
   "order": 1,
   "screenshots": [
     {
+      "path": "docs/media/demo.png",
+      "alt": "Agentic QA Boilerplate — onboarding and methodology demo"
+    },
+    {
       "path": "bk147-app-shell-with-sidebar.png",
-      "alt": "Bunkai app shell with sidebar — UI layout test"
+      "alt": "App shell with sidebar — UI layout test"
     },
     {
       "path": "bk147-multi-tab.png",
-      "alt": "Bunkai multi-tab navigation — state consistency across tabs"
+      "alt": "Multi-tab navigation — state consistency across tabs"
     },
     {
       "path": "bk147-tc10-not-found.png",
-      "alt": "Bunkai TC-10 — 404 handling on invalid routes"
+      "alt": "TC-10 — 404 handling on invalid routes"
     }
   ],
   "links": {
-    "allure_staging": "https://nelgoez.github.io/bunkai-qa-engineering/staging/sanity/",
+    "npm": "https://www.npmjs.com/package/create-agentic-qa",
+    "template": "https://github.com/upex-galaxy/agentic-qa-boilerplate",
     "docs": "https://github.com/nelgoez/bunkai-qa-engineering/tree/main/docs"
   }
 }
