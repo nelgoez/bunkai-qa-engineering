@@ -1,0 +1,1 @@
+{"id":"3f5ce4d53bc1c14ab49227d72def291f","fullName":"integration/atc/atc-create-edit.test.ts:256:3","name":"BK-156: PATCH /atcs/{id} cascade-replaces children (BK-96 regression)","status":"passed","testResultsByEnv":{"default":"7f825e91ff2d69fcf916c5fe82b5267c"}}
