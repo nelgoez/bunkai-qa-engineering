@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "Slug \"ws-dup-mu5b80vm\" is already taken.",
+    "request_id": "55313398-27dc-4d91-b1fc-5fed7c06cfab"
+  }
+}
