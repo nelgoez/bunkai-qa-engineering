@@ -1,0 +1,55 @@
+{
+  "atc": {
+    "id": "f6de9fab-8a5b-4a41-9b99-9c830b554147",
+    "slug": "api-gen-module/atc-df28956e",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "4960e530-ce96-42e6-80ec-0c5f5268be1b",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "e55814cd-94a6-4f1f-a419-af2fc526ed41",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "cb44a730-ca84-4f11-80d9-e1799a5d2b56",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "ATC to patch 1789715963905",
+    "status": "unrun",
+    "version": 1,
+    "priority": null,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "technique": null,
+    "assertions": [
+      {
+        "id": "411dba81-b6f8-4e55-b27d-0ac3694a7c18",
+        "content": "Response time < 2s",
+        "position": 1
+      }
+    ],
+    "created_at": "2026-09-18T07:19:24.025471+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-09-18T07:19:24.025471+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}
