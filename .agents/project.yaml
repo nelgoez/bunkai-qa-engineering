@@ -68,16 +68,16 @@ qa:
     master_test_plan_epic:
       name: QA Master Test Plan # the MTP — parent of every Test Plan (FTP/STP/ATP); description mirrors
       # .context/master-test-plan.md + points to the official QA repo; cross-linked to the 3 sibling QA epics
-      key: null # discovered/created at runtime, then cached here (e.g. BK-1)
+      key: BK-514 # discovered/created at runtime, then cached here (e.g. BK-1)
     test_repository_epic:
       name: QA Test Repository # convention name; holds every Test (TC) issue
-      key: null # discovered/created at runtime, then cached here (e.g. BK-2)
+      key: BK-70 # discovered/created at runtime, then cached here (e.g. BK-2)
     test_artifacts_epic:
       name: QA Test Artifacts # holds every Test Execution (FTR/STR/ATR), Precondition, Test Set
-      key: null # discovered/created at runtime, then cached here (e.g. BK-3)
+      key: BK-515 # discovered/created at runtime, then cached here (e.g. BK-3)
     defect_epic:
       name: QA Defect Management # convention name; the `QA ` prefix marks a process epic, not product
-      key: null # discovered/created at runtime, then cached here (e.g. BK-4)
+      key: BK-183 # discovered/created at runtime, then cached here (e.g. BK-4)
 
 team:
   # Jira assignee accountIds for key team members (resolved 2026-06-10)
