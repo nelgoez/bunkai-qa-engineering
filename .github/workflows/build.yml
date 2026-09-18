@@ -24,8 +24,8 @@ env:
   STAGING_USER_PASSWORD: ${{ secrets.STAGING_USER_PASSWORD }}
   STAGING_USER_PAT: ${{ secrets.STAGING_USER_PAT }}
   STAGING_USER_READONLY_PAT: ${{ secrets.STAGING_USER_READONLY_PAT }}
-  # TMS Sync — push test results to Jira/Xray on CI runs
-  AUTO_SYNC: 'true'
+  # TMS Sync — static-check pipeline runs no tests and no TMS sync
+  AUTO_SYNC: 'false'
   TMS_PROVIDER: 'jira'
 
 jobs:
@@ -68,3 +68,54 @@ jobs:
 
       - name: Install Playwright (API context)
         run: bun run pw:install
+
+  # ============================================
+  # Notify Failure — a red suite is never silent.
+  # Opens one labeled issue per failing workflow,
+  # deduplicated on the open-issue title.
+  # ============================================
+  notify-failure:
+    name: Notify Failure
+    needs: [TestBuild]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Open labeled failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const workflow = context.workflow;
+            const runId = context.runId;
+            const runNumber = context.runNumber;
+            const label = 'ci-failure';
+            const title = `[CI] ${workflow} failed - run #${runNumber}`;
+
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: label,
+            });
+            if (open.some(i => i.title === title)) {
+              core.notice(`Duplicate open failure issue for "${workflow}" - skipping.`);
+              return;
+            }
+
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
+            const body = [
+              `Workflow **${workflow}** failed.`,
+              '',
+              `- Run: ${runUrl}`,
+              `- Ref: \`${context.ref}\``,
+              `- Commit: \`${context.sha}\``,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              labels: [label],
+              body,
+            });
+            core.notice(`Opened failure issue "${title}".`);
