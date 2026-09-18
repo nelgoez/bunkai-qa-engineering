@@ -4,7 +4,20 @@
   "displayName": "Agentic QA Boilerplate",
   "shortDescription": "Open-source Agentic QA framework — Playwright + KATA + Jira/Xray. Ships a create-agentic-qa scaffolder, 20+ agent skills, a full Xray CLI, and 7 MCP integrations to drive the entire QA lifecycle from shift-left testing to release sign-off.",
   "category": "agentic-qa",
-  "tags": ["playwright", "typescript", "bun", "kata", "allure", "agentic-qa", "jira-xray", "xray-cli", "mcp", "scaffolder", "open-source", "ci-cd"],
+  "tags": [
+    "playwright",
+    "typescript",
+    "bun",
+    "kata",
+    "allure",
+    "agentic-qa",
+    "jira-xray",
+    "xray-cli",
+    "mcp",
+    "scaffolder",
+    "open-source",
+    "ci-cd"
+  ],
   "order": 1,
   "screenshots": [
     {
