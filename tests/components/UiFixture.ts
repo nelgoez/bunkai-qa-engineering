@@ -17,7 +17,9 @@
 import type { TestContextOptions } from '@TestContext';
 
 import { LoginPage } from '@ui/LoginPage';
+import { TokensPage } from '@ui/TokensPage';
 import { UiBase } from '@ui/UiBase';
+import { WorkspacesPage } from '@ui/WorkspacesPage';
 
 // ============================================
 // UI Fixture Class
@@ -27,9 +29,17 @@ export class UiFixture extends UiBase {
   /** Login page component - handles authentication flows */
   readonly login: LoginPage;
 
+  /** Tokens page component - Settings > Tokens (Personal Access Tokens) */
+  readonly tokens: TokensPage;
+
+  /** Workspaces page component - Settings > Workspaces (workspaces I belong to) */
+  readonly workspaces: WorkspacesPage;
+
   constructor(options: TestContextOptions) {
     super(options);
 
     this.login = new LoginPage(options);
+    this.tokens = new TokensPage(options);
+    this.workspaces = new WorkspacesPage(options);
   }
 }

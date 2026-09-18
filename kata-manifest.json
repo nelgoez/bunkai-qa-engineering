@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "generatedAt": "2026-09-15T23:36:29.142Z",
+  "generatedAt": "2026-09-18T23:16:44.135Z",
   "components": {
     "api": [
       {
@@ -265,15 +265,69 @@
             "line": 108
           }
         ]
+      },
+      {
+        "name": "TokensPage",
+        "file": "TokensPage.ts",
+        "relativePath": "tests/components/ui/TokensPage.ts",
+        "atcs": [
+          {
+            "id": "BK-1043",
+            "method": "listTokensWithColumnsAndNoSecret",
+            "line": 73
+          },
+          {
+            "id": "BK-1045",
+            "method": "requireConfirmationBeforeRevoke",
+            "line": 85
+          },
+          {
+            "id": "BK-1047",
+            "method": "cancelRevokeKeepsTokenActive",
+            "line": 94
+          },
+          {
+            "id": "BK-1054",
+            "method": "showExpiryDateOnRow",
+            "line": 107
+          }
+        ]
+      },
+      {
+        "name": "WorkspacesPage",
+        "file": "WorkspacesPage.ts",
+        "relativePath": "tests/components/ui/WorkspacesPage.ts",
+        "atcs": [
+          {
+            "id": "BK-1030",
+            "method": "listWorkspacesWithNameAndSlug",
+            "line": 70
+          },
+          {
+            "id": "BK-1031",
+            "method": "renderCapitalisedRoleLabel",
+            "line": 81
+          },
+          {
+            "id": "BK-1032",
+            "method": "markExactlyOneActiveWorkspace",
+            "line": 90
+          },
+          {
+            "id": "BK-1037",
+            "method": "showNoLeaveAddOrSwitchControl",
+            "line": 102
+          }
+        ]
       }
     ]
   },
   "steps": [],
   "summary": {
-    "totalComponents": 8,
-    "totalATCs": 41,
+    "totalComponents": 10,
+    "totalATCs": 49,
     "apiComponents": 7,
-    "uiComponents": 1,
+    "uiComponents": 3,
     "stepsModules": 0
   }
 }
