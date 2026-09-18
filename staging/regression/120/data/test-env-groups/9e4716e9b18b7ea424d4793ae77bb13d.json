@@ -1,0 +1,1 @@
+{"id":"9e4716e9b18b7ea424d4793ae77bb13d","fullName":"integration/defects/defect-sync.test.ts:39:3","name":"BK-241: Auth boundary — permanent auth failure stops retries","status":"skipped","testResultsByEnv":{"default":"ed4bcef1ba878501ef00a0e756b0917f"}}
