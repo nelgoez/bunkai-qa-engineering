@@ -1,0 +1,1 @@
+{"id":"87614d1e1fd895ed620c03201669c21e","fullName":"integration/workspace/workspace-project-crud.test.ts:53:3","name":"BK-4: POST /workspaces rejects duplicate slug → 409","status":"passed","testResultsByEnv":{"default":"1ec7f689e273fa2b52ac343e4fee244d"}}
