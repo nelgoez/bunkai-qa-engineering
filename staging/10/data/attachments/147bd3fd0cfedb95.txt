@@ -1,0 +1,10 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-154] createAtcWithBodyBoundaryValidation - PASS (164ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-154] createAtcWithBodyBoundaryValidation - PASS (147ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-154] createAtcWithBodyBoundaryValidation - PASS (209ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-154] createAtcWithBodyBoundaryValidation - PASS (152ms)
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+✅ [BK-154] createAtcWithBodyBoundaryValidation - PASS (169ms)

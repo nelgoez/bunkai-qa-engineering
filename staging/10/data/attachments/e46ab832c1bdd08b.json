@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "not_found",
+    "message": "ATC, user story, or module not found.",
+    "details": {
+      "reason": "not_found"
+    },
+    "request_id": "7dc2b4fb-2859-4411-af65-404bdeccda69"
+  }
+}
