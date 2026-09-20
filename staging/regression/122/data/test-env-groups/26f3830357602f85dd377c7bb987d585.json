@@ -1,0 +1,1 @@
+{"id":"26f3830357602f85dd377c7bb987d585","fullName":"integration/user-story/user-story.test.ts:22:3","name":"BK-14: POST /modules/{id}/user-stories rejects title < 3 → 422","status":"passed","testResultsByEnv":{"default":"b114746ba21af42e454ce74ffdd0f48a"}}

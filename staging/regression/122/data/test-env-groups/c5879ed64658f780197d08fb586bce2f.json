@@ -1,0 +1,1 @@
+{"id":"c5879ed64658f780197d08fb586bce2f","fullName":"integration/atc/atc-create-edit.test.ts:140:3","name":"BK-152: POST /atcs rejects module outside user story subtree with 422","status":"passed","testResultsByEnv":{"default":"0afa2cdcd8ea59d1e373dbe401dce0a2"}}
