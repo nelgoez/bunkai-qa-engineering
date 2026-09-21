@@ -1,0 +1,1 @@
+{"id":"9ec37e594b5c6146baaaf8baf3f1cd6f","fullName":"integration/workspace/workspace-project-crud.test.ts:101:3","name":"BK-8: POST /workspaces/{id}/projects rejects name < 3 → 422","status":"passed","testResultsByEnv":{"default":"92e491ad5648743b9719f8b2620c8f54"}}
