@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "Invalid email or password.",
+    "request_id": "ba5bebf2-f980-422e-a0a8-38c4ebd6e217"
+  }
+}
