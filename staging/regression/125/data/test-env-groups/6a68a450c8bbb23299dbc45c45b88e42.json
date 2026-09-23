@@ -1,0 +1,1 @@
+{"id":"6a68a450c8bbb23299dbc45c45b88e42","fullName":"integration/user-story/user-story.test.ts:33:3","name":"BK-14: POST /modules/{id}/user-stories rejects empty body → 422","status":"passed","testResultsByEnv":{"default":"0b2a8e5fd1c0a81c3537a2e326ad3d67"}}

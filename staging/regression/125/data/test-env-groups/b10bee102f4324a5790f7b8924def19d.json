@@ -1,0 +1,1 @@
+{"id":"b10bee102f4324a5790f7b8924def19d","fullName":"integration/user-story/user-story.test.ts:41:3","name":"BK-14: POST /modules/{id}/user-stories returns 401 without auth","status":"passed","testResultsByEnv":{"default":"1352170fd35010eb7dd3432a8d381839"}}
