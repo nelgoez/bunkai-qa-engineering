@@ -1,0 +1,8 @@
+{
+  "title": "Test duplicate ATC 1790154215232",
+  "atc_ids": [
+    "ec1b2900-170a-45cf-b6b3-21892c84f39c",
+    "ec1b2900-170a-45cf-b6b3-21892c84f39c"
+  ],
+  "workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9"
+}
