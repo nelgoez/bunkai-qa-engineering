@@ -1,0 +1,2 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/workspaces
+✅ [BK-293] createWorkspaceReservedSlug - PASS (159ms)

@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "Slug \"ws-dup-mudsmhql\" is already taken.",
+    "request_id": "d1b02850-7778-48be-ae26-3e6ce6ba68c5"
+  }
+}

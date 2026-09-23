@@ -1,0 +1,10 @@
+{
+  "workspace": {
+    "id": "00a30128-14cf-4cc4-8547-5f7deb39672b",
+    "slug": "ws-db-mudsmiup",
+    "name": "DB-Persist mudsmiup",
+    "owner_user_id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "plan": "community",
+    "created_at": "2026-09-23T07:40:20.730172+00:00"
+  }
+}
