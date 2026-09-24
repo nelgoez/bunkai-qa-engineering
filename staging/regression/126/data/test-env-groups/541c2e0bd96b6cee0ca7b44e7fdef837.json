@@ -1,0 +1,1 @@
+{"id":"541c2e0bd96b6cee0ca7b44e7fdef837","fullName":"integration/atc/atc-create-edit.test.ts:124:3","name":"BK-151: POST /atcs rejects AC that belongs to a different user story with 422","status":"passed","testResultsByEnv":{"default":"9f2e28dff5880dc9d42c451e609c8592"}}

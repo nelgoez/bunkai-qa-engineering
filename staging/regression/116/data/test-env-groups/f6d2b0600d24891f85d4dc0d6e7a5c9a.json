@@ -1,1 +1,0 @@
-{"id":"f6d2b0600d24891f85d4dc0d6e7a5c9a","fullName":"integration/atc/atc-create-edit.test.ts:343:3","name":"BK-157: PATCH /atcs/{id} absent X-If-Match → 200","status":"passed","testResultsByEnv":{"default":"06e7e97c8bd4a9e8d5832ed0ac073299"}}

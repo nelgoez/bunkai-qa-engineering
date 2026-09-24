@@ -1,0 +1,1 @@
+{"id":"3b8be48561a89c4f0e42a3989b45e715","fullName":"integration/workspace/workspace-project-crud.test.ts:80:3","name":"BK-8: POST /workspaces/{id}/projects creates project → 201","status":"passed","testResultsByEnv":{"default":"1498915b8d7d465210a38b7a1da3c710"}}
