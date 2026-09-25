@@ -1,1 +1,0 @@
-{"id":"1e68e45de2789ca88e0b20cd0c2cb31f","fullName":"integration/atc/atc-create-edit.test.ts:215:3","name":"BK-155: POST /atcs returns error when user_story_id does not exist (no partial write)","status":"passed","testResultsByEnv":{"default":"832297c1ece6afe712aaeb212a5a9161"}}

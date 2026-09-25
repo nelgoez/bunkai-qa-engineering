@@ -1,7 +1,0 @@
-{
-  "error": {
-    "code": "not_found",
-    "message": "One or more selected ATCs are not available in this workspace.",
-    "request_id": "14ebbcb0-fb6e-439c-9db5-2e9d450067de"
-  }
-}
