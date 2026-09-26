@@ -1,1 +1,0 @@
-{"id":"dbe2971519c59788e8bd2f580804bc42","fullName":"integration/atc/atc-create-edit.test.ts:48:3","name":"BK-149: POST /atcs creates an ATC with steps, assertions, slug and version 1","status":"passed","testResultsByEnv":{"default":"7f0fef00be6c8f8a58adfdae132bd6ae"}}
