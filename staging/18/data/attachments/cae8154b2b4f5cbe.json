@@ -1,0 +1,24 @@
+{
+  "user": {
+    "id": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "email": "qa-headless@bunkai.io"
+  },
+  "session": {
+    "access_token": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImUzNTEyOTEwLTY0ZDEtNGY4OS04ZDk2LTI4NjA5NzQ2ZTQ1YyIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2ZtYnBpa3pwa2FmcHRxeGltaHhuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIwY2RmZWEyOS1jYmY3LTQ3NjItYjRhYS1mNmQxNTI0OTJmNDMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzkwNTk1MDI1LCJpYXQiOjE3OTA1OTE0MjUsImVtYWlsIjoicWEtaGVhZGxlc3NAYnVua2FpLmlvIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6dHJ1ZX0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3OTA1OTE0MjV9XSwic2Vzc2lvbl9pZCI6ImY5NDVmZTYwLTg1OGMtNDI4Ni04ZGI3LTI2NGEzZDU4MTAyOCIsImlzX2Fub255bW91cyI6ZmFsc2V9.wcpSm_juNkV-BfZeaDER-k8KDMWh7cKAadaMtk4q-0isr7ZQqhT0ExgvezHp-ayHt8tJ2nchkEolVOJVK-qoRQ",
+    "refresh_token": "fsoibypwuukg",
+    "expires_at": 1790595025,
+    "token_type": "bearer"
+  },
+  "pat": {
+    "token": "bk_pat_xwERQ1th04Aa.2LXIUDhl7Xb5XoxGFseBgiJB6F11UXs",
+    "id": "e657d4cd-c9e4-44c9-b686-433df5097b4b",
+    "name": "cli-signin",
+    "scopes": [
+      "atc:read",
+      "atc:write",
+      "run:execute"
+    ],
+    "expires_at": null
+  },
+  "warning": "Store the PAT token now — it cannot be retrieved later."
+}
