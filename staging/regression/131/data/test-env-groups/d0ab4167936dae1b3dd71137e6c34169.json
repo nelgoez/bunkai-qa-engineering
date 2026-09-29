@@ -1,0 +1,1 @@
+{"id":"d0ab4167936dae1b3dd71137e6c34169","fullName":"integration/workspace/workspace-project-crud.test.ts:122:3","name":"BK-8: POST /workspaces/{id}/projects rejects non-member → 403","status":"skipped","testResultsByEnv":{"default":"4eb1b3c2898e6923a84dd0d0c5661d11"}}
