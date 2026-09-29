@@ -1,0 +1,60 @@
+{
+  "atc": {
+    "id": "e87daf30-7cf2-4741-b126-eb04749faad1",
+    "slug": "api-gen-module/atc-0c4dc110",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "7d1b03da-8fa5-4b55-b67e-80b325acdc52",
+        "content": "Step 1",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "b26dd7ad-59f6-43c8-b808-15ec4f47ef3a",
+        "content": "Step 2",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "f1ada73c-9c6d-4bc8-94a4-e526e7125ee3",
+        "content": "Step 3",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "ATC cascade test 1790677436976",
+    "status": "unrun",
+    "version": 1,
+    "priority": null,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "technique": null,
+    "assertions": [
+      {
+        "id": "f9dc1255-1be5-4e58-9145-dae0b406cc62",
+        "content": "Assertion 1",
+        "position": 1
+      },
+      {
+        "id": "ddb5f469-0bd9-4809-8b8a-5438e1734b08",
+        "content": "Assertion 2",
+        "position": 2
+      }
+    ],
+    "created_at": "2026-09-29T10:23:57.078656+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-09-29T10:23:57.078656+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}
