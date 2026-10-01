@@ -1,0 +1,1 @@
+{"id":"84ac94682cb4bce8e4f461a172287a11","fullName":"integration/workspace/workspace-project-crud.test.ts:42:3","name":"BK-4: POST /workspaces rejects reserved slug → 422","status":"passed","testResultsByEnv":{"default":"eb44ceccfb2dc8e0b918d38a2b7afa49"}}
