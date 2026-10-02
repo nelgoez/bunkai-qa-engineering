@@ -1,0 +1,1 @@
+{"id":"78594d9162aa28dfe32d93fd3060089d","fullName":"integration/workspace/workspace-project-crud.test.ts:111:3","name":"BK-8: POST /workspaces/{id}/projects rejects duplicate name → 409","status":"passed","testResultsByEnv":{"default":"f1ecf823bc36709a85cf3df6fcb5c5da"}}

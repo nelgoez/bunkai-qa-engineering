@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "conflict",
+    "message": "Slug \"ws-dup-muqp02hb\" is already taken.",
+    "request_id": "c369cfdd-c332-4065-add7-d5b282610f9b"
+  }
+}
