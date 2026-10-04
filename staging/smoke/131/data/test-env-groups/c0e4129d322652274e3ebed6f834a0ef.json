@@ -1,1 +1,0 @@
-{"id":"c0e4129d322652274e3ebed6f834a0ef","fullName":"integration/auth/user-session.test.ts:24:3","name":"BK-166: Unauthenticated request returns 401","status":"passed","testResultsByEnv":{"default":"cf313f4e82ed371334b10776ccb8b836"}}
