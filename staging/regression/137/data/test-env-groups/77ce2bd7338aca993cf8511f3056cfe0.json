@@ -1,0 +1,1 @@
+{"id":"77ce2bd7338aca993cf8511f3056cfe0","fullName":"integration/defects/defect-sync.test.ts:31:3","name":"BK-240: Re-sync idempotency — no duplicate external items","status":"skipped","testResultsByEnv":{"default":"410d8350f89e433c65de4f91ec7c1b4b"}}
