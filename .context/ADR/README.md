@@ -46,3 +46,4 @@ number from this Index (`max(existing) + 1`, zero-padded); numbers are never reu
 | ADR-0003  | Selector contract (`data-testid`)        | Accepted | —          | —             |
 | ADR-0004  | Flake policy (no retries, `@critical` smoke) | Accepted | —       | —             |
 | ADR-0005  | Auth-in-tests (PAT + storageState)       | Accepted | —          | —             |
+| ADR-0006  | GitHub REST API version pinning (CI notifications) | Proposed | —          | —             |
