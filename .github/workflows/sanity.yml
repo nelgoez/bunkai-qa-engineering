@@ -253,16 +253,16 @@ jobs:
         run: |
           if [ -n "$PORTAL_URL" ]; then
             bun scripts/ci/publish-allure-portal.ts \
-              --env "${{ env.TEST_ENV }}" --suite "${{ github.event.inputs.custom_allure_url }}" \
+              --env "${{ env.TEST_ENV }}" --suite "${{ github.event.inputs.custom_allure_url || 'sanity' }}" \
               --run "${{ github.run_number }}" \
               --results sanity-artifacts/allure-results
           else
             bun scripts/ci/publish-allure-pages.ts \
-              --env "${{ env.TEST_ENV }}" --suite "${{ github.event.inputs.custom_allure_url }}" \
+              --env "${{ env.TEST_ENV }}" --suite "${{ github.event.inputs.custom_allure_url || 'sanity' }}" \
               --run "${{ github.run_number }}" \
               --results sanity-artifacts/allure-results --pages gh-pages --keep 3
             echo "## Allure Report" >> $GITHUB_STEP_SUMMARY
-            echo "View the report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.TEST_ENV }}/${{ github.event.inputs.custom_allure_url }}/" >> $GITHUB_STEP_SUMMARY
+            echo "View the report: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ env.TEST_ENV }}/${{ github.event.inputs.custom_allure_url || 'sanity' }}/" >> $GITHUB_STEP_SUMMARY
           fi
 
   # ============================================
@@ -283,9 +283,10 @@ jobs:
             const { owner, repo } = context.repo;
             const workflow = context.workflow;
             const runId = context.runId;
-            const runNumber = context.runNumber;
             const label = 'ci-failure';
-            const title = `[CI] ${workflow} failed - run #${runNumber}`;
+            // Stable per-workflow title so repeated failures converge on ONE open
+            // issue instead of one per run number; each new run is appended as a comment.
+            const title = `[CI] ${workflow} failed`;
 
             const { data: open } = await github.rest.issues.listForRepo({
               owner,
@@ -293,10 +294,7 @@ jobs:
               state: 'open',
               labels: label,
             });
-            if (open.some(i => i.title === title)) {
-              core.notice(`Duplicate open failure issue for "${workflow}" - skipping.`);
-              return;
-            }
+            const existing = open.find(i => i.title === title);
 
             const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
             const body = [
@@ -307,11 +305,21 @@ jobs:
               `- Commit: \`${context.sha}\``,
             ].join('\n');
 
-            await github.rest.issues.create({
-              owner,
-              repo,
-              title,
-              labels: [label],
-              body,
-            });
-            core.notice(`Opened failure issue "${title}".`);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body,
+              });
+              core.notice(`Appended to open failure issue "${title}" (#${existing.number}).`);
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                labels: [label],
+                body,
+              });
+              core.notice(`Opened failure issue "${title}".`);
+            }
