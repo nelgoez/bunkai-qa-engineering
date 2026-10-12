@@ -1,0 +1,11 @@
+❌ [BK-1030] listWorkspacesWithNameAndSlug - FAIL: expect(locator).toBeVisible() failed
+
+Locator: locator('[data-testid="workspaces-list"]').first().locator('[data-testid="workspaces-rows"]')
+Expected: visible
+Timeout: 10000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 10000ms
+  - waiting for locator('[data-testid="workspaces-list"]').first().locator('[data-testid="workspaces-rows"]')
+
