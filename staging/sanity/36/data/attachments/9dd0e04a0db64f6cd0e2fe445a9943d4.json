@@ -1,0 +1,15 @@
+{
+  "test": {
+    "id": "c9397637-ecbc-4064-9c85-4b5277cad03a",
+    "steps": [
+      {
+        "atc_id": "c1427586-1b5a-47c7-a859-ebfdd42a358a",
+        "position": 1
+      }
+    ],
+    "title": "Test idempotency 1792054163646",
+    "created_at": "2026-10-15T08:49:23.967447+00:00",
+    "created_by": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9"
+  }
+}
