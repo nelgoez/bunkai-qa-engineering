@@ -1,0 +1,1 @@
+{"id":"da420bed72a9d001a776b9a347be77a3","fullName":"integration/atc/atc-create-edit.test.ts:408:3","name":"BK-160: PATCH /atcs/{id} keeps slug, user_story_id and module_id immutable","status":"passed","testResultsByEnv":{"default":"7b4ea35abff67488d2991a2d0b6bba70"}}
