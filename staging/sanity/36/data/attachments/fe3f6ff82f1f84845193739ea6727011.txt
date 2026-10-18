@@ -1,4 +1,0 @@
----- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/6f4f530d-ee1e-49e6-b893-8ec8ed75a485/projects
-✅ [BK-296] createProjectSuccessfully - PASS (189ms)
----- API NOK: 409 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/6f4f530d-ee1e-49e6-b893-8ec8ed75a485/projects
-✅ [BK-298] createProjectDuplicateName - PASS (175ms)
