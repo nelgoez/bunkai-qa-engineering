@@ -1,4 +1,0 @@
----- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/atcs
-✅ [BK-149] createAtcSuccessfully - PASS (185ms)
----- API OK: 200 - https://staging-upexbunkai.vercel.app/api/v1/atcs/095be3d2-4444-4710-a740-33de8644bd8c
-✅ [BK-160] patchAtcImmutableFields - PASS (238ms)
