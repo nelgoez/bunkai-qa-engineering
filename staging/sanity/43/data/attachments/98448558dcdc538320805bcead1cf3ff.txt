@@ -1,0 +1,2 @@
+---- API OK: 201 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/7d3d84a2-f3e3-4fe2-8e27-ff96e0a4af86/projects
+✅ [BK-296] createProjectSuccessfully - PASS (278ms)
