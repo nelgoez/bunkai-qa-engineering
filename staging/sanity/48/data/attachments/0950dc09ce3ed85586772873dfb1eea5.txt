@@ -1,0 +1,5 @@
+---- API NOK: 400 - https://staging-upexbunkai.vercel.app/api/v1/workspaces/undefined/projects
+❌ [BK-296] createProjectSuccessfully - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 400

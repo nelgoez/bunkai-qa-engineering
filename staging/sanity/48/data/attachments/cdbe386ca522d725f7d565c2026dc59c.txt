@@ -1,0 +1,53 @@
+
+============================================================
+KATA Architecture - Global Teardown
+============================================================
+
+ATC Coverage:
+   31 unique ATC tracked (100 total executions)
+   ✅ Passed: 21 | ❌ Failed: 10 | ⏭️ Skipped: 0
+
+[SYNC] Syncing results to TMS...
+
+[SYNC] Syncing 31 test results to jira...
+[SKIP] BK-311 not assigned to current user — skipping
+[SKIP] BK-313 not assigned to current user — skipping
+[SKIP] BK-314 not assigned to current user — skipping
+[SKIP] BK-1030 not assigned to current user — skipping
+[SKIP] BK-1043 not assigned to current user — skipping
+[SKIP] BK-1054 not assigned to current user — skipping
+[SKIP] BK-1045 not assigned to current user — skipping
+[SKIP] BK-1047 not assigned to current user — skipping
+[SKIP] BK-149 not assigned to current user — skipping
+[SKIP] BK-151 not assigned to current user — skipping
+[SKIP] BK-152 not assigned to current user — skipping
+[SKIP] BK-153 not assigned to current user — skipping
+[SKIP] BK-154 not assigned to current user — skipping
+[SKIP] BK-155 not assigned to current user — skipping
+[SKIP] BK-312 not assigned to current user — skipping
+[SKIP] BK-306 not assigned to current user — skipping
+[SKIP] BK-307 not assigned to current user — skipping
+[SKIP] BK-308 not assigned to current user — skipping
+[SKIP] BK-310 not assigned to current user — skipping
+[SKIP] BK-300 not assigned to current user — skipping
+[SKIP] BK-301 not assigned to current user — skipping
+[SKIP] BK-302 not assigned to current user — skipping
+[SKIP] BK-303 not assigned to current user — skipping
+[SKIP] BK-304 not assigned to current user — skipping
+[SKIP] BK-291 not assigned to current user — skipping
+[SKIP] BK-292 not assigned to current user — skipping
+[SKIP] BK-293 not assigned to current user — skipping
+[SKIP] BK-295 not assigned to current user — skipping
+[SKIP] BK-297 not assigned to current user — skipping
+[SKIP] BK-296 not assigned to current user — skipping
+[SKIP] BK-299 not assigned to current user — skipping
+
+[SUMMARY] Sync: 0 success, 0 failed, 31 skipped (not owned)
+   Provider: jira
+   Status: Success
+   Message: Updated 0/0 issues (31 skipped)
+
+============================================================
+[OK] Global teardown complete
+============================================================
+
