@@ -1,0 +1,5 @@
+---- API NOK: 400 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+❌ [BK-151] createAtcWithAcOutsideUserStory - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 422
+Received: 400
