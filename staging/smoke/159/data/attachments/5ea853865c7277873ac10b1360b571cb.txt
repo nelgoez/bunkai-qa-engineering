@@ -1,0 +1,2 @@
+---- API NOK: 422 - https://staging-upexbunkai.vercel.app/api/v1/tests
+✅ [BK-307] createTestWithInvalidTitle - PASS (267ms)

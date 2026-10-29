@@ -1,0 +1,1 @@
+{"id":"e04cf5614285185970df4172d377ba82","fullName":"integration/workspace/workspace-project-crud.test.ts:133:3","name":"BK-4: DB persistence — created workspace appears in GET /workspaces list","status":"failed","testResultsByEnv":{"default":"75af0a373ef881b3ccd39dc18de49a5f"}}
