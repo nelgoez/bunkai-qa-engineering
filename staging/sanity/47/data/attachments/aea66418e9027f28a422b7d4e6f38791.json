@@ -1,7 +1,0 @@
-{
-  "error": {
-    "code": "idempotency_key_required",
-    "message": "Missing idempotency-key header.",
-    "request_id": "a8314091-bbe7-4e83-b58f-3c222e19ee43"
-  }
-}
