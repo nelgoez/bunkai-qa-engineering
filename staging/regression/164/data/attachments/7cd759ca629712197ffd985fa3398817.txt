@@ -1,0 +1,5 @@
+---- API NOK: 400 - https://staging-upexbunkai.vercel.app/api/v1/modules/37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4/user-stories
+❌ [BK-300] createUserStory - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 201
+Received: 400

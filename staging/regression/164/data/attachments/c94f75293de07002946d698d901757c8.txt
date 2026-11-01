@@ -1,0 +1,5 @@
+---- API NOK: 400 - https://staging-upexbunkai.vercel.app/api/v1/atcs
+❌ [BK-152] createAtcWithModuleOutsideSubtree - FAIL: expect(received).toBe(expected) // Object.is equality
+
+Expected: 404
+Received: 400
