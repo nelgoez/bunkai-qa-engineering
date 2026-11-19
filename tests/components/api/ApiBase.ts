@@ -176,7 +176,10 @@ export class ApiBase extends TestContext {
     options: RequestOptions = {},
   ): Promise<[APIResponse, TBody, TPayload]> {
     const url = this.apiEndpoint(endpoint);
-    const headers = this.buildHeaders(options.headers);
+    const headers = this.buildHeaders({
+      'Idempotency-Key': crypto.randomUUID(),
+      ...options.headers,
+    });
 
     const response = await this.request.post(url, {
       headers,
