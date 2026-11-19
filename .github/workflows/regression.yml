@@ -52,7 +52,7 @@ env:
 jobs:
   IntegrationTests:
     name: Integration ${{ matrix.module }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -96,9 +96,6 @@ jobs:
       - name: Validate Test Environment Variables
         run: bun run test:env:check
 
-      - name: Install Playwright (API context)
-        run: bun run pw:install
-
       - name: Run ${{ matrix.module }} Integration Tests
         run: bunx playwright test --project=integration ${{ matrix.testPath }}
 
@@ -135,7 +132,7 @@ jobs:
   E2ETests:
     name: E2E Tests
     needs: IntegrationTests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     environment:
       name: ${{ github.event.inputs.environment || 'staging' }}
@@ -215,7 +212,7 @@ jobs:
   allure-report:
     name: Build & Deploy Allure Report
     needs: [IntegrationTests, E2ETests]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ always() && github.event.inputs.generate_allure != 'false' }}
 
     steps:
@@ -319,7 +316,7 @@ jobs:
   notify-failure:
     name: Notify Failure
     needs: [IntegrationTests, E2ETests, allure-report]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: failure()
     steps:
       - name: Open labeled failure issue

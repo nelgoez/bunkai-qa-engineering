@@ -55,7 +55,7 @@ env:
 jobs:
   SmokeTest:
     name: Smoke Test Suite
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     environment:
       name: ${{ github.event.inputs.environment || 'staging' }}
@@ -137,7 +137,7 @@ jobs:
   allure-report:
     name: Build & Deploy Allure Report
     needs: SmokeTest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ always() && github.event.inputs.generate_allure != 'false' }}
 
     steps:
@@ -219,7 +219,7 @@ jobs:
   notify-failure:
     name: Notify Failure
     needs: [SmokeTest, allure-report]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: failure()
     steps:
       - name: Open labeled failure issue

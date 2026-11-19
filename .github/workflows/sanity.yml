@@ -81,7 +81,7 @@ env:
 jobs:
   SanityTest:
     name: Sanity Test Suite
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     environment:
       name: ${{ github.event.inputs.environment || 'staging' }}
@@ -191,7 +191,7 @@ jobs:
   allure-report:
     name: Build & Deploy Allure Report
     needs: SanityTest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ always() && github.event.inputs.generate_allure != 'false' }}
 
     steps:
@@ -273,7 +273,7 @@ jobs:
   notify-failure:
     name: Notify Failure
     needs: [SanityTest, allure-report]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: failure()
     steps:
       - name: Open labeled failure issue
