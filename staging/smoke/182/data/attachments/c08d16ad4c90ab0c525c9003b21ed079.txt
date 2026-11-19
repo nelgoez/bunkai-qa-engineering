@@ -1,0 +1,51 @@
+
+============================================================
+KATA Architecture - Global Teardown
+============================================================
+
+ATC Coverage:
+   29 unique ATC tracked (64 total executions)
+   ✅ Passed: 29 | ❌ Failed: 0 | ⏭️ Skipped: 0
+
+[SYNC] Syncing results to TMS...
+
+[SYNC] Syncing 29 test results to jira...
+[SKIP] BK-311 not assigned to current user — skipping
+[SKIP] BK-313 not assigned to current user — skipping
+[SKIP] BK-149 not assigned to current user — skipping
+[SKIP] BK-151 not assigned to current user — skipping
+[SKIP] BK-152 not assigned to current user — skipping
+[SKIP] BK-153 not assigned to current user — skipping
+[SKIP] BK-154 not assigned to current user — skipping
+[SKIP] BK-155 not assigned to current user — skipping
+[SKIP] BK-156 not assigned to current user — skipping
+[SKIP] BK-157 not assigned to current user — skipping
+[SKIP] BK-158 not assigned to current user — skipping
+[SKIP] BK-159 not assigned to current user — skipping
+[SKIP] BK-160 not assigned to current user — skipping
+[SKIP] BK-312 not assigned to current user — skipping
+[SKIP] BK-305 not assigned to current user — skipping
+[SKIP] BK-306 not assigned to current user — skipping
+[SKIP] BK-307 not assigned to current user — skipping
+[SKIP] BK-308 not assigned to current user — skipping
+[SKIP] BK-309 not assigned to current user — skipping
+[SKIP] BK-310 not assigned to current user — skipping
+[SKIP] BK-291 not assigned to current user — skipping
+[SKIP] BK-292 not assigned to current user — skipping
+[SKIP] BK-293 not assigned to current user — skipping
+[SKIP] BK-294 not assigned to current user — skipping
+[SKIP] BK-295 not assigned to current user — skipping
+[SKIP] BK-296 not assigned to current user — skipping
+[SKIP] BK-297 not assigned to current user — skipping
+[SKIP] BK-298 not assigned to current user — skipping
+[SKIP] BK-299 not assigned to current user — skipping
+
+[SUMMARY] Sync: 0 success, 0 failed, 29 skipped (not owned)
+   Provider: jira
+   Status: Success
+   Message: Updated 0/0 issues (29 skipped)
+
+============================================================
+[OK] Global teardown complete
+============================================================
+
