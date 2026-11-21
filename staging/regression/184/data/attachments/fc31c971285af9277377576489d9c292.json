@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Name must be at least 3 characters.",
+    "details": {
+      "reason": "name_too_short"
+    },
+    "request_id": "cf3bf22c-a47c-45ed-ac3b-771d52bac685"
+  }
+}

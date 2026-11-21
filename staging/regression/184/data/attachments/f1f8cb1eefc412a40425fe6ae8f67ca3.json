@@ -1,0 +1,19 @@
+{
+  "test": {
+    "id": "678bfcb1-3091-414c-9c02-66c7579d0d81",
+    "steps": [
+      {
+        "atc_id": "c22c73b2-332a-45e8-92f2-c998f310c05b",
+        "position": 1
+      },
+      {
+        "atc_id": "c22c73b2-332a-45e8-92f2-c998f310c05b",
+        "position": 2
+      }
+    ],
+    "title": "Test duplicate ATC 1795238007256",
+    "created_at": "2026-11-21T05:13:27.919992+00:00",
+    "created_by": "0cdfea29-cbf7-4762-b4aa-f6d152492f43",
+    "workspace_id": "dfdd3fb7-0724-4eb5-b970-1498e949beb9"
+  }
+}

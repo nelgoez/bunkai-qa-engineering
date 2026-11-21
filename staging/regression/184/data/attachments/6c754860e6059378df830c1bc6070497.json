@@ -1,0 +1,55 @@
+{
+  "atc": {
+    "id": "a911ac9f-cdde-48f0-b586-628b0929dfb0",
+    "slug": "api-gen-module/atc-3c27255f",
+    "tags": [
+      "smoke",
+      "login"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "41c93ad4-d948-4824-b0ba-d491398f4a01",
+        "content": "Navigate to login page",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "217e3aa3-425e-4383-8533-4a2d615d80c4",
+        "content": "Enter email test@example.com",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      },
+      {
+        "id": "1c2ddcb5-984d-4660-91e2-9fe01b6b3d6f",
+        "content": "Click submit",
+        "expected": null,
+        "position": 3,
+        "input_data": null
+      }
+    ],
+    "title": "Locking test 1795238012985",
+    "status": "unrun",
+    "version": 1,
+    "priority": null,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "technique": null,
+    "assertions": [
+      {
+        "id": "a0e5e920-4b48-416a-9753-cca8efb48e46",
+        "content": "Response time < 2s",
+        "position": 1
+      }
+    ],
+    "created_at": "2026-11-21T05:13:33.149166+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-11-21T05:13:33.149166+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}
