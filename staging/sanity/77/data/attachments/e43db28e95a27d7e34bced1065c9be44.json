@@ -1,0 +1,10 @@
+{
+  "error": {
+    "code": "validation_failed",
+    "message": "Title must be 200 characters or fewer.",
+    "details": {
+      "reason": "title_too_long"
+    },
+    "request_id": "45f03255-b5a2-4e85-bc74-c432967eeaa7"
+  }
+}
