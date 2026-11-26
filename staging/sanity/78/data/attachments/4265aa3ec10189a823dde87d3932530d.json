@@ -1,0 +1,39 @@
+{
+  "atc": {
+    "id": "b541dc0d-94e4-4f8c-8d10-ae5c2af6c1f5",
+    "slug": "api-gen-module/atc-56d6f7ba",
+    "tags": [],
+    "layer": "API",
+    "steps": [
+      {
+        "id": "c8eb1cd8-f08b-4d23-a524-b70b1c48ad53",
+        "content": "Step 1",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "bbce37b0-e0a9-4dad-9397-3a024f7e6642",
+        "content": "Step 2",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      }
+    ],
+    "title": "ATC-3 for test 1795699894253",
+    "status": "unrun",
+    "version": 1,
+    "priority": null,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "technique": null,
+    "assertions": [],
+    "created_at": "2026-11-26T13:31:35.096457+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-11-26T13:31:35.096457+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  }
+}
