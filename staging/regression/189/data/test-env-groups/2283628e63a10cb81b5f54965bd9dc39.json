@@ -1,0 +1,1 @@
+{"id":"2283628e63a10cb81b5f54965bd9dc39","fullName":"integration/atc/atc-create-edit.test.ts:188:3","name":"BK-154: POST /atcs validates request body boundaries","status":"passed","testResultsByEnv":{"default":"8f2ddb9f3da4cd99f1a24548612e6b18"}}
