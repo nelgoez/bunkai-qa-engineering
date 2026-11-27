@@ -1,0 +1,44 @@
+{
+  "atc": {
+    "id": "dc43b253-d003-4c3b-a83c-b92b99610efd",
+    "slug": "api-gen-module/atc-5ac3e4e6",
+    "tags": [
+      "cascade"
+    ],
+    "layer": "UI",
+    "steps": [
+      {
+        "id": "44c6a2f6-8a5b-43d1-b16b-5fa14fb83832",
+        "content": "Replacement step 1",
+        "expected": null,
+        "position": 1,
+        "input_data": null
+      },
+      {
+        "id": "45cac071-e5cb-44d7-b8f1-cb0787b4e82c",
+        "content": "Replacement step 2",
+        "expected": null,
+        "position": 2,
+        "input_data": null
+      }
+    ],
+    "title": "Cascade replaced 1795776273610",
+    "status": "unrun",
+    "version": 2,
+    "priority": null,
+    "module_id": "37aa2ba9-47eb-4e45-ad2d-085c1ee36ef4",
+    "technique": null,
+    "assertions": [],
+    "created_at": "2026-11-27T10:44:33.882991+00:00",
+    "project_id": "1a6fdae6-8b0c-47bb-b444-0e2563deab4b",
+    "updated_at": "2026-11-27T10:44:34.222134+00:00",
+    "archived_at": null,
+    "user_story_id": "0f4a6636-d845-4459-9262-ebae2657ca62",
+    "acceptance_criterion_ids": [
+      "96587255-b61d-4f8b-9cf7-a09f945c4bb1"
+    ]
+  },
+  "version": 2,
+  "affected_test_count": 0,
+  "affected_archived_test_count": 0
+}
