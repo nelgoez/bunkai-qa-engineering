@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "Authentication required.",
+    "request_id": "58143052-55ee-427e-a099-820f77af0bfd"
+  }
+}
