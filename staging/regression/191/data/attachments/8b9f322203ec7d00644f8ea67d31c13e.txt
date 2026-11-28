@@ -1,0 +1,30 @@
+
+============================================================
+KATA Architecture - Global Teardown
+============================================================
+
+ATC Coverage:
+   8 unique ATC tracked (15 total executions)
+   ✅ Passed: 8 | ❌ Failed: 0 | ⏭️ Skipped: 0
+
+[SYNC] Syncing results to TMS...
+
+[SYNC] Syncing 8 test results to jira...
+[SKIP] BK-311 not assigned to current user — skipping
+[SKIP] BK-149 not assigned to current user — skipping
+[SKIP] BK-305 not assigned to current user — skipping
+[SKIP] BK-306 not assigned to current user — skipping
+[SKIP] BK-307 not assigned to current user — skipping
+[SKIP] BK-308 not assigned to current user — skipping
+[SKIP] BK-309 not assigned to current user — skipping
+[SKIP] BK-310 not assigned to current user — skipping
+
+[SUMMARY] Sync: 0 success, 0 failed, 8 skipped (not owned)
+   Provider: jira
+   Status: Success
+   Message: Updated 0/0 issues (8 skipped)
+
+============================================================
+[OK] Global teardown complete
+============================================================
+
